@@ -1,0 +1,132 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+    }
+}
+
+plugins {
+    id 'org.hidetake.ssh' version '0.4.2'
+}
+
+apply plugin:'application'
+apply plugin: 'gradle-one-jar'
+
+
+allprojects {
+    apply plugin: 'groovy'
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6'
+}
+
+// used by application plugin
+mainClassName = 'jbum.ui.PageChooser'
+
+compileGroovy {
+    options.compilerArgs << '-XDignore.symbol.file'
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+repositories {
+    flatDir(dirs: file('libs'))
+    mavenCentral()
+}
+
+dependencies {
+    compile module('org.codehaus.groovy:groovy:2.3.7')
+    compile module(':junit:3.8.2')
+    compile module(':cglib-nodep:2.1_3')
+    compile module(':dom4j:1.6.1')
+    compile module(':xstream:1.3.1')
+    compile module(':iText:')
+    compile module(':javamail:')
+    compile module(':jazzy-core:')
+    compile module(':jazzy-swing:')
+    compile module(':jdom:1.0')
+    compile module(':joda-time:1.2.1')
+    compile module(':jsch:0.1.42')
+    compile module(':meta:')
+    compile module(':stax:1.2.0_rc2-dev')
+    compile module(':stax-api:1.0.1')
+    compile module(':xom-1.1:')
+    compile module(':xpp3_min-1.1.3.4.O:')
+}
+
+task copyFiles(type: Copy, dependsOn: [jar]) {
+    from configurations.runtime
+    from("build/libs")
+    into("webstart/lib")
+    include('*.jar')
+}
+
+def home = System.getProperty('user.home')
+
+task signAll(dependsOn: [copyFiles]) << {
+    new File('webstart/signed').mkdirs()
+    def libFiles = files { file('webstart/lib').listFiles() }
+    libFiles.each {
+        ant.signjar(
+                destDir: 'webstart/signed',
+                alias: 'mykey',
+                jar: it,
+                keystore: home+'/bin/jbum-key',
+                storepass: 'jbum4win',
+                preservelastmodified: 'true')
+    }
+}
+
+task signJbumJar(dependsOn: [copyFiles]) << {
+    new File('webstart/signed').mkdirs()
+    def libFiles = files { file('webstart/lib/jbum.jar') }
+    libFiles.each {
+        ant.signjar(
+                destDir: 'webstart/signed',
+                alias: 'mykey',
+                jar: it,
+                keystore: home+'/bin/jbum-key',
+                storepass: new File(home+'/bin/jbum-pass.txt').text,
+                preservelastmodified: 'true')
+    }
+}
+
+task oneJar(type: OneJar) {
+    mainClass = mainClassName
+}
+
+task deployJnlpFile(type:Exec) {
+    executable 'sh'
+    args '-c', 'scp src/main/resources/jbum.jnlp studio:/jadn/ROOT/jbum/'
+}
+
+task genVersionFile(type: Exec, dependsOn: 'classes') {
+    standardOutput = new ByteArrayOutputStream()
+    executable "sh"
+    args '-c', 'java -cp build/classes/main:webstart/lib/groovy-2.3.7.jar jbum.core.Version full'
+    doLast {
+        file('webstart/signed/update.dat').text = standardOutput.toString()
+    }
+}
+
+task deploy(type: Exec, dependsOn: ['oneJar', 'signJbumJar', 'deployJnlpFile', 'genVersionFile'] ){
+    executable "sh"
+    args "-c", "scp webstart/signed/* jadn.com:/jadn/ROOT/jbum/"
+}
+
+
+//manifest.mainAttributes("Main-Class":  "jbum.ui.PageChooser");
+
+// try to automate webstart deploy...
+//// , dependsOn: [signAll]
+//task updateJadn(type:Exec) << {
+//    //commandLine 'scp src/main/resources/jbum.jnlp studio:/jadn/ROOT/jbum/'
+//}
+//
+//task foo(type: Exec)  {
+//    commandLine '/bin/bash -c "scp webstart/signed/*.jar studio:/jadn/ROOT/jbum/"'
+//}
+
+
