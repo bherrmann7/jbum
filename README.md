@@ -2,6 +2,8 @@
 
 A simple application for taking a directory of photos and turning them into a web page with optional comments and styling.  
 
+Web site http://jbum.sourceforge.net/
+
 ## Running
 
     gradle run
