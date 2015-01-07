@@ -4,6 +4,8 @@ A simple application for taking a directory of photos and turning them into a we
 
 Web site http://jbum.sourceforge.net/
 
+Sample output http://jadn.com/babypea/wefindout-2003/
+
 ## Running
 
     gradle run
