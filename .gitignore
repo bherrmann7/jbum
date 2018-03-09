@@ -5,3 +5,5 @@ jbum.ipr
 jbum.iws
 /.gradle
 webstart
+jbum_main.iml
+jbum_test.iml
