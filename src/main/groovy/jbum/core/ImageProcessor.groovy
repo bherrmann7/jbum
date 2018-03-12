@@ -32,14 +32,14 @@ public class ImageProcessor implements Runnable {
 
     Vector vii = new Vector();
 
-    Vector vbutton = new Vector();
+    //Vector vbutton = new Vector();
 
     Vector vtask = new Vector();
 
-    Vector vcolor = new Vector();
+    //Vector vcolor = new Vector();
 
     @SuppressWarnings("unchecked")
-	public static void enqueue(ImageInfo ii, JButton button, String task) {
+	public static void enqueue(ImageInfo ii, String task) {
         synchronized (ImageProcessor.class) {
             if (ip == null) {
                 ip = new ImageProcessor();
@@ -47,27 +47,23 @@ public class ImageProcessor implements Runnable {
             }
 
             ip.vii.add(ii);
-            ip.vbutton.add(button);
+            //ip.vbutton.add(button);
             ip.vtask.add(task);
-            ip.vcolor.add(button.getBackground());
-            button.setBackground(Color.yellow);
+            //ip.vcolor.add(button.getBackground());
+            //button.setBackground(Color.yellow);
         }
     }
 
     public void run() {
     	try {
         ImageInfo ii = null;
-        JButton button = null;
         String task = null;
-        Color color = null;
 
         while (true) {
             synchronized (ImageProcessor.class) {
                 if (vii.size() != 0) {
                     ii = (ImageInfo) vii.elementAt(0);
-                    button = (JButton) vbutton.elementAt(0);
                     task = (String) vtask.elementAt(0);
-                    color = (Color) vcolor.elementAt(0);
                 } else {
                     // no work.
                     ip = null;
@@ -96,9 +92,7 @@ public class ImageProcessor implements Runnable {
             
             }
             // Problem with image processing returns null.
-            button.setBackground(color);
             if (img != null) {
-                button.setIcon(ImageCache.set(ii.getSmallFile(Main.getCurrentDir()), img));
                 System.gc();
                 Main.save();
             }
@@ -106,9 +100,7 @@ public class ImageProcessor implements Runnable {
             synchronized (getClass()) {
                 // remove work item
                 vii.remove(0);
-                vbutton.remove(0);
                 vtask.remove(0);
-                vcolor.remove(0);
             }
         }
     	} catch (Throwable t){

@@ -1,10 +1,10 @@
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
     }
 }
 
@@ -12,8 +12,9 @@ plugins {
     id 'org.hidetake.ssh' version '0.4.2'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
 apply plugin:'application'
-apply plugin: 'gradle-one-jar'
 
 
 allprojects {
@@ -35,7 +36,7 @@ repositories {
     flatDir(dirs: file('libs'))
     mavenCentral()
 }
-
+//  jsch
 dependencies {
     compile module('org.codehaus.groovy:groovy:2.3.7')
     compile module(':junit:3.8.2')
@@ -48,12 +49,14 @@ dependencies {
     compile module(':jazzy-swing:')
     compile module(':jdom:1.0')
     compile module(':joda-time:1.2.1')
-    compile module(':jsch:0.1.42')
+    //compile module(':jsch:0.1.54')
+    compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
     compile module(':meta:')
     compile module(':stax:1.2.0_rc2-dev')
     compile module(':stax-api:1.0.1')
     compile module(':xom-1.1:')
     compile module(':xpp3_min-1.1.3.4.O:')
+//    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
 task copyFiles(type: Copy, dependsOn: [jar]) {
@@ -93,10 +96,6 @@ task signJbumJar(dependsOn: [copyFiles]) << {
     }
 }
 
-task oneJar(type: OneJar) {
-    mainClass = mainClassName
-}
-
 task deployJnlpFile(type:Exec) {
     executable 'sh'
     args '-c', 'scp src/main/resources/jbum.jnlp studio:/jadn/ROOT/jbum/'
@@ -111,11 +110,21 @@ task genVersionFile(type: Exec, dependsOn: 'classes') {
     }
 }
 
-task deploy(type: Exec, dependsOn: ['oneJar', 'signJbumJar', 'deployJnlpFile', 'genVersionFile'] ){
+task deploy(type: Exec, dependsOn: ['signJbumJar', 'deployJnlpFile', 'genVersionFile'] ){
     executable "sh"
     args "-c", "scp webstart/signed/* jadn.com:/jadn/ROOT/jbum/"
 }
 
+//compileKotlin {
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+//}
+//compileTestKotlin {
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+//}
 
 //manifest.mainAttributes("Main-Class":  "jbum.ui.PageChooser");
 

@@ -8,21 +8,16 @@ import javax.swing.JFrame;
 import jbum.core.Version;
 
 public class Update extends Thread {
-	JFrame frame;
-
-	public Update(JFrame frame) {
-		
-	}
 
 	public static void check(JFrame frame){
-		Update update = new Update(frame);
-		update.start();
+//		Update update = new Update(frame);
+//		update.start();
 	}
 
 	@SuppressWarnings("deprecation")
 	public void run() {
 		try {
-			URL url = new URL("http://jadn.com/jbum/update.dat");			
+			URL url = new URL("http://jadn.com/jbum/update.dat");
 			DataInputStream dis = new DataInputStream(url.openStream());
 			String version = dis.readLine();
 			if ( !Version.VERSION.equals( version ) ){

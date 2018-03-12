@@ -1,4 +1,6 @@
-package jbum.ui;
+package jbum.ui
+
+import jbum.core.CameraUtil;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,10 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.awt.event.WindowEvent
 import java.lang.reflect.Method;
 
 import javax.swing.BorderFactory;
@@ -30,11 +29,14 @@ import javax.swing.KeyStroke;
 import jbum.core.ColorSet;
 import jbum.core.DPage;
 import jbum.core.ImageInfo;
-import jbum.core.MailThread;
+
 import jbum.core.Prefs;
 import jbum.core.Version;
 import jbum.layouts.ExportToTemplate;
-import jbum.layouts.TemplateFactory;
+import jbum.layouts.TemplateFactory
+
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter;
 
 public class Main {
     private static Main myself;
@@ -123,12 +125,11 @@ public class Main {
 
                     try {
                         if (Prefs.getWebBrowser().trim().length() != 0)
-                            Runtime.getRuntime().exec(
-                                    Prefs.getWebBrowser()
-                                            + " file:///"
-                                            + fixSpaces(dpage.getWhere()
-                                            .toString())
-                                            + "/index.html");
+                            Runtime.getRuntime().exec([
+                                    Prefs.getWebBrowser(),
+                                            "file:///"
+                                            + fixSpaces(dpage.getWhere().toString())
+                                            + "/index.html"] as String[])
                     } catch (Throwable t) {
                         t.printStackTrace();
                         error(t,
@@ -211,7 +212,7 @@ public class Main {
                         try {
                             Object o = Class.forName("jbum.ui.Publish").newInstance();
                             Method m = o.getClass().getMethod("openDialog");
-                            m.invoke(o, []);
+                            m.invoke(o);
                         } catch (Exception e) {
                             error(e, "trying to publish");
                             e.printStackTrace();
@@ -458,20 +459,36 @@ public class Main {
 
         );
 
-        menuBar.add(menuItem = new
 
-                JMenuItem("Feedback")
 
-        );
-        menuItem.addActionListener(new
+//        menuBar.add(menuItem = new JMenuItem("Mark Camera Model"))
+//        menuItem.addActionListener({
+//            jbum.ui.Main.myself.centerP.setVisible(false)
+//            jbum.ui.Main.myself.centerP.vecii.vec.forEach({ ii ->
+//                ii.commentTA.setText("")
+//                //ii.commentTA.setText(CameraUtil.getCameraName(new File(Main.getCurrentDir(), ii.fileName.name)))
+//
+//            })
+//            jbum.ui.Main.myself.centerP.rebuildComponents()
+//        } as  ActionListener)
 
-                ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
-                        new Feedback(frame);
-                    }
-                }
-
-        );
+//        menuBar.add(menuItem = new JMenuItem("Divide by Date"))
+//        menuItem.addActionListener({
+//
+//            def m = [:]
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd")
+//
+//            def cameras = CameraUtil.findCameras(jbum.ui.Main.myself.centerP.vecii).toList()
+//            jbum.ui.Main.myself.centerP.vecii.vec.forEach({ ii ->
+//                Date date = CenterP.getDate(ii.getOriginalFile(getCurrentDir()),cameras)
+//                //System.out.println("date is "+date)
+//                def dateStr = date == null ? null : dateFormat.format(date)
+//                m[dateStr] =  (m[dateStr] == null) ? 1 : (m[dateStr]+1)
+//            })
+//            jbum.ui.Main.myself.centerP.introTA.setText(m.toString())
+//
+//            //jbum.ui.Main.myself.centerP.rebuildComponents()
+//        } as  ActionListener)
 
         // / -- Help
         final ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("author.jpg"));
@@ -500,7 +517,6 @@ public class Main {
                             JOptionPane.showMessageDialog(frame, about, "About Groovy",
                                     JOptionPane.INFORMATION_MESSAGE, icon);
                         } catch (Throwable e1) {
-                            new MailThread("About Groovy", e1);
                             e1.printStackTrace();
                         }
                     }
@@ -521,7 +537,6 @@ public class Main {
                             o.getClass().getMethod("startConsole").invoke(o,
                                     (Object[]) null);
                         } catch (Throwable e1) {
-                            new MailThread("startConsole", e1);
                             e1.printStackTrace();
                         }
                     }
@@ -545,24 +560,6 @@ public class Main {
                 }
 
         );
-
-        try
-
-        {
-            Object groovyUI = Class.forName("jbum.ui.GroovyUI").newInstance();
-            Method m = groovyUI.getClass().getMethod("init",
-                    [javax.swing.JFrame.class] as Class[])
-            m.invoke(groovyUI, [frame] as Object[]);
-        }
-
-        catch (
-                Throwable e1
-                )
-
-        {
-            new MailThread("Creating GroovyUI", e1);
-            e1.printStackTrace();
-        }
 
         frame.setSize(1050, 800);
 
@@ -666,7 +663,6 @@ public class Main {
     }
 
     public static void error(Throwable e, String whywhere) {
-        new MailThread(whywhere, e);
 
         JOptionPane.showMessageDialog(null, e.getMessage(), whywhere,
                 JOptionPane.ERROR_MESSAGE);
@@ -687,8 +683,6 @@ public class Main {
     }
 
     public static void error(String title, String msg) {
-        new MailThread(title + " " + msg);
-
         JOptionPane.showMessageDialog(null, msg, title,
                 JOptionPane.ERROR_MESSAGE);
     }
@@ -735,8 +729,7 @@ public class Main {
     }
 
     public static String prettyColor(Color c) {
-        return "#" + get2Hex(c.getRed()) + get2Hex(c.getGreen())
-        +get2Hex(c.getBlue());
+        return "#" + get2Hex(c.getRed()) + get2Hex(c.getGreen()) + get2Hex(c.getBlue());
     }
 
     static String get2Hex(int x) {

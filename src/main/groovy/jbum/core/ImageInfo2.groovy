@@ -20,8 +20,6 @@ public class ImageInfo2 {
 
 	public String comment;
 
-	public String date;
-
 	static SimpleDateFormat sdf = new SimpleDateFormat(
 			"dd-MMM-yyyy hh:mm:ss a EEE");
 
@@ -33,15 +31,6 @@ public class ImageInfo2 {
 		this.mediumSize = mediumSize;
 		this.smallSize = smallSize;
 		this.comment = comment.replace('\n', ' ');
-
-		try {
-			date = "";
-			Date d = CenterP.getDate(new File(Main.getCurrentDir(), fileName), null/*BOBH*/);
-			if (d != null)
-				date = sdf.format(d);
-		} catch (Throwable t) {
-			System.err.println("Unable to extract date of " + fileName);
-		}
 
 	}
 

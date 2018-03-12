@@ -45,8 +45,7 @@ class PageTemplate {
     String replaceAll(String src, String match, String replace) {
         int loc = -1;
         while ((loc = src.indexOf(match)) != -1) {
-            src = src.substring(0, loc) + replace
-                    + src.substring(loc + match.length());
+            src = src.substring(0, loc) + replace + src.substring(loc + match.length());
         }
         return src;
     }

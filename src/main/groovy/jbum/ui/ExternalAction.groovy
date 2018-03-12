@@ -9,11 +9,10 @@ import jbum.core.Prefs;
 
 public class ExternalAction implements Runnable {
     ImageInfo ii;
-    JButton button;
 
-    public ExternalAction(ImageInfo ii, JButton button) {
+
+    public ExternalAction(ImageInfo ii) {
         this.ii = ii;
-        this.button = button;
         new Thread(this, "ExternalAction").start();
     }
 
@@ -31,7 +30,7 @@ public class ExternalAction implements Runnable {
                         Prefs.getImageEditor(), target
                     ] as String[]);
             p.waitFor();
-            ImageProcessor.enqueue(ii, button, ImageProcessor.SMALLER);
+            ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
         } catch (Exception e) {
         	Main.error("running "+Prefs.getImageEditor(), "Unable to execute program: "+Prefs.getImageEditor()+
         			"\nYou may want to modify your program preferences in File/Preferences"+        			

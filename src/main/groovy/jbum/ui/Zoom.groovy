@@ -1,5 +1,6 @@
-package jbum.ui;
+package jbum.ui
 
+import javax.swing.BorderFactory;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -21,16 +22,17 @@ public class Zoom {
         Image img = Toolkit.getDefaultToolkit().createImage(imgFile.toString());
         ImageIcon icon = new ImageIcon(img);
         JButton button = new JButton(icon);
+        button.setBorder(BorderFactory.createEmptyBorder())
 
         button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     frame.setVisible(false);
-                    frame.dispose(); // by by ya'all
+                    frame.dispose();
                 }
             });
 
         frame.getContentPane().add(button, BorderLayout.CENTER);
-        frame.setSize(10 + icon.getIconWidth(), 10 + icon.getIconHeight());
+        frame.setSize(10 + icon.getIconWidth(), 40 + icon.getIconHeight());
 
         Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int x = (d.width - frame.getWidth()) / 2;

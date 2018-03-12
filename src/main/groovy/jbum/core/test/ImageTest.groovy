@@ -29,7 +29,7 @@ class ImageTest extends junit.framework.TestCase {
 		(0..2).each {
 			ImageInfo ii = new ImageInfo(new File("img_100"+it+".jpg"),null,null,null);
 			//ImageProcessor.enqueue(ii, jlabel, ImageProcessor.SMALLER);
-			ImageProcessor.enqueue(ii, jlabel, ImageProcessor.CLOCKWISE);
+			ImageProcessor.enqueue(ii, ImageProcessor.CLOCKWISE);
 			//ImageProcessor.enqueue(ii, jlabel, ImageProcessor.COUNTER_CLOCKWISE);
 			
 			//ip.makeThumb(ii, ip.CLOCKWISE);

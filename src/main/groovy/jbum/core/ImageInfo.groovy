@@ -16,7 +16,7 @@ public class ImageInfo implements java.io.Serializable {
 
     public Dimension smallSize;
 
-    public transient JTextArea commentTA = mkTA();
+    public transient JTextArea commentTA = mkTA()
 
     public ImageInfo(File x, Dimension imgSize, Dimension mediumSize,
             Dimension smallSize) {

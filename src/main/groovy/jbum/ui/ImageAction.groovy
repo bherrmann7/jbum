@@ -18,32 +18,24 @@ import com.swabunga.spell.engine.SpellDictionaryHashMap;
 import com.swabunga.spell.swing.JTextComponentSpellChecker;
 
 
-public class ImageAction implements ActionListener {
-    CenterP centerP;
-    ImageInfo ii;
-    JButton jl;
-    JPanel p;
+public class ImageAction {
 
-    public ImageAction(CenterP centerP, ImageInfo ii, JButton jl, JPanel p) {
-        this.centerP = centerP;
-        this.ii = ii;
-        this.jl = jl;
-        this.p = p;
-    }
-
-    public void actionPerformed(ActionEvent ae) {
-        String actionName = "uh?";
-        
-//        if (ae.getSource().equals(jl)) {
-//            jl.setBackground(Color.BLUE.brighter().brighter().brighter().brighter().brighter().brighter());
-//            return;
-//        }
+    static void performAction(String imageName, String tooltext) {
+        String actionName = "zoom";
 
         for (int i = 0; i < CenterP.buttonInfo.length; i += 3) {
-            if (CenterP.buttonInfo[i + 1].equals(
-                        ((JButton) ae.getSource()).getToolTipText())) {
+            if (CenterP.buttonInfo[i + 1].equals(tooltext)){
                 actionName = CenterP.buttonInfo[i];
             }
+        }
+
+        CenterP centerP = Main.myself.centerP
+
+        ImageInfo ii = centerP.vecii.vec.find { ImageInfo ii ->
+            ii.getOriginalFile(Main.currentDir).name == imageName
+        }
+        if(ii == null){
+            throw new RuntimeException("Unable to find: "+imageName)
         }
 
         if ("X".equals(actionName)) {
@@ -65,8 +57,8 @@ public class ImageAction implements ActionListener {
             File[] files = centerP.deletionManager.purgeList();
 
             for (int i = 0; i < files.length; i++) {
-                ImageInfo ii = new ImageInfo(files[i], null, null, null);
-                centerP.vecii.add(pos + 1 + i, ii);
+                ImageInfo jii = new ImageInfo(files[i], null, null, null);
+                centerP.vecii.add(pos + 1 + i, jii);
             }
 
             centerP.rebuildComponents();
@@ -75,19 +67,19 @@ public class ImageAction implements ActionListener {
         }
 
         if ("R".equals(actionName)) {
-            ImageProcessor.enqueue(ii, jl, ImageProcessor.SMALLER);
+            ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
 
             return;
         }
 
         if ("C".equals(actionName)) {
-            ImageProcessor.enqueue(ii, jl, ImageProcessor.CLOCKWISE);
+            ImageProcessor.enqueue(ii, ImageProcessor.CLOCKWISE);
 
             return;
         }
 
         if ("CC".equals(actionName)) {
-            ImageProcessor.enqueue(ii, jl, ImageProcessor.COUNTER_CLOCKWISE);
+            ImageProcessor.enqueue(ii, ImageProcessor.COUNTER_CLOCKWISE);
 
             return;
         }
@@ -198,7 +190,7 @@ public class ImageAction implements ActionListener {
         }
 
         if ("tool".equals(actionName)) {
-            new ExternalAction(ii, jl);
+            new ExternalAction(ii);
             return;
         }
 
@@ -206,4 +198,4 @@ public class ImageAction implements ActionListener {
         new Zoom(ii.getMediumFile(Main.getCurrentDir()));
     }
 }
-;
+

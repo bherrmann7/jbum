@@ -125,9 +125,6 @@ public class DeletionManager implements ActionListener, MenuListener {
 		centerP.rebuildComponents();
 	}
 
-	void imageInfoIsNow(VecImageInfo vecii) {
-	}
-
 	File[] purgeList() {
 		File[] list = centerP.currentDir.listFiles();
 		Vector<File> v = new Vector<File>();

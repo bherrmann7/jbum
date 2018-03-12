@@ -31,7 +31,7 @@ public class Splitter {
             // TODO: delete all html?
         }
 
-        // Use page to save new set (should probaby clone the Page and use that.)
+        // Use page to save new set (should probably clone the Page and use that.)
         p.setVii(newVii);
         p.setWhere(moveTo);
         if (p.exists()) {

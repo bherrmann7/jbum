@@ -105,7 +105,7 @@ function newWin(img, w, h) {
  
 
 function gotKey(event){
-   if( event.which != 101/*e*/ || !event.ctrlKey ) 
+   if( event.which != 5/*e*/ || !event.ctrlKey )
     return;
     // toggle emailing of photos
      document.getElementsByClassName( "silent").each(function(item) {

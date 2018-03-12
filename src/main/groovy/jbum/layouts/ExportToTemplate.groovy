@@ -154,8 +154,7 @@ public class ExportToTemplate {
 			trytoLoad = "file:" + template;
 			is = new FileInputStream(template);
 		} else {
-			trytoLoad = "classLoaderOf" + getClass().getName() + ":"
-					+ TemplateFactory.getResourceName(templateName);
+			trytoLoad = "classLoaderOf" + getClass().getName() + ":" + TemplateFactory.getResourceName(templateName);
 			is = getClass().getClassLoader().getResourceAsStream(
 					TemplateFactory.getResourceName(templateName));
 		}
@@ -164,15 +163,19 @@ public class ExportToTemplate {
 		return is;
 	}
 
+	private String handleAdd(String panel, Double width, Double height) {
+		handleAdd(panel, width.toInteger(), height.toInteger())
+	}
+
 	private String handleAdd(String panel, int width, int height) {
 		int dex = 0;
 		while ((dex = panel.indexOf('{$ add ')) != -1) {
 			int end = panel.indexOf(' $}', dex);
 			String[] args = panel.substring(dex + '{$ add '.length(), end)
 					.split(" ");
-			int contents = height;
+			int contents = height
 			if (args[0].equals("mediumWidth"))
-				contents = width;
+				contents = width
 			contents += Integer.parseInt(args[1]);
 			panel = panel.substring(0, dex) + contents
 					+ panel.substring(end + 3);

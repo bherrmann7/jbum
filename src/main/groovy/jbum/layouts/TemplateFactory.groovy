@@ -1,17 +1,4 @@
-package jbum.layouts;
-
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import jbum.core.MailThread;
+package jbum.layouts
 
 public class TemplateFactory {
 
@@ -105,8 +92,6 @@ public class TemplateFactory {
 			}
 			return (String[]) resources.toArray(new String[resources.size()]);
 		} catch (Throwable e) {
-			new MailThread("computeResources with: " + templateName+"\n\nUnable to find "+"/"
-					+ getResourceBase(templateName)+"/resources.txt", e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -163,6 +163,7 @@ public class Publish {
                 Main.status("all done.  Tranfered ${files.size()} in ${(System.currentTimeMillis() - startTime) / 1000} seconds")
 
             } catch (Throwable t) {
+                t.printStackTrace()
                 println("Transfer Aborted, files=${putting}, error=" + t.message)
                 Main.status("Transfer Aborted, files=${putting}, error=" + t.message)
             }
