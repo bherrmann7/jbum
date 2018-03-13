@@ -1,47 +1,22 @@
 package jbum.ui
 
-import javax.swing.BorderFactory;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container
-import java.awt.Event;
-import java.awt.GridLayout;
-import java.awt.Insets
+import com.drew.imaging.jpeg.JpegMetadataReader
+import com.drew.metadata.Directory
+import com.drew.metadata.Metadata
+import com.drew.metadata.exif.ExifDirectory
+import com.swabunga.spell.engine.SpellDictionary
+import com.swabunga.spell.engine.SpellDictionaryHashMap
+import com.swabunga.spell.swing.JTextComponentSpellChecker
+import jbum.core.*
+import jbum.layouts.TemplateFactory
+import jbum.ui.Prefs
+
+import javax.swing.*
+import javax.swing.text.JTextComponent
+import java.awt.*
 import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.JTextComponent;
-
-import jbum.core.*;
-import jbum.layouts.TemplateFactory;
-
-import com.drew.imaging.jpeg.JpegMetadataReader;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.exif.ExifDirectory;
-import com.swabunga.spell.engine.SpellDictionary;
-import com.swabunga.spell.engine.SpellDictionaryHashMap;
-import com.swabunga.spell.swing.JTextComponentSpellChecker;
+import java.text.SimpleDateFormat
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class CenterP extends JScrollPane {
@@ -431,6 +406,8 @@ public class CenterP extends JScrollPane {
         }
     }
 
+    def imageName2button = [ : ]
+
     private void doComponents() {
         Box box = (Box) getViewport().getView();
 
@@ -476,12 +453,14 @@ public class CenterP extends JScrollPane {
             littleP.setLayout(new BorderLayout());
             rowP.add(littleP);
 
-            String name = ii.getName()+" : "+CameraUtil.getCameraName(ii.getOriginalFile(Main.getCurrentDir()))
+            String cameraName = CameraUtil.getCameraName(ii.getOriginalFile(Main.getCurrentDir()))
+            String name = ii.name + (cameraName == null ? "" : " : "+cameraName)
 
-            JButton button = new JButton(name, ImageCache.get(ii
-                    .getSmallFile(Main.getCurrentDir())));
+            JButton button = new JButton(name, ImageCache.get(ii.getSmallFile(Main.getCurrentDir())));
+            imageName2button[ii.name] = button
             button.setBackground(littleP.getBackground());
-            button.setBorder(BorderFactory.createEmptyBorder(20, 5, 5, 5))
+            button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0))
+            button.setMargin(new Insets(0,0,0,0))
             if (ii.imgSize == null ||
                     // Not sure why this was turned off ... Apr 17,2007
                     (!ii.getSmallFile(Main.getCurrentDir()).exists())) {

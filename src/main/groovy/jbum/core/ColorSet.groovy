@@ -1,10 +1,6 @@
-package jbum.core;
+package jbum.core
 
-import java.awt.Color;
-
-/*
- * Created on Mar 19, 2004 @author bob
- */
+import java.awt.*
 
 public class ColorSet {
 
@@ -27,7 +23,7 @@ public class ColorSet {
     static String DEFAULT = "Default Colors";
 
     private static Object[] sets = [
-    // Name, Background, Text, Panel Even, PanelOdd
+            // Name, Background, Text, Panel Even, PanelOdd
             DEFAULT, new Color(0xD0D0B0), Color.black, new Color(0xD0D0FF),
             new Color(0xE0E0E0),
 
@@ -35,7 +31,7 @@ public class ColorSet {
             new Color(0xccffcc),
 
             "Halloween", new Color(0xFFDD77), Color.black, new Color(0xFFCC99),
-            new Color(0xFFFFCC) ]
+            new Color(0xFFFFCC)]
 
     public static Color getBackground(String name) {
         return (Color) sets[getDex(name) + 1];

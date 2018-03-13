@@ -1,9 +1,6 @@
 package jbum.ui
 
-import javax.swing.ImageIcon
-import javax.swing.JButton
-import javax.swing.JMenuItem
-import javax.swing.JPopupMenu
+import javax.swing.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
@@ -23,8 +20,8 @@ class PopupMenu extends JPopupMenu {
         return imageIcon
     }
 
-    public PopupMenu(String imageName){
-        (0..<CenterP.buttonInfo.size()/3).forEach {
+    public PopupMenu(String imageName) {
+        (0..<CenterP.buttonInfo.size() / 3).forEach {
             //String buttonCmd = CenterP.buttonInfo[it * 3]
             String buttonName = CenterP.buttonInfo[it * 3 + 2]
             String buttonToolTip = CenterP.buttonInfo[it * 3 + 1]
@@ -33,7 +30,7 @@ class PopupMenu extends JPopupMenu {
             jMenuItem.setIcon(getImageIcon(buttonName))
             jMenuItem.setText(buttonToolTip)
             jMenuItem.addActionListener({ ActionEvent ae ->
-                String buttonText = ((JMenuItem)ae.getSource()).getText()
+                String buttonText = ((JMenuItem) ae.getSource()).getText()
                 ImageAction.performAction(imageName, buttonText)
             } as ActionListener)
             add(jMenuItem)

@@ -1,17 +1,13 @@
-package jbum.core.test;
+package jbum.core.test
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
+import com.drew.imaging.jpeg.JpegMetadataReader
+import com.drew.imaging.jpeg.JpegProcessingException
+import com.drew.metadata.Directory
+import com.drew.metadata.Metadata
+import junit.framework.TestCase
 
-import junit.framework.TestCase;
-
-import com.drew.imaging.jpeg.JpegMetadataReader;
-import com.drew.imaging.jpeg.JpegProcessingException;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 
 public class SanityCheckMeta extends TestCase {
 
@@ -27,7 +23,7 @@ public class SanityCheckMeta extends TestCase {
         df.format(d);
         //System.out.println("Date is " + df.format(d));
     }
-    
+
 
     public static Date getDate(File jpegFile) {
         try {

@@ -4,21 +4,15 @@
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-package jbum.core;
+package jbum.core
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
+import com.sun.image.codec.jpeg.JPEGCodec
+import com.sun.image.codec.jpeg.JPEGImageEncoder
 
-import javax.swing.ImageIcon;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import javax.swing.*
+import java.awt.*
+import java.awt.geom.AffineTransform
+import java.awt.image.BufferedImage
 
 /**
  * lifted from,
@@ -32,13 +26,13 @@ public class ThumbnailMaker {
         Date start = new Date();
         createThumbnail("/tmp/cimg0173.jpg", "/tmp/thumb.jpg", 200);
         Date end = new Date();
-        System.out.println("Took "+(end.getTime()-start.getTime())/1000+" seconds.");
+        System.out.println("Took " + (end.getTime() - start.getTime()) / 1000 + " seconds.");
         System.exit(0);
     }
 
     /**
      * Reads an image in a file and creates a thumbnail in another file.
-     * 
+     *
      * @param orig
      *            The name of image file.
      * @param thumb
@@ -89,7 +83,7 @@ public class ThumbnailMaker {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
     }
 
 }

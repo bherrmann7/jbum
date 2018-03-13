@@ -1,17 +1,16 @@
-package jbum.ui;
+package jbum.ui
 
-import javax.swing.JButton;
+import jbum.core.ImageInfo
+import jbum.core.ImageProcessor
+import jbum.core.Prefs
 
-import jbum.core.ImageInfo;
-import jbum.core.ImageProcessor;
-import jbum.core.Prefs;
-
+import javax.swing.JButton
 
 public class ExternalAction implements Runnable {
     ImageInfo ii;
 
 
-    public ExternalAction(ImageInfo ii) {
+    public ExternalAction(ImageInfo ii, JButton jButton) {
         this.ii = ii;
         new Thread(this, "ExternalAction").start();
     }
@@ -27,14 +26,14 @@ public class ExternalAction implements Runnable {
             //				tt.append(target.charAt(i));
             //			}
             Process p = Runtime.getRuntime().exec([
-                        Prefs.getImageEditor(), target
-                    ] as String[]);
+                    Prefs.getImageEditor(), target
+            ] as String[]);
             p.waitFor();
             ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
         } catch (Exception e) {
-        	Main.error("running "+Prefs.getImageEditor(), "Unable to execute program: "+Prefs.getImageEditor()+
-        			"\nYou may want to modify your program preferences in File/Preferences"+        			
-        			"\n\nError:"+e.getMessage());
+            Main.error("running " + Prefs.getImageEditor(), "Unable to execute program: " + Prefs.getImageEditor() +
+                    "\nYou may want to modify your program preferences in File/Preferences" +
+                    "\n\nError:" + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -1,15 +1,10 @@
+package jbum.pdf
 
-package jbum.pdf;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-
+import com.lowagie.text.Document
+import com.lowagie.text.PageSize
+import com.lowagie.text.Paragraph
+import com.lowagie.text.Rectangle
+import com.lowagie.text.pdf.PdfWriter
 
 public class TestDocument {
 
@@ -26,9 +21,9 @@ public class TestDocument {
         doc.open();
 
         IntroPDF.writeIntro(doc, 33);
-        
+
         for (int i = 0; i < 50; i++) {
-            doc.add(new Paragraph("This is a test document.  Page "+i,BigPDF.f12Font));
+            doc.add(new Paragraph("This is a test document.  Page " + i, BigPDF.f12Font));
             doc.newPage();
         }
 

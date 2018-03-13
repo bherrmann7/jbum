@@ -1,22 +1,15 @@
-package jbum.ui;
+package jbum.ui
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.InputStreamReader;
+import com.swabunga.spell.engine.SpellDictionaryHashMap
+import com.swabunga.spell.swing.JTextComponentSpellChecker
+import jbum.core.DPage
+import jbum.core.ImageInfo
+import jbum.core.ImageProcessor
+import jbum.core.Splitter
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import jbum.core.DPage;
-import jbum.core.ImageInfo;
-import jbum.core.ImageProcessor;
-import jbum.core.Splitter;
-
-import com.swabunga.spell.engine.SpellDictionaryHashMap;
-import com.swabunga.spell.swing.JTextComponentSpellChecker;
-
+import javax.swing.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
 public class ImageAction {
 
@@ -24,7 +17,7 @@ public class ImageAction {
         String actionName = "zoom";
 
         for (int i = 0; i < CenterP.buttonInfo.length; i += 3) {
-            if (CenterP.buttonInfo[i + 1].equals(tooltext)){
+            if (CenterP.buttonInfo[i + 1].equals(tooltext)) {
                 actionName = CenterP.buttonInfo[i];
             }
         }
@@ -34,8 +27,8 @@ public class ImageAction {
         ImageInfo ii = centerP.vecii.vec.find { ImageInfo ii ->
             ii.getOriginalFile(Main.currentDir).name == imageName
         }
-        if(ii == null){
-            throw new RuntimeException("Unable to find: "+imageName)
+        if (ii == null) {
+            throw new RuntimeException("Unable to find: " + imageName)
         }
 
         if ("X".equals(actionName)) {
@@ -127,38 +120,38 @@ public class ImageAction {
             final FileChooser chooser = new FileChooser(
                     "Select directory to move all images before this one to");
             ActionListener actionListener = new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        File moveTo = chooser.getSelectedFile();
+                public void actionPerformed(ActionEvent e) {
+                    File moveTo = chooser.getSelectedFile();
 
-                        if (moveTo == null) {
-                            return;
-                        }
+                    if (moveTo == null) {
+                        return;
+                    }
 
-                        if (!moveTo.exists()) {
-                            JOptionPane.showMessageDialog(null,
+                    if (!moveTo.exists()) {
+                        JOptionPane.showMessageDialog(null,
                                 "The chosen directory does not exist.",
                                 "Error splitting up photos",
                                 JOptionPane.ERROR_MESSAGE);
 
-                            return;
-                        }
+                        return;
+                    }
 
-                        if (!moveTo.isDirectory()) {
-                            JOptionPane.showMessageDialog(null,
+                    if (!moveTo.isDirectory()) {
+                        JOptionPane.showMessageDialog(null,
                                 "The chosen file is not a directory.\nI need a directory to move the images to.",
                                 "Error splitting up photos",
                                 JOptionPane.ERROR_MESSAGE);
 
-                            return;
-                        }
-
-                        int loc = centerP.vecii.indexOf(ii);
-                        DPage page = centerP.getCurrentPage();
-                        Splitter.split(page, loc, moveTo);
-                        page.save();
-                        centerP.rebuildComponents();
+                        return;
                     }
-                };
+
+                    int loc = centerP.vecii.indexOf(ii);
+                    DPage page = centerP.getCurrentPage();
+                    Splitter.split(page, loc, moveTo);
+                    page.save();
+                    centerP.rebuildComponents();
+                }
+            };
 
             chooser.addActionListener(actionListener);
 
@@ -169,8 +162,8 @@ public class ImageAction {
             try {
                 if (centerP.dictionary == null) {
                     centerP.dictionary = new SpellDictionaryHashMap(new InputStreamReader(
-                                CenterP.class.getClassLoader()
-                                             .getResourceAsStream("english.0")));
+                            CenterP.class.getClassLoader()
+                                    .getResourceAsStream("english.0")));
                 }
 
                 JTextComponentSpellChecker sc = new JTextComponentSpellChecker(centerP.dictionary);
@@ -184,7 +177,7 @@ public class ImageAction {
 
         if ("info".equals(actionName)) {
             new JpgInfo(ii.getOriginalFile(Main.getCurrentDir()),
-                ii.getSmallFile(Main.getCurrentDir()), centerP);
+                    ii.getSmallFile(Main.getCurrentDir()), centerP);
 
             return;
         }

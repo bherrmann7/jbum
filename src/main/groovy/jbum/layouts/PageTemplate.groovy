@@ -1,6 +1,4 @@
-package jbum.layouts;
-
-import java.io.InputStream;
+package jbum.layouts
 
 class PageTemplate {
 

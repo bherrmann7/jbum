@@ -1,9 +1,6 @@
-package jbum.core;
+package jbum.core
 
-import java.io.File;
-
-import javax.swing.JOptionPane;
-
+import javax.swing.*
 
 public class Splitter {
     public static void split(DPage p, int loc, File moveTo) {

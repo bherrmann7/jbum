@@ -1,21 +1,14 @@
+package jbum.pdf
 
-package jbum.pdf;
+import com.lowagie.text.*
+import com.lowagie.text.pdf.PdfPCell
+import com.lowagie.text.pdf.PdfPTable
+import jbum.core.DPage
+import jbum.core.ImageInfo
 
-import static jbum.pdf.IntroPDF.safeEmbed;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import java.awt.Color;
-import jbum.core.DPage;
-import jbum.core.ImageInfo;
+import java.awt.*
+
+import static jbum.pdf.IntroPDF.safeEmbed
 
 public class CreatePDF {
 
@@ -62,7 +55,7 @@ public class CreatePDF {
             PdfPCell cell = new PdfPCell(img);
             cell.setBorder(Rectangle.NO_BORDER);
             cell.setPadding(3f);
-            if (!BigPDF.embedTest) 
+            if (!BigPDF.embedTest)
                 cell.setBackgroundColor(Color.WHITE);
             it.addCell(cell);
             PdfPCell p = new PdfPCell(scrub(ii.commentTA.getText()));
@@ -115,7 +108,8 @@ public class CreatePDF {
             if (str.charAt(i) == 10) {
                 if (!lastWasSpace)
                     sb.append(' ');
-            } else if (str.charAt(i) == 32 && lastWasSpace) {} else
+            } else if (str.charAt(i) == 32 && lastWasSpace) {
+            } else
                 sb.append(str.charAt(i));
             lastWasSpace = (str.charAt(i) == 32);
         }

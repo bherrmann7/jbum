@@ -1,15 +1,9 @@
+package jbum.pdf
 
-package jbum.pdf;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Image;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
-import java.io.FileOutputStream;
+import com.lowagie.text.*
+import com.lowagie.text.pdf.PdfPCell
+import com.lowagie.text.pdf.PdfPTable
+import com.lowagie.text.pdf.PdfWriter
 
 public class Issue2 {
 
@@ -32,7 +26,7 @@ public class Issue2 {
         pdfWriter.setPDFXConformance(PdfWriter.PDFX1A2001);
         doc.open();
 
-        PdfPTable table = new PdfPTableNOB(2,null);
+        PdfPTable table = new PdfPTableNOB(2, null);
         table.setWidthPercentage(100);
 
         Image img = Image.getInstance("/home/bherrmann/loopy.gif");
@@ -51,7 +45,7 @@ public class Issue2 {
         table.addCell(p);
 
         doc.add(table);
-        
+
         doc.close();
 
         Runtime.getRuntime().exec("xpdf issue2.pdf");

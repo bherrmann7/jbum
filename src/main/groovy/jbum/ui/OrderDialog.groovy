@@ -1,14 +1,15 @@
-package jbum.ui;
+package jbum.ui
 
-import jbum.core.Camera;
-import jbum.core.CameraUtil;
-import jbum.core.VecImageInfo;
-import se.datadosen.component.RiverLayout;
+import jbum.core.Camera
+import jbum.core.CameraUtil
+import jbum.core.VecImageInfo
+import se.datadosen.component.RiverLayout
 
 import javax.swing.*
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
+import java.awt.*
+import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
+import java.util.List
 
 public class OrderDialog extends JDialog {
 
@@ -28,11 +29,11 @@ public class OrderDialog extends JDialog {
 
         cameras.each { Camera camera ->
             List<Integer> DHMOffsets = camera.getOffsets()
-            def dayTF =  new JTextField(''+DHMOffsets.get(0),5);
-            def hourTF =  new JTextField(''+DHMOffsets.get(1),5)
-            def minTF =  new JTextField(''+DHMOffsets.get(2),5)
+            def dayTF = new JTextField('' + DHMOffsets.get(0), 5);
+            def hourTF = new JTextField('' + DHMOffsets.get(1), 5)
+            def minTF = new JTextField('' + DHMOffsets.get(2), 5)
             add("br left", new JLabel(camera.name));
-            add("tab", new JLabel(''+camera.imageInfos.size()));
+            add("tab", new JLabel('' + camera.imageInfos.size()));
             add("tab", dayTF);
             add("tab", hourTF);
             add("tab", minTF);
@@ -40,10 +41,10 @@ public class OrderDialog extends JDialog {
         }
 
         JPanel okcancel = new JPanel();
-        add("p left",okcancel);
+        add("p left", okcancel);
         JButton send = new JButton("Reorder Images");
         okcancel.add(send);
-        send.addActionListener(new ActionListener(){
+        send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cameras.each { Camera camera ->
                     def uiSet = mapUI[camera.name]
@@ -55,17 +56,19 @@ public class OrderDialog extends JDialog {
                 okcancel.setEnabled(false)
                 centerP.orderByExifDate(cameras as List<Camera>)
                 dispose();
-            }}
+            }
+        }
         );
         JButton cancel = new JButton("Cancel");
         okcancel.add(cancel);
-        cancel.addActionListener(new ActionListener(){
+        cancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-            }}
+            }
+        }
         )
 
-        setLocation((int)(frame.getLocation().x+100),(int)(frame.getLocation().y+100));
+        setLocation((int) (frame.getLocation().x + 100), (int) (frame.getLocation().y + 100));
         Dimension d = getPreferredSize();
         d.height += 25;
         setSize(d);

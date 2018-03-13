@@ -1,18 +1,9 @@
 package jbum.ui
 
-import javax.swing.BorderFactory;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-
+import javax.swing.*
+import java.awt.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 
 public class Zoom {
     public Zoom(File imgFile) {
@@ -25,11 +16,11 @@ public class Zoom {
         button.setBorder(BorderFactory.createEmptyBorder())
 
         button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    frame.setVisible(false);
-                    frame.dispose();
-                }
-            });
+            public void actionPerformed(ActionEvent ae) {
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
 
         frame.getContentPane().add(button, BorderLayout.CENTER);
         frame.setSize(10 + icon.getIconWidth(), 40 + icon.getIconHeight());

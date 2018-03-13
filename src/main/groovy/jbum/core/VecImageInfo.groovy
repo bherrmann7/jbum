@@ -3,10 +3,7 @@
  * 2000
  */
 
-package jbum.core;
-
-import java.util.ArrayList;
-import java.util.Vector;
+package jbum.core
 
 public class VecImageInfo implements java.io.Serializable {
     static final long serialVersionUID = -3259743450740459827L;
@@ -14,7 +11,7 @@ public class VecImageInfo implements java.io.Serializable {
     private Vector<ImageInfo> vec = new Vector<ImageInfo>();
 
     public VecImageInfo() {
-    }    
+    }
 
     VecImageInfo(ImageInfo[] elements) {
         add(elements);
@@ -59,9 +56,10 @@ public class VecImageInfo implements java.io.Serializable {
         vec.setElementAt(elem, i);
     }
 
-    public void clear(){
-    	vec.clear();
+    public void clear() {
+        vec.clear();
     }
+
     public int size() {
         return vec.size();
     }
@@ -84,19 +82,19 @@ public class VecImageInfo implements java.io.Serializable {
     public void add(int pos, ImageInfo element) {
         vec.add(pos, element);
     }
-    
-    public ArrayList<ImageInfo2> toModern(){
-    	ArrayList<ImageInfo2> modern = new ArrayList<ImageInfo2>(vec.size());
-    	for (Object iio : vec) {
-			modern.add(((ImageInfo)iio).toImageInfo2());
-		}
-    	return modern;
-    	 
+
+    public ArrayList<ImageInfo2> toModern() {
+        ArrayList<ImageInfo2> modern = new ArrayList<ImageInfo2>(vec.size());
+        for (Object iio : vec) {
+            modern.add(((ImageInfo) iio).toImageInfo2());
+        }
+        return modern;
+
     }
-    
-    public Vector getVec(){
-    	return vec;
+
+    public Vector getVec() {
+        return vec;
     }
-    
+
 }
 

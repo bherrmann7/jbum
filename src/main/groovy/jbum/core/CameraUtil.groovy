@@ -6,16 +6,13 @@ import com.drew.metadata.Metadata
 import com.drew.metadata.exif.ExifDirectory
 import jbum.ui.Main
 
-/**
- * Created by bob on 10/18/14.
- */
 class CameraUtil {
     static def findCameras(VecImageInfo vecImageInfo) {
         Map<String, Camera> map = [:]
 
         vecImageInfo.vec.each { ImageInfo ii ->
             // BOBH toLowerCase ...
-            String name = getCameraName(new File(Main.getCurrentDir(), ii.fileName.name ))
+            String name = getCameraName(new File(Main.getCurrentDir(), ii.fileName.name))
             if (!map[name])
                 map[name] = new Camera(name: name, imageInfos: [ii])
             else
@@ -23,7 +20,6 @@ class CameraUtil {
         }
         return map.values()
     }
-
 
     public static String getCameraName(File jpegFile) {
         Metadata metadata = JpegMetadataReader.readMetadata(jpegFile);

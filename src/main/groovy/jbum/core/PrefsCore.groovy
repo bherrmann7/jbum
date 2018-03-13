@@ -5,21 +5,18 @@
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 
-package jbum.core;
+package jbum.core
 
-import java.io.File;
-import java.util.Properties;
-
-import jbum.ui.Main;
+import jbum.ui.Main
 
 /**
  * @author bob
  */
 public class PrefsCore {
-	
-	public static void setApp(String appName){
-		PrefsCore.appName = appName;
-	}
+
+    public static void setApp(String appName) {
+        PrefsCore.appName = appName;
+    }
 
     final static boolean debug = false;
 
@@ -32,9 +29,9 @@ public class PrefsCore {
     private static void initProp() {
         if (prop != null)
             return;
-    	
-    	 file = new File(System.getProperty("user.home") + File.separator +
-                 "." + appName + ".prop");
+
+        file = new File(System.getProperty("user.home") + File.separator +
+                "." + appName + ".prop");
 
         if (file.exists()) {
             try {
@@ -106,7 +103,7 @@ public class PrefsCore {
                     + ") returns " + o);
         return o;
     }
-    
+
     public static String getStr(String name, Object defaultValue) {
         initProp();
 
@@ -117,9 +114,9 @@ public class PrefsCore {
         if (debug)
             System.out.println("AppProp: get(name=" + name + ",default=" + defaultValue
                     + ") returns " + o);
-        
+
         if (o == null)
-        	return null;
+            return null;
         return o.toString();
     }
 

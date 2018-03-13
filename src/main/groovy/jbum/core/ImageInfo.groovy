@@ -1,25 +1,19 @@
-package jbum.core;
+package jbum.core
 
-import java.awt.Dimension;
-import java.io.File;
-
-import javax.swing.JTextArea;
+import javax.swing.*
+import java.awt.*
 
 public class ImageInfo implements java.io.Serializable {
     final static long serialVersionUID = 2366333334630035894L;
 
     private File fileName;
-
     public Dimension imgSize;
-
     public Dimension mediumSize;
-
     public Dimension smallSize;
-
     public transient JTextArea commentTA = mkTA()
 
     public ImageInfo(File x, Dimension imgSize, Dimension mediumSize,
-            Dimension smallSize) {
+                     Dimension smallSize) {
         this.fileName = x;
         this.imgSize = imgSize;
         this.mediumSize = mediumSize;
@@ -50,7 +44,7 @@ public class ImageInfo implements java.io.Serializable {
     }
 
     private JTextArea mkTA() {
-        return new JTextArea(3, 20);
+        return new JTextArea(3, 10);
     }
 
     public String getName() {
@@ -71,7 +65,7 @@ public class ImageInfo implements java.io.Serializable {
                 + File.separator + "sm_" + fileName.getName());
     }
 
-	public ImageInfo2 toImageInfo2() {
-		return new ImageInfo2(fileName.toString(), imgSize, mediumSize, smallSize, commentTA.getText());
-	}
+    public ImageInfo2 toImageInfo2() {
+        return new ImageInfo2(fileName.toString(), imgSize, mediumSize, smallSize, commentTA.getText());
+    }
 }

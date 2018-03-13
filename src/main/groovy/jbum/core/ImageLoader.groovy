@@ -1,12 +1,11 @@
-package jbum.core;
+package jbum.core
 
-import java.awt.Image;
-import java.awt.image.ImageObserver;
+import java.awt.*
+import java.awt.image.ImageObserver
 
 public class ImageLoader implements ImageObserver {
 
     boolean ok;
-
     String imageName;
 
     public ImageLoader(String imageName) {
@@ -21,12 +20,12 @@ public class ImageLoader implements ImageObserver {
     }
 
     public boolean imageUpdate(Image img, int infoflags, int x, int y,
-            int width, int height) {
-    	
-    	// get rid of warnings
-    	if (false) {
-    		System.out.println(img.toString()+width+height+x+y);
-    	}
+                               int width, int height) {
+
+        // get rid of warnings
+        if (false) {
+            System.out.println(img.toString() + width + height + x + y);
+        }
 
         if ((infoflags & ERROR) != 0) {
             System.err.println("ERROR: error bit set to on, " + imageName);

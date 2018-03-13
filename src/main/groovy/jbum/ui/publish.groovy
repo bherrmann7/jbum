@@ -1,14 +1,13 @@
 package jbum.ui
 
-import jbum.core.*
-
-import com.jcraft.jsch.*;
-import java.awt.*;
-import javax.swing.*
-import javax.swing.event.*
+import com.jcraft.jsch.*
+import jbum.core.DPage
+import jbum.core.PrefsCore
 import se.datadosen.component.RiverLayout
+
+import javax.swing.*
+import javax.swing.event.DocumentListener
 import java.awt.event.ActionListener
-import java.beans.PropertyChangeListener
 
 public class Publish {
 
@@ -85,7 +84,7 @@ public class Publish {
 
     void startPublish(host, user, password, destDir, textOnly) {
         Thread.start {
-            def putting            
+            def putting
             try {
                 Main.status("Starting to transfer files")
 
@@ -116,11 +115,11 @@ public class Publish {
 
                 File srcDir = start
                 File dstDir = new File(destDir, start.name)
-                def sFile = {File file ->
+                def sFile = { File file ->
                     file.toString().replace('\\', '/')
                 }
 
-                def mkdir = {File dir ->
+                def mkdir = { File dir ->
                     try {
                         c.mkdir(sFile(dir))
                     } catch (SftpException ex) {
@@ -132,16 +131,16 @@ public class Publish {
 
                 mkdir(dstDir)
                 srcDir.eachDirRecurse {
-                    def file = new File(dstDir, it.toString().substring(srcDir.toString().size()+1))
+                    def file = new File(dstDir, it.toString().substring(srcDir.toString().size() + 1))
                     mkdir(file)
                     //println "Ensureed $file"
                 }
 
                 def monitor = [
-                        init: {int i, java.lang.String s, java.lang.String s1, long l ->
+                        init : { int i, java.lang.String s, java.lang.String s1, long l ->
                         },
-                        count: {long l -> return true },
-                        end: {-> }
+                        count: { long l -> return true },
+                        end  : { -> }
                 ] as SftpProgressMonitor
 
                 def files = []
@@ -153,8 +152,8 @@ public class Publish {
                     files << it
                 }
 
-                files.eachWithIndex {file, index ->
-                    String relativePath = file.toString().substring(srcDir.toString().length()+1)
+                files.eachWithIndex { file, index ->
+                    String relativePath = file.toString().substring(srcDir.toString().length() + 1)
                     Main.status("Transfering $index/$files.size $relativePath")
                     putting = [file.toString(), sFile(new File(dstDir, relativePath))]
                     c.put(file.toString(), sFile(new File(dstDir, relativePath)), null, ChannelSftp.OVERWRITE)

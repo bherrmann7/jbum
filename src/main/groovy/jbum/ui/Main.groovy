@@ -1,60 +1,24 @@
 package jbum.ui
 
-import jbum.core.CameraUtil;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent
-import java.lang.reflect.Method;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JColorChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.KeyStroke;
-
-import jbum.core.ColorSet;
-import jbum.core.DPage;
-import jbum.core.ImageInfo;
-
-import jbum.core.Prefs;
-import jbum.core.Version;
-import jbum.layouts.ExportToTemplate;
+import jbum.core.ColorSet
+import jbum.core.DPage
+import jbum.core.Prefs
+import jbum.core.Version
+import jbum.layouts.ExportToTemplate
 import jbum.layouts.TemplateFactory
 
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter;
+import javax.swing.*
+import java.awt.*
+import java.awt.event.*
+import java.lang.reflect.Method
 
 public class Main {
     private static Main myself;
-
     CenterP centerP;
-
     JLabel memStatusL = new JLabel();
-
     JLabel statusL = new JLabel("");
-
-    JRadioButtonMenuItem rbTwo = new JRadioButtonMenuItem("2");
-
-    JRadioButtonMenuItem rbThree = new JRadioButtonMenuItem("3");
-
-    JRadioButtonMenuItem rbFour = new JRadioButtonMenuItem("4");
-
+    ButtonGroup imagesPerRow;
     JRadioButtonMenuItem[] templateRbs;
-
     final JFrame frame = new JFrame();
 
     // for testing
@@ -127,7 +91,7 @@ public class Main {
                         if (Prefs.getWebBrowser().trim().length() != 0)
                             Runtime.getRuntime().exec([
                                     Prefs.getWebBrowser(),
-                                            "file:///"
+                                    "file:///"
                                             + fixSpaces(dpage.getWhere().toString())
                                             + "/index.html"] as String[])
                     } catch (Throwable t) {
@@ -240,68 +204,20 @@ public class Main {
             }
         });
 
-        if (false/* one off for my buddy Tom */)
-
-        {
-            menu
-                    .add(menuItem = new JMenuItem(
-                    "Load comments from comments.csv"));
-            menuItem.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent ae) {
-                    try {
-                        BufferedReader br = new BufferedReader(new FileReader(
-                                new File(getCurrentDir(), "comments.csv")));
-                        String line = null;
-                        while ((line = br.readLine()) != null) {
-                            String filename = line.split(",")[0];
-                            String comment = line.split(",")[1];
-
-                            boolean match = false;
-                            for (int i = 0; i < centerP.vecii.size(); i++) {
-                                ImageInfo ii = centerP.vecii.get(i);
-                                if (filename.equals(ii.getName())) {
-                                    ii.commentTA.setText(comment);
-                                    match = true;
-                                }
-                            }
-                            if (!match)
-                                if (!comment.endsWith(".avi"))
-                                    System.out.println("No match for: "
-                                            + filename + " comment:" + comment);
-                        }
-                    } catch (Exception e) {
-                        error(e, "trying to process comments.csv");
-                    }
-                }
-            });
-        }
-
-        menuItem = new
-
-                JMenuItem("Exit");
-
+        menuItem = new JMenuItem("Exit");
         menu.add(menuItem);
-        menuItem.addActionListener(new
-
-                ActionListener() {
-                    public void actionPerformed(ActionEvent ae) {
-                        System.exit(0);
-                    }
-                }
-
-        );
+        menuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                System.exit(0);
+            }
+        }
+        )
 
         // / -- Deleted
         DeletionManager deletionManager = new DeletionManager(menuBar);
 
         // Layout
-        menuBar.add(menu = new
-
-                JMenu("Layout")
-
-        );
-
-        ButtonGroup group = new ButtonGroup();
+        menuBar.add(menu = new JMenu("Layout"));
 
         ActionListener layoutChange = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -324,38 +240,24 @@ public class Main {
             }
         };
 
-        rbTwo = new
+        picsPerRow:
+        {
 
-                JRadioButtonMenuItem("2 images per row");
+            imagesPerRow = new ButtonGroup();
+            (2..6).forEach {
+                def rb = new JRadioButtonMenuItem("$it images per row");
+                imagesPerRow.add(rb)
+                menu.add(rb)
+                rb.addActionListener(layoutChange)
+                // default to 4 per row
+                if (it == 4) rb.setSelected(true)
 
-        rbTwo.setSelected(true);
-        group.add(rbTwo);
-        menu.add(rbTwo);
+            }
 
-        rbThree = new
-
-                JRadioButtonMenuItem("3 images per row");
-
-        rbThree.setSelected(true);
-        group.add(rbThree);
-        menu.add(rbThree);
-
-        rbFour = new
-
-                JRadioButtonMenuItem("4 images per row");
-
-        rbFour.setSelected(true);
-        group.add(rbFour);
-        menu.add(rbFour);
-
-        rbTwo.addActionListener(layoutChange);
-        rbThree.addActionListener(layoutChange);
-        rbFour.addActionListener(layoutChange);
+        }
 
         // Templates....
-        group = new
-
-                ButtonGroup();
+        ButtonGroup group = new ButtonGroup();
 
         menu.addSeparator();
 
@@ -374,11 +276,7 @@ public class Main {
         }
 
         // Color
-        menuBar.add(menu = new
-
-                JMenu("Color")
-
-        );
+        menuBar.add(menu = new JMenu("Color"));
 
         ActionListener ae = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -393,27 +291,19 @@ public class Main {
             }
         };
 
-        menuItem = new
-
-                JMenuItem("Background");
+        menuItem = new JMenuItem("Background");
 
         menuItem.addActionListener(ae);
         menu.add(menuItem);
-        menuItem = new
-
-                JMenuItem("Text");
+        menuItem = new JMenuItem("Text");
 
         menuItem.addActionListener(ae);
         menu.add(menuItem);
-        menuItem = new
-
-                JMenuItem("Panel Odd");
+        menuItem = new JMenuItem("Panel Odd");
 
         menuItem.addActionListener(ae);
         menu.add(menuItem);
-        menuItem = new
-
-                JMenuItem("Panel Even");
+        menuItem = new JMenuItem("Panel Even");
 
         menuItem.addActionListener(ae);
         menu.add(menuItem);
@@ -426,7 +316,6 @@ public class Main {
             }
         }
 
-        ;
 
         for (
                 int i = 0;
@@ -439,9 +328,7 @@ public class Main {
         }
 
         menu.addSeparator();
-        menuItem = new
-
-                JMenuItem("Show current colors");
+        menuItem = new JMenuItem("Show current colors");
 
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
@@ -459,54 +346,15 @@ public class Main {
 
         );
 
-
-
-//        menuBar.add(menuItem = new JMenuItem("Mark Camera Model"))
-//        menuItem.addActionListener({
-//            jbum.ui.Main.myself.centerP.setVisible(false)
-//            jbum.ui.Main.myself.centerP.vecii.vec.forEach({ ii ->
-//                ii.commentTA.setText("")
-//                //ii.commentTA.setText(CameraUtil.getCameraName(new File(Main.getCurrentDir(), ii.fileName.name)))
-//
-//            })
-//            jbum.ui.Main.myself.centerP.rebuildComponents()
-//        } as  ActionListener)
-
-//        menuBar.add(menuItem = new JMenuItem("Divide by Date"))
-//        menuItem.addActionListener({
-//
-//            def m = [:]
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd")
-//
-//            def cameras = CameraUtil.findCameras(jbum.ui.Main.myself.centerP.vecii).toList()
-//            jbum.ui.Main.myself.centerP.vecii.vec.forEach({ ii ->
-//                Date date = CenterP.getDate(ii.getOriginalFile(getCurrentDir()),cameras)
-//                //System.out.println("date is "+date)
-//                def dateStr = date == null ? null : dateFormat.format(date)
-//                m[dateStr] =  (m[dateStr] == null) ? 1 : (m[dateStr]+1)
-//            })
-//            jbum.ui.Main.myself.centerP.introTA.setText(m.toString())
-//
-//            //jbum.ui.Main.myself.centerP.rebuildComponents()
-//        } as  ActionListener)
-
         // / -- Help
         final ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("author.jpg"));
 
         // makes help on the right
-        menuBar.add(Box.createHorizontalGlue());
-        menuBar.add(menu = new
+        menuBar.add(Box.createHorizontalGlue())
+        menuBar.add(menu = new JMenu("Help"))
 
-                JMenu("Help")
-
-        );
-        menu.add(menuItem = new
-
-                JMenuItem("About Groovy")
-
-        );
+        menu.add(menuItem = new JMenuItem("About Groovy"))
         menuItem.addActionListener(new
-
                 ActionListener() {
                     public void actionPerformed(ActionEvent axe) {
 
@@ -521,11 +369,8 @@ public class Main {
                         }
                     }
                 }
-
         );
-        menu.add(menuItem = new
-
-                JMenuItem("Groovy Console")
+        menu.add(menuItem = new JMenuItem("Groovy Console")
 
         );
         menuItem.addActionListener(new
@@ -543,11 +388,7 @@ public class Main {
                 }
 
         );
-        menu.add(menuItem = new
-
-                JMenuItem("About")
-
-        );
+        menu.add(menuItem = new JMenuItem("About"))
         menuItem.addActionListener(new
 
                 ActionListener() {
@@ -573,14 +414,10 @@ public class Main {
         * Color newColor = JColorChooser.showDialog( ColorChooserDemo2.this,
         * "Choose Background Color", banner.getBackground());
         */
-        centerP = new
-
-                CenterP(deletionManager);
+        centerP = new CenterP(deletionManager);
 
         // frame.getContentPane().add(centerP, BorderLayout.CENTER);
-        frame.getContentPane().
-
-                add(centerP, BorderLayout.CENTER);
+        frame.getContentPane().add(centerP, BorderLayout.CENTER)
 
         b:
         {
@@ -599,7 +436,7 @@ public class Main {
                     if (myself != null && myself.centerP != null
                             && myself.centerP.vecii != null)
                         msg += "images=" + Main.myself.centerP.vecii.size();
-                    msg += ' mem=' +((long)(Runtime.getRuntime().totalMemory() / 1_000_000)) + "MB";
+                    msg += ' mem=' + ((long) (Runtime.getRuntime().totalMemory() / 1_000_000)) + "MB";
                     memStatusL.setText(msg);
 
                     try {
@@ -610,9 +447,7 @@ public class Main {
             }
         }
 
-        ).
-
-                start();
+        ).start();
 
         centerP.setDir(file);
         Prefs.justLoaded(file);
@@ -622,23 +457,11 @@ public class Main {
     }
 
     static int getPicsPerRow() {
-        int picsPerRow = 2;
-
-        if (myself.rbThree.isSelected()) {
-            picsPerRow = 3;
-        }
-
-        if (myself.rbFour.isSelected()) {
-            picsPerRow = 4;
-        }
-
-        return picsPerRow;
+        return Integer.parseInt(myself.imagesPerRow.elements.find { it.selected }.text[0])
     }
 
     static void setPicsPerRow(int x) {
-        myself.rbTwo.setSelected(x == 2);
-        myself.rbThree.setSelected(x == 3);
-        myself.rbFour.setSelected(x == 4);
+        myself.imagesPerRow.elements.find { it.text.startsWith(x.toString()) }.setSelected(true)
     }
 
     public static void main(String[] args) {

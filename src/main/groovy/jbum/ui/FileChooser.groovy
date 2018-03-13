@@ -1,22 +1,11 @@
-package jbum.ui;
+package jbum.ui
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-
-import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
+import javax.swing.*
+import java.awt.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 
 public class FileChooser {
     File myFile;
@@ -27,12 +16,12 @@ public class FileChooser {
 
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    myFile = null;
-                    myActionListener.actionPerformed(null);
-                    frame.dispose();
-                }
-            });
+            public void windowClosing(WindowEvent e) {
+                myFile = null;
+                myActionListener.actionPerformed(null);
+                frame.dispose();
+            }
+        });
 
         Container contentPane = frame.getContentPane();
         JPanel titlePanel = new JPanel();
@@ -52,17 +41,17 @@ public class FileChooser {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         ActionListener actionListener = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    String command = e.getActionCommand();
+            public void actionPerformed(ActionEvent e) {
+                String command = e.getActionCommand();
 
-                    if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-                        myFile = chooser.getSelectedFile();
-                    }
-
-                    frame.dispose();
-                    myActionListener.actionPerformed(e);
+                if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+                    myFile = chooser.getSelectedFile();
                 }
-            };
+
+                frame.dispose();
+                myActionListener.actionPerformed(e);
+            }
+        };
 
         chooser.addActionListener(actionListener);
         contentPane.add(chooser, BorderLayout.CENTER);

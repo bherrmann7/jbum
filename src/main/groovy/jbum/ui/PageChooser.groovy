@@ -1,36 +1,17 @@
-package jbum.ui;
+package jbum.ui
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import jbum.core.Prefs
+import jbum.core.Version
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.AbstractTableModel;
-
-import jbum.core.Prefs;
-import jbum.core.Version;
-
+import javax.swing.*
+import javax.swing.border.EmptyBorder
+import javax.swing.event.DocumentEvent
+import javax.swing.event.DocumentListener
+import javax.swing.table.AbstractTableModel
+import java.awt.*
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+import java.text.SimpleDateFormat
 
 /**
  * @author bob
@@ -42,12 +23,12 @@ public class PageChooser {
     public static void main(String[] args) {
 
         System.setSecurityManager(null);
-    	
-    	if ( args.length!=0) {
-    	  new Main(new File(args[0]));
-    	  return;
-    	}
-        
+
+        if (args.length != 0) {
+            new Main(new File(args[0]));
+            return;
+        }
+
         final JFrame frame = new JFrame("Jbum - Page Chooser");
         final PagesDataModel pagesDataModel = new PagesDataModel();
         pagesDataModel.validate();
@@ -73,7 +54,7 @@ public class PageChooser {
 
         ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("jbum.gif"));
 
-        titlePanel.add(new JLabel(Version.VERSION, icon,SwingConstants.RIGHT), BorderLayout.WEST);
+        titlePanel.add(new JLabel(Version.VERSION, icon, SwingConstants.RIGHT), BorderLayout.WEST);
 
         contentPane.add(titlePanel, BorderLayout.NORTH);
 
@@ -87,7 +68,8 @@ public class PageChooser {
             welcome = true;
         }
 
-        boxstuff:{
+        boxstuff:
+        {
             Box y = Box.createVerticalBox();
             y.setBorder(BorderFactory.createTitledBorder(
                     "Create new page from folder of images"));
@@ -96,7 +78,8 @@ public class PageChooser {
 
             final JTextField jtf = new JTextField(20);
 
-            innerstuff:{
+            innerstuff:
+            {
                 Box x = Box.createHorizontalBox();
                 x.setBorder(new EmptyBorder(10, 10, 10, 10));
                 y.add(x);
@@ -111,31 +94,32 @@ public class PageChooser {
 
                 JButton browseButton = new JButton("Browse...");
                 browseButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            final FileChooser chooser = new FileChooser(
-                                    "Choose a directory with images to create a page with.");
-                            chooser.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent axe) {
-                                        File file = chooser.getSelectedFile();
+                    public void actionPerformed(ActionEvent e) {
+                        final FileChooser chooser = new FileChooser(
+                                "Choose a directory with images to create a page with.");
+                        chooser.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent axe) {
+                                File file = chooser.getSelectedFile();
 
-                                        if (file == null) {
-                                            return;
-                                        }
+                                if (file == null) {
+                                    return;
+                                }
 
-                                        if (!file.isDirectory()) {
-                                            file = file.getParentFile();
-                                        }
+                                if (!file.isDirectory()) {
+                                    file = file.getParentFile();
+                                }
 
-                                        jtf.setText(file.toString());
-                                    }
-                                });
-                        }
-                    });
+                                jtf.setText(file.toString());
+                            }
+                        });
+                    }
+                });
                 x.add(browseButton);
             }
-            
-            
-            uipanel:{
+
+
+            uipanel:
+            {
                 JPanel p = new JPanel();
                 p.setBackground(yellow);
                 p.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -146,64 +130,68 @@ public class PageChooser {
                 final JButton createButton = new JButton("Create/Open");
                 createButton.setEnabled(false);
                 buttonHolder.add(createButton);
-                
-                jtf.getDocument().addDocumentListener(new DocumentListener(){
 
-					public void changedUpdate(DocumentEvent e) {
-						check();
-					}
+                jtf.getDocument().addDocumentListener(new DocumentListener() {
 
-					private void check() {
-						try {
-							File file = new File(jtf.getText());
-							createButton.setEnabled(file.isDirectory());					
-						} catch (Throwable t){}						
-					}
+                    public void changedUpdate(DocumentEvent e) {
+                        check();
+                    }
 
-					public void insertUpdate(DocumentEvent e) {
-						check();
-					}
+                    private void check() {
+                        try {
+                            File file = new File(jtf.getText());
+                            createButton.setEnabled(file.isDirectory());
+                        } catch (Throwable t) {
+                        }
+                    }
 
-					public void removeUpdate(DocumentEvent e) {
-						check();
-					}});
-                
+                    public void insertUpdate(DocumentEvent e) {
+                        check();
+                    }
+
+                    public void removeUpdate(DocumentEvent e) {
+                        check();
+                    }
+                });
+
                 p.add(buttonHolder, BorderLayout.EAST);
                 createButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            File f = new File(jtf.getText());
+                    public void actionPerformed(ActionEvent e) {
+                        File f = new File(jtf.getText());
 
-                            if (!f.exists()) {
-                                Main.error("Choosing a folder to work with...",
+                        if (!f.exists()) {
+                            Main.error("Choosing a folder to work with...",
                                     "Can't create/open a folder that doesn't exist");
 
-                                return;
-                            }
-
-                            new Main(f);
-                            frame.dispose();
+                            return;
                         }
-                    });
+
+                        new Main(f);
+                        frame.dispose();
+                    }
+                });
                 y.add(p);
             }
         }
 
         if (!welcome) {
-        	block:{
+            block:
+            {
                 JPanel p = new JPanel();
                 p.setBackground(yellow);
                 p.setLayout(new BorderLayout());
                 stack.add(p);
                 JLabel or = new JLabel("  Or");
-                p.add(or,BorderLayout.WEST);
-                or.setFont(new Font("Sans",Font.BOLD,25));
-        	}
+                p.add(or, BorderLayout.WEST);
+                or.setFont(new Font("Sans", Font.BOLD, 25));
+            }
             Box y = Box.createVerticalBox();
             stack.add(y);
             y.setBorder(BorderFactory.createTitledBorder(
                     "Modify a previously created page"));
 
-            block:{
+            block:
+            {
                 Box x = Box.createVerticalBox();
                 JScrollPane scrollpane = new JScrollPane(table);
                 scrollpane.setBackground(yellow);
@@ -212,7 +200,8 @@ public class PageChooser {
                 y.add(x);
             }
 
-            block:{
+            block:
+            {
                 JPanel p = new JPanel();
                 p.setBackground(yellow);
                 p.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -226,63 +215,63 @@ public class PageChooser {
                 first.add(findButton);
 
                 findButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            final FileChooser chooser = new FileChooser(
-                                    "Where to start finding from?");
-                            chooser.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent ae) {
-                                        File file = chooser.getSelectedFile();
+                    public void actionPerformed(ActionEvent e) {
+                        final FileChooser chooser = new FileChooser(
+                                "Where to start finding from?");
+                        chooser.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent ae) {
+                                File file = chooser.getSelectedFile();
 
-                                        if (file == null) {
-                                            return;
-                                        }
+                                if (file == null) {
+                                    return;
+                                }
 
-                                        if (!file.isDirectory()) {
-                                            file = file.getParentFile();
-                                        }
+                                if (!file.isDirectory()) {
+                                    file = file.getParentFile();
+                                }
 
-                                        doFind(file);
-                                        pagesDataModel.update();
+                                doFind(file);
+                                pagesDataModel.update();
 
-                                        if (pagesDataModel.getRowCount() == 0) {
-                                            openButton.setEnabled(false);
-                                        } else {
-                                            openButton.setEnabled(true);
-                                        }
-                                    }
-                                });
-                        }
-                    });
+                                if (pagesDataModel.getRowCount() == 0) {
+                                    openButton.setEnabled(false);
+                                } else {
+                                    openButton.setEnabled(true);
+                                }
+                            }
+                        });
+                    }
+                });
 
                 JButton clearButton = new JButton("Clear");
                 first.add(clearButton);
 
                 clearButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            pagesDataModel.clear();
-                            openButton.setEnabled(false);
-                            Prefs.setLastModified(new ArrayList<String[]>());
-                        }
-                    });
+                    public void actionPerformed(ActionEvent e) {
+                        pagesDataModel.clear();
+                        openButton.setEnabled(false);
+                        Prefs.setLastModified(new ArrayList<String[]>());
+                    }
+                });
 
                 JPanel last = new JPanel();
                 last.setBackground(yellow);
                 p.add(last, BorderLayout.EAST);
                 last.add(openButton);
                 openButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            int sel = table.getSelectedRow();
+                    public void actionPerformed(ActionEvent e) {
+                        int sel = table.getSelectedRow();
 
-                            if (sel == -1) {
-                                return;
-                            }
-
-                            String value = (String) table.getModel().getValueAt(sel,
-                                    2);
-                            new Main(new File(value));
-                            frame.dispose();
+                        if (sel == -1) {
+                            return;
                         }
-                    });
+
+                        String value = (String) table.getModel().getValueAt(sel,
+                                2);
+                        new Main(new File(value));
+                        frame.dispose();
+                    }
+                });
 
                 if (pagesDataModel.getRowCount() == 0) {
                     openButton.setEnabled(false);
@@ -294,7 +283,7 @@ public class PageChooser {
 
         Prefs.setFramePlace(frame, welcome);
         frame.setVisible(true);
-        
+
         Update.check(frame);
     }
 
@@ -308,7 +297,7 @@ public class PageChooser {
             String dateMod = sd.format(new Date(jbf[i].lastModified()));
             String title = jbf[i].getParentFile().getName();
             String path = jbf[i].getParent().toString();
-            al.add([ dateMod, title, path ]);
+            al.add([dateMod, title, path]);
         }
 
         //Collections.sort(al);
@@ -341,9 +330,9 @@ public class PageChooser {
     }
 
     @SuppressWarnings("serial")
-	private static final class PagesDataModel extends AbstractTableModel {        	
-		
-		ArrayList data;
+    private static final class PagesDataModel extends AbstractTableModel {
+
+        ArrayList data;
 
         PagesDataModel() {
             data = Prefs.getLastModified();

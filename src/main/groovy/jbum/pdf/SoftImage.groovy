@@ -1,19 +1,13 @@
-package jbum.pdf;
+package jbum.pdf
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.awt.image.FilteredImageSource;
-import java.awt.image.RGBImageFilter;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import com.sun.image.codec.jpeg.JPEGCodec
+import com.sun.image.codec.jpeg.JPEGImageEncoder
+import jbum.core.ImageLoader
 
-import jbum.core.ImageLoader;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import java.awt.*
+import java.awt.image.BufferedImage
+import java.awt.image.FilteredImageSource
+import java.awt.image.RGBImageFilter
 
 class Soften extends RGBImageFilter {
 
@@ -93,11 +87,11 @@ public class SoftImage {
         final Image original = image;
         Image soft = Toolkit.getDefaultToolkit().createImage(
                 new FilteredImageSource(original.getSource()), new Soften());
-    ImageLoader watcher = new ImageLoader(soft, "softened");
-    watcher.waitForBits ( );
+        ImageLoader watcher = new ImageLoader(soft, "softened");
+        watcher.waitForBits();
 
-    image.flush ( );
-    return soft;
-}
+        image.flush();
+        return soft;
+    }
 
 }

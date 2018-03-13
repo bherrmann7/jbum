@@ -1,9 +1,6 @@
-package jbum.ui;
+package jbum.ui
 
-import java.io.File;
-
-import javax.swing.filechooser.FileFilter;
-
+import javax.swing.filechooser.FileFilter
 
 public class DirFilter extends FileFilter {
     public boolean accept(File f) {
