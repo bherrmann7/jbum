@@ -45,7 +45,7 @@ numPerRow=0;
 
  function createPhotoTable() {
      pt="<table>"
-	 numPerRow = parseInt(getWidth()/300);
+	 numPerRow = parseInt(getWidth()/228);
 	 col =0;
 	 for(dex=0;dex<p.photos.length;dex++){
 	    if ( col == 0 )
