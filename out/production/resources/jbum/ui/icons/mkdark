@@ -1,8 +1,0 @@
-
-LIST=`/bin/ls -1 *.gif|grep -v Dark.gif`
-
-for each in $LIST
-do B=`basename $each .gif`
-   echo convert -modulate 65 $B.gif ${B}Dark.gif 
-   convert -modulate 65 $B.gif ${B}Dark.gif 
-done
