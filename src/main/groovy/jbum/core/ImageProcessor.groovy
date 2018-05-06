@@ -1,22 +1,28 @@
 package jbum.core
 
-import jbum.ui.Main
+import jbum.ui.App
 
 import javax.swing.*
 import java.awt.*
 import java.awt.image.BufferedImage
 
-public class ImageProcessor implements Runnable {
+ class ImageProcessor implements Runnable {
 
-    public static final String CLOCKWISE = "rr";
-    public static final String COUNTER_CLOCKWISE = "rl";
-    public static final String SMALLER = "sm";
+     static final String CLOCKWISE = "rr";
+     static final String COUNTER_CLOCKWISE = "rl";
+     static final String SMALLER = "sm";
     static ImageProcessor ip;
     Vector vii = new Vector();
     Vector vtask = new Vector();
 
+     static queueSize(){
+         if(ip==null || ip.vii == null)
+             return 0
+         return ip.vii.size()
+     }
+
     @SuppressWarnings("unchecked")
-    public static void enqueue(ImageInfo ii, String task) {
+     static void enqueue(ImageInfo ii, String task) {
         synchronized (ImageProcessor.class) {
             if (ip == null) {
                 ip = new ImageProcessor();
@@ -27,7 +33,7 @@ public class ImageProcessor implements Runnable {
         }
     }
 
-    public void run() {
+     void run() {
         try {
             ImageInfo ii
             String task
@@ -40,22 +46,22 @@ public class ImageProcessor implements Runnable {
                     } else {
                         // no work.
                         ip = null;
-                        Main.status("");
+                        App.status("");
                         return
                     }
                 }
 
-                Main.status("Processing " + ii.getName() + ", " + vii.size()
+                App.status("Processing " + ii.getName() + ", " + vii.size()
                         + " items in awaiting processing.")
 
                 Image img = makeThumb(ii, task)
 
                 // Problem with image processing returns null.
                 if (img != null) {
-                    JButton button = Main.myself.centerP.imageName2button[ii.name]
-                    button.setIcon(ImageCache.set(ii.getSmallFile(Main.getCurrentDir()), img));
+                    JButton button = App.myself.centerP.imageName2button[ii.name]
+                    button.setIcon(ImageCache.set(ii.getSmallFile(App.getCurrentDir()), img));
                     System.gc()
-                    Main.save()
+                    App.save()
                     // Should we throw here?  should we have error message?
                 }
 
@@ -66,7 +72,8 @@ public class ImageProcessor implements Runnable {
                 }
             }
         } catch (Throwable t) {
-            Main.error(t, "Error occured during image processing");
+            t.printStackTrace()
+            App.error(t, "Error occured during image processing");
         }
     }
 
@@ -74,7 +81,7 @@ public class ImageProcessor implements Runnable {
         // not sure where to really put this block. ImageDB class perhaps?
         // and get rid of vecii?
 
-        File smallerdir = ii.getSmallFile(Main.getCurrentDir()).getParentFile();
+        File smallerdir = ii.getSmallFile(App.getCurrentDir()).getParentFile();
         if (!smallerdir.isDirectory()) {
             smallerdir.mkdir();
         }
@@ -83,7 +90,7 @@ public class ImageProcessor implements Runnable {
             throw new RuntimeException("Unable to create directory named 'smaller'");
         }
 
-        Image img = new ImageIcon(ii.getOriginalFile(Main.getCurrentDir()).toString()).getImage();
+        Image img = new ImageIcon(ii.getOriginalFile(App.getCurrentDir()).toString()).getImage();
         int width = img.getWidth(null);
         int height = img.getHeight(null);
 
@@ -115,13 +122,13 @@ public class ImageProcessor implements Runnable {
 
             try {
                 FileOutputStream fileOut = new FileOutputStream(ii
-                        .getOriginalFile(Main.getCurrentDir()));
+                        .getOriginalFile(App.getCurrentDir()));
                 com.sun.image.codec.jpeg.JPEGImageEncoder en = com.sun.image.codec.jpeg.JPEGCodec
                         .createJPEGEncoder(fileOut);
 
                 en.encode(bimg);
             } catch (Exception e) {
-                Main.error(e, "Unable to write out image (permissions?) ");
+                App.error(e, "Unable to write out image (permissions?) ");
                 return null;
             }
 
@@ -129,7 +136,7 @@ public class ImageProcessor implements Runnable {
             bimg = null;
 
             // now reload newly rotated image.
-            img = new ImageIcon(ii.getOriginalFile(Main.getCurrentDir()).toString()).getImage();
+            img = new ImageIcon(ii.getOriginalFile(App.getCurrentDir()).toString()).getImage();
 
         }
 
@@ -145,8 +152,8 @@ public class ImageProcessor implements Runnable {
             mediumWidth = (width * mediumHeight) / height;
         }
 
-        Image me = makeSmall(ii.getName(), img, ii.getMediumFile(Main.getCurrentDir()), mediumWidth, mediumHeight);
-        Image sm = makeSmall(ii.getName(), img, ii.getSmallFile(Main.getCurrentDir()), 300, -1);
+        Image me = makeSmall(ii.getName(), img, ii.getMediumFile(App.getCurrentDir()), mediumWidth, mediumHeight);
+        Image sm = makeSmall(ii.getName(), img, ii.getSmallFile(App.getCurrentDir()), 300, -1);
 
         ii.mediumSize = new Dimension(me.getWidth(null), me.getHeight(null));
         ii.smallSize = new Dimension(sm.getWidth(null), sm.getHeight(null));
@@ -184,7 +191,7 @@ public class ImageProcessor implements Runnable {
             fileOut.close();
             return smaller;
         } catch (Exception e) {
-            Main.error(e, "Unable to write out image (permissions?) ");
+            App.error(e, "Unable to write out image (permissions?) ");
             return null;
         }
     }

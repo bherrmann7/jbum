@@ -2,6 +2,11 @@ package jbum.core
 
 class Camera {
 
+    // Cameras timestamp images, sometimes these clocks are wrong, this class helps to
+    // align the times from multiple cameras so pictures align to tell a story.
+    // This is much less of an issue now (2018) as most photos are from cell phones which
+    // always know the correct time.
+
     Camera() {
         // Should cache and default these to last used by name
         setOffsets(0, 0, 0)

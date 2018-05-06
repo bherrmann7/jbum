@@ -1,4 +1,4 @@
-package jbum.ui
+package jbum.other
 
 import com.jcraft.jsch.*
 
@@ -9,17 +9,17 @@ class FetchUserInfo implements UserInfo, UIKeyboardInteractive {
 
     boolean promptYesNo(String str) { 1 }
 
-    public String getPassphrase() { return null; }
+     String getPassphrase() { return null; }
 
-    public boolean promptPassphrase(String message) { return true; }
+     boolean promptPassphrase(String message) { return true; }
 
-    public boolean promptPassword(String message) { password }
+     boolean promptPassword(String message) { password }
 
-    public void showMessage(String message) {
+     void showMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 
-    public String[] promptKeyboardInteractive(String destination,
+     String[] promptKeyboardInteractive(String destination,
                                               String name,
                                               String instruction,
                                               String[] prompt,

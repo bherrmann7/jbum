@@ -1,6 +1,8 @@
-package jbum.ui
+package jbum.other
 
 import jbum.core.DPage
+import jbum.ui.BlogInfo
+import jbum.ui.App
 import se.datadosen.component.RiverLayout
 
 import javax.swing.*
@@ -15,7 +17,7 @@ class MyCellRenderer extends JLabel implements ListCellRenderer {
     // This is the only method defined by ListCellRenderer.
     // We just reconfigure the JLabel each time we're called.
 
-    public Component getListCellRendererComponent(
+     Component getListCellRendererComponent(
             JList list,
             Object value,            // value to display
             int index,               // cell index
@@ -43,7 +45,7 @@ class MyCellRenderer extends JLabel implements ListCellRenderer {
 class Blog {
 
     void openDialog(DPage dpage) {
-        Main.myself.saveAction.actionPerformed(null)
+        App.myself.saveAction.actionPerformed(null)
         BlogInfo blogInfo = dpage.blogInfo
 
         if (!blogInfo.title)

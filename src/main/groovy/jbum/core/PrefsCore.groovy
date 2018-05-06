@@ -1,20 +1,11 @@
-/*
- * Created on Aug 12, 2004
- *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
 
 package jbum.core
 
-import jbum.ui.Main
+import jbum.ui.App
 
-/**
- * @author bob
- */
-public class PrefsCore {
+ class PrefsCore {
 
-    public static void setApp(String appName) {
+     static void setApp(String appName) {
         PrefsCore.appName = appName;
     }
 
@@ -40,7 +31,7 @@ public class PrefsCore {
                 prop = (Properties) ois.readObject();
                 ois.close();
             } catch (Exception e) {
-                Main.error(e, "fff");
+                App.error(e, "fff");
             }
         } else {
             prop = new Properties();
@@ -91,7 +82,7 @@ public class PrefsCore {
         return d;
     }
 
-    public static Object get(String name, Object defaultValue) {
+     static Object get(String name, Object defaultValue) {
         initProp();
 
         Object o = prop.get(name);
@@ -104,7 +95,7 @@ public class PrefsCore {
         return o;
     }
 
-    public static String getStr(String name, Object defaultValue) {
+     static String getStr(String name, Object defaultValue) {
         initProp();
 
         Object o = prop.get(name);
@@ -129,7 +120,7 @@ public class PrefsCore {
         syncProp();
     }
 
-    public static void set(String name, java.io.Serializable x) {
+     static void set(String name, java.io.Serializable x) {
         initProp();
         if (debug)
             System.out.println("AppProp: set(name=" + name + ", x=" + x + ");");
@@ -154,7 +145,7 @@ public class PrefsCore {
             oos.writeObject(prop);
             oos.close();
         } catch (Exception e) {
-            Main.error(e, "saving prop");
+            App.error(e, "saving prop");
         }
     }
 

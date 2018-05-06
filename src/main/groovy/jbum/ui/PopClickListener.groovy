@@ -5,12 +5,18 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 
 class PopClickListener extends MouseAdapter {
-    public void mousePressed(MouseEvent e) {
+    String imageName
+
+    PopClickListener(String imageName){
+        this.imageName = imageName
+    }
+
+     void mousePressed(MouseEvent e) {
         if (e.isPopupTrigger())
             doPop(e);
     }
 
-    public void mouseReleased(MouseEvent e) {
+     void mouseReleased(MouseEvent e) {
         if (e.isPopupTrigger())
             doPop(e);
     }
@@ -18,7 +24,7 @@ class PopClickListener extends MouseAdapter {
     private void doPop(MouseEvent e) {
         JButton jb = e.getComponent()
         // convert button text to image name
-        String imageName = jb.text
+        //String imageName = jb.text
         def dexOf = imageName.indexOf(" : ")
         if (dexOf != -1) {
             imageName = imageName.substring(0, dexOf)

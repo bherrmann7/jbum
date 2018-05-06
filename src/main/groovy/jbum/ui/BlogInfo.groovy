@@ -1,6 +1,6 @@
 package jbum.ui
 
-public class BlogInfo {
+ class BlogInfo {
 
     CenterP centerP
 

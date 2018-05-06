@@ -5,29 +5,26 @@ import jbum.core.DPage
 import jbum.core.Prefs
 import jbum.core.Version
 import jbum.layouts.ExportToTemplate
-import jbum.layouts.TemplateFactory
 
 import javax.swing.*
 import java.awt.*
 import java.awt.event.*
-import java.lang.reflect.Method
 
-public class Main {
-    private static Main myself;
+class App {
+    private static App myself;
     CenterP centerP;
     JLabel memStatusL = new JLabel();
     JLabel statusL = new JLabel("");
     ButtonGroup imagesPerRow;
-    JRadioButtonMenuItem[] templateRbs;
     final JFrame frame = new JFrame();
 
-    // for testing
-    public Main() {
+    App(){
+
     }
 
-    public ActionListener saveAction = new ActionListener() {
+    ActionListener saveAction = new ActionListener() {
         @SuppressWarnings("deprecation")
-        public void actionPerformed(ActionEvent ae) {
+        void actionPerformed(ActionEvent ae) {
             try {
                 DPage dpage = centerP.getCurrentPage();
                 dpage.save();
@@ -42,11 +39,11 @@ public class Main {
 
     };
 
-    public Main(File file) {
+    App(File file) {
         myself = this;
         frame.setTitle("jbum - " + file);
         frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+            void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
@@ -62,12 +59,6 @@ public class Main {
         // a group of JMenuItems
         JMenuItem menuItem = null;
 
-        /*
-           * menuItem = new JMenuItem("Open directory...", KeyEvent.VK_O);
-           * menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
-           * ActionEvent.ALT_MASK)); menu.add(menuItem);
-           * menuItem.addActionListener(new ActionListener() {...
-           */
         menuItem = new JMenuItem("Save", KeyEvent.VK_S);
         menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 ActionEvent.ALT_MASK));
@@ -80,7 +71,7 @@ public class Main {
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
             @SuppressWarnings("deprecation")
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 try {
                     DPage dpage = centerP.getCurrentPage();
                     dpage.save();
@@ -113,7 +104,7 @@ public class Main {
                 ActionEvent.ALT_MASK));
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 centerP.spellcheck();
             }
         });
@@ -123,14 +114,14 @@ public class Main {
                 ActionEvent.ALT_MASK));
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 new RenameMoveChooser();
             }
         });
 
         menu.add(menuItem = new JMenuItem("Order images by exif date..."));
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 //centerP.orderByExifDate();
                 OrderDialog orderDialog = new OrderDialog(frame, centerP.vecii, centerP);
                 orderDialog.show();
@@ -140,74 +131,23 @@ public class Main {
 
         menu.add(menuItem = new JMenuItem("Preferences..."));
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 new jbum.ui.Prefs();
             }
         });
 
-        menu.add(menuItem = new JMenuItem("Export PDF"));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                try {
-                    new jbum.pdf.ExportPDF(centerP.getCurrentPage());
-                } catch (Exception e) {
-                    error("Generating PDF", e.getMessage());
-                }
-            }
-        });
 
-        menu.add(menuItem = new JMenuItem("Export PDF 2"));
+        menu.add(menuItem = new JMenuItem("Rebuild Images"));
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                try {
-                    jbum.pdf.ExportPDF.make2(centerP.getCurrentPage());
-                } catch (Exception e) {
-                    error("Generating PDF", e.getMessage());
-                }
-            }
-        });
-
-        menu.add(menuItem = new JMenuItem(
-                "Publish"));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            Object o = Class.forName("jbum.ui.Publish").newInstance();
-                            Method m = o.getClass().getMethod("openDialog");
-                            m.invoke(o);
-                        } catch (Exception e) {
-                            error(e, "trying to publish");
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-            }
-        });
-
-        menu.add(menuItem = new JMenuItem(
-                "Blog"));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            Blog blog = new Blog();
-                            blog.openDialog(centerP.getCurrentPage());
-                        } catch (Exception e) {
-                            error(e, "trying to blog");
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+            void actionPerformed(ActionEvent ae) {
+                centerP.rebuildImages()
             }
         });
 
         menuItem = new JMenuItem("Exit");
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 System.exit(0);
             }
         }
@@ -220,22 +160,7 @@ public class Main {
         menuBar.add(menu = new JMenu("Layout"));
 
         ActionListener layoutChange = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (Main.getTemplate().equals(TemplateFactory.WOODEN_FLOW)) {
-                    centerP.setColor("Background", Color.decode("#c97726"));
-                    centerP.setColor("Panel Even", Color.decode("#A35200"));
-                }
-                if (Main.getTemplate().equals(TemplateFactory.POLAROIDS_FLOW)) {
-                    centerP.setColor("Panel Even", Color.WHITE);
-                }
-                if (Main.getTemplate().equals(TemplateFactory.POLAROIDS)) {
-                    centerP.setColor("Panel Even", Color.WHITE);
-                }
-                if (Main.getTemplate().equals(TemplateFactory.CHAMELEON_FLOW)) {
-                    centerP.setColor("Background", Color.decode("#e0e0e0"));
-                    centerP.setColor("Panel Even", Color.WHITE);
-                    centerP.setColor("Panel Odd", Color.WHITE);
-                }
+            void actionPerformed(ActionEvent e) {
                 centerP.rebuildComponents();
             }
         };
@@ -256,30 +181,11 @@ public class Main {
 
         }
 
-        // Templates....
-        ButtonGroup group = new ButtonGroup();
-
-        menu.addSeparator();
-
-        String[] tnames = TemplateFactory.getNames();
-        templateRbs = new JRadioButtonMenuItem[tnames.length];
-
-        for (
-                int i = 0;
-                i < tnames.length; i++)
-
-        {
-            templateRbs[i] = new JRadioButtonMenuItem(tnames[i]);
-            templateRbs[i].addActionListener(layoutChange);
-            group.add(templateRbs[i]);
-            menu.add(templateRbs[i]);
-        }
-
         // Color
         menuBar.add(menu = new JMenu("Color"));
 
         ActionListener ae = new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 Color c = centerP.getColor(ae.getActionCommand());
                 Color newColor = JColorChooser.showDialog(frame,
                         "Choose Background Color", c);
@@ -310,7 +216,7 @@ public class Main {
 
         menu.addSeparator();
         ae = new ActionListener() {
-            public void actionPerformed(ActionEvent axe) {
+            void actionPerformed(ActionEvent axe) {
                 centerP.setColorSet(axe.getActionCommand());
                 centerP.rebuildComponents();
             }
@@ -332,7 +238,7 @@ public class Main {
 
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent axey) {
+            void actionPerformed(ActionEvent axey) {
                 JOptionPane.showMessageDialog(frame, "Background: "
                         + prettyColor(centerP.getColor("Background"))
                         + "\nText: " + prettyColor(centerP.getColor("Text"))
@@ -347,52 +253,17 @@ public class Main {
         );
 
         // / -- Help
-        final ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("author.jpg"));
+        final ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("author.jpg"));
 
         // makes help on the right
         menuBar.add(Box.createHorizontalGlue())
         menuBar.add(menu = new JMenu("Help"))
 
-        menu.add(menuItem = new JMenuItem("About Groovy"))
-        menuItem.addActionListener(new
-                ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
-
-                        try {
-                            Object o = Class.forName("jbum.ui.GroovyVersion").newInstance();
-                            String about = o.getClass().getField("about").get(o).toString();
-
-                            JOptionPane.showMessageDialog(frame, about, "About Groovy",
-                                    JOptionPane.INFORMATION_MESSAGE, icon);
-                        } catch (Throwable e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-        );
-        menu.add(menuItem = new JMenuItem("Groovy Console")
-
-        );
-        menuItem.addActionListener(new
-
-                ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
-                        try {
-                            Object o = Class.forName("jbum.ui.GroovyVersion").newInstance();
-                            o.getClass().getMethod("startConsole").invoke(o,
-                                    (Object[]) null);
-                        } catch (Throwable e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-
-        );
         menu.add(menuItem = new JMenuItem("About"))
         menuItem.addActionListener(new
 
                 ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
+                    void actionPerformed(ActionEvent axe) {
                         JOptionPane.showMessageDialog(frame,
                                 "Written by Robert Herrmann,\nbob@jadn.com.\n"
                                         + "http://jadn.com\n\n" + Version.VERSION,
@@ -410,10 +281,6 @@ public class Main {
         // frame.pack();
         frame.setVisible(true);
 
-        /*
-        * Color newColor = JColorChooser.showDialog( ColorChooserDemo2.this,
-        * "Choose Background Color", banner.getBackground());
-        */
         centerP = new CenterP(deletionManager);
 
         // frame.getContentPane().add(centerP, BorderLayout.CENTER);
@@ -430,12 +297,11 @@ public class Main {
         }
 
         new Thread(new Runnable() {
-            public void run() {
+            void run() {
                 while (true) {
                     String msg = "";
-                    if (myself != null && myself.centerP != null
-                            && myself.centerP.vecii != null)
-                        msg += "images=" + Main.myself.centerP.vecii.size();
+                    if (myself != null && myself.centerP != null && myself.centerP.vecii != null)
+                        msg += "images=" + App.myself.centerP.vecii.size();
                     msg += ' mem=' + ((long) (Runtime.getRuntime().totalMemory() / 1_000_000)) + "MB";
                     memStatusL.setText(msg);
 
@@ -457,6 +323,9 @@ public class Main {
     }
 
     static int getPicsPerRow() {
+        // bobh hack for dumping via command line
+        if(myself.imagesPerRow == null)
+            return 4;
         return Integer.parseInt(myself.imagesPerRow.elements.find { it.selected }.text[0])
     }
 
@@ -464,94 +333,39 @@ public class Main {
         myself.imagesPerRow.elements.find { it.text.startsWith(x.toString()) }.setSelected(true)
     }
 
-    public static void main(String[] args) {
-        // What directory do we start in?
-        final FileChooser chooser = new FileChooser(
-                "Choose a directory with images to work with.");
-        chooser.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                File file = chooser.getSelectedFile();
-
-                if (file == null) {
-                    System.exit(0);
-                }
-
-                if (!file.isDirectory()) {
-                    file = file.getParentFile();
-                }
-
-                new Main(file);
-            }
-        });
-    }
-
-    public static void error(Throwable e, String whywhere) {
-
+    static void error(Throwable e, String whywhere) {
         JOptionPane.showMessageDialog(null, e.getMessage(), whywhere,
                 JOptionPane.ERROR_MESSAGE);
-
-        // Need dialog to ask user permission, and show progres... and allow
-        // abort
-
-        // ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        // e.printStackTrace(new PrintStream(baos));
-        // String msg = "\nException trace\n";
-        // msg += new String(baos.toByteArray());
-        // try {
-        // sendEmail( msg );
-        // } catch (MessagingException e1) {
-        // // TODO Auto-generated catch block
-        // e1.printStackTrace();
-        // }
     }
 
-    public static void error(String title, String msg) {
+    static void error(String title, String msg) {
         JOptionPane.showMessageDialog(null, msg, title,
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void warning(String title, String msg) {
+    static void warning(String title, String msg) {
         JOptionPane.showMessageDialog(null, msg, title,
                 JOptionPane.WARNING_MESSAGE);
     }
 
-    public static void info(String title, String msg) {
+    static void info(String title, String msg) {
         JOptionPane.showMessageDialog(null, msg, title,
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void save() {
+    static void save() {
         myself.centerP.getCurrentPage().save();
     }
 
-    public static void status(String status) {
+    static void status(String status) {
         myself.statusL.setText(status);
     }
 
-    static String getTemplate() {
-        if (myself.templateRbs != null) {
-            for (int i = 0; i < myself.templateRbs.length; i++) {
-                if (myself.templateRbs[i].isSelected()) {
-                    return myself.templateRbs[i].getText();
-                }
-            }
-        }
-
-        return TemplateFactory.STANDARD;
-    }
-
-    static void setTemplate(String name) {
-        for (int i = 0; i < myself.templateRbs.length; i++) {
-            myself.templateRbs[i].setSelected(myself.templateRbs[i].getText()
-                    .equals(name));
-        }
-    }
-
-    public static File getCurrentDir() {
+    static File getCurrentDir() {
         return myself.centerP.currentDir;
     }
 
-    public static String prettyColor(Color c) {
+    static String prettyColor(Color c) {
         return "#" + get2Hex(c.getRed()) + get2Hex(c.getGreen()) + get2Hex(c.getBlue());
     }
 
@@ -565,7 +379,7 @@ public class Main {
         return v;
     }
 
-    public static void movedTo(File dst) {
+    static void movedTo(File dst) {
         myself.centerP.currentDir = dst;
         myself.frame.setTitle("jbum - " + dst);
     }

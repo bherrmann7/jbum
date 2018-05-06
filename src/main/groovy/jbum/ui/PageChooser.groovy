@@ -16,18 +16,11 @@ import java.text.SimpleDateFormat
 /**
  * @author bob
  */
-public class PageChooser {
+ class PageChooser {
     static JButton openButton = new JButton("Open" /* "Modify" */);
     static SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy");
 
-    public static void main(String[] args) {
-
-        System.setSecurityManager(null);
-
-        if (args.length != 0) {
-            new Main(new File(args[0]));
-            return;
-        }
+     static void start() {
 
         final JFrame frame = new JFrame("Jbum - Page Chooser");
         final PagesDataModel pagesDataModel = new PagesDataModel();
@@ -40,7 +33,7 @@ public class PageChooser {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         /*
-         * frame.addWindowListener(new WindowAdapter() { public void
+         * frame.addWindowListener(new WindowAdapter() {  void
          * windowClosing(WindowEvent e) { //myFile = null;
          * //myActionListener.actionPerformed(null); frame.dispose(); } });
          */
@@ -52,7 +45,7 @@ public class PageChooser {
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(yellow);
 
-        ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("jbum.gif"));
+        ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("jbum.gif"));
 
         titlePanel.add(new JLabel(Version.VERSION, icon, SwingConstants.RIGHT), BorderLayout.WEST);
 
@@ -94,11 +87,11 @@ public class PageChooser {
 
                 JButton browseButton = new JButton("Browse...");
                 browseButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                     void actionPerformed(ActionEvent e) {
                         final FileChooser chooser = new FileChooser(
                                 "Choose a directory with images to create a page with.");
                         chooser.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent axe) {
+                             void actionPerformed(ActionEvent axe) {
                                 File file = chooser.getSelectedFile();
 
                                 if (file == null) {
@@ -133,7 +126,7 @@ public class PageChooser {
 
                 jtf.getDocument().addDocumentListener(new DocumentListener() {
 
-                    public void changedUpdate(DocumentEvent e) {
+                     void changedUpdate(DocumentEvent e) {
                         check();
                     }
 
@@ -145,28 +138,28 @@ public class PageChooser {
                         }
                     }
 
-                    public void insertUpdate(DocumentEvent e) {
+                     void insertUpdate(DocumentEvent e) {
                         check();
                     }
 
-                    public void removeUpdate(DocumentEvent e) {
+                     void removeUpdate(DocumentEvent e) {
                         check();
                     }
                 });
 
                 p.add(buttonHolder, BorderLayout.EAST);
                 createButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                     void actionPerformed(ActionEvent e) {
                         File f = new File(jtf.getText());
 
                         if (!f.exists()) {
-                            Main.error("Choosing a folder to work with...",
+                            App.error("Choosing a folder to work with...",
                                     "Can't create/open a folder that doesn't exist");
 
                             return;
                         }
 
-                        new Main(f);
+                        new App(f);
                         frame.dispose();
                     }
                 });
@@ -215,11 +208,11 @@ public class PageChooser {
                 first.add(findButton);
 
                 findButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                     void actionPerformed(ActionEvent e) {
                         final FileChooser chooser = new FileChooser(
                                 "Where to start finding from?");
                         chooser.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent ae) {
+                             void actionPerformed(ActionEvent ae) {
                                 File file = chooser.getSelectedFile();
 
                                 if (file == null) {
@@ -230,13 +223,13 @@ public class PageChooser {
                                     file = file.getParentFile();
                                 }
 
-                                doFind(file);
+                                PageChooser.doFind(file);
                                 pagesDataModel.update();
 
                                 if (pagesDataModel.getRowCount() == 0) {
-                                    openButton.setEnabled(false);
+                                    PageChooser.openButton.setEnabled(false);
                                 } else {
-                                    openButton.setEnabled(true);
+                                    PageChooser.openButton.setEnabled(true);
                                 }
                             }
                         });
@@ -247,7 +240,7 @@ public class PageChooser {
                 first.add(clearButton);
 
                 clearButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                     void actionPerformed(ActionEvent e) {
                         pagesDataModel.clear();
                         openButton.setEnabled(false);
                         Prefs.setLastModified(new ArrayList<String[]>());
@@ -259,7 +252,7 @@ public class PageChooser {
                 p.add(last, BorderLayout.EAST);
                 last.add(openButton);
                 openButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                     void actionPerformed(ActionEvent e) {
                         int sel = table.getSelectedRow();
 
                         if (sel == -1) {
@@ -268,7 +261,7 @@ public class PageChooser {
 
                         String value = (String) table.getModel().getValueAt(sel,
                                 2);
-                        new Main(new File(value));
+                        new App(new File(value));
                         frame.dispose();
                     }
                 });
@@ -284,7 +277,7 @@ public class PageChooser {
         Prefs.setFramePlace(frame, welcome);
         frame.setVisible(true);
 
-        Update.check(frame);
+//        Update.check(frame);
     }
 
     private static void doFind(File root) {
@@ -338,24 +331,24 @@ public class PageChooser {
             data = Prefs.getLastModified();
         }
 
-        public void update() {
+         void update() {
             data = Prefs.getLastModified();
             fireTableDataChanged();
         }
 
-        public int getColumnCount() {
+         int getColumnCount() {
             return 3;
         }
 
-        public int getRowCount() {
+         int getRowCount() {
             return data.size();
         }
 
-        public Object getValueAt(int row, int col) {
+         Object getValueAt(int row, int col) {
             return ((String[]) data.get(row))[col];
         }
 
-        public String getColumnName(int col) {
+         String getColumnName(int col) {
             if (col == 0) {
                 return "Last Modified";
             }
@@ -367,7 +360,7 @@ public class PageChooser {
             return "Folder Path";
         }
 
-        public void validate() {
+         void validate() {
             for (int i = data.size() - 1; i >= 0; i--) {
                 if (!new File(getValueAt(i, 2).toString()).exists()) {
                     data.remove(i);
@@ -375,7 +368,7 @@ public class PageChooser {
             }
         }
 
-        public void clear() {
+         void clear() {
             data.clear();
             fireTableDataChanged();
         }

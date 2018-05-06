@@ -11,7 +11,7 @@ import javax.swing.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
-public class ImageAction {
+ class ImageAction {
 
     static void performAction(String imageName, String tooltext) {
         String actionName = "zoom";
@@ -22,10 +22,10 @@ public class ImageAction {
             }
         }
 
-        CenterP centerP = Main.myself.centerP
+        CenterP centerP = App.myself.centerP
 
         ImageInfo ii = centerP.vecii.vec.find { ImageInfo ii ->
-            ii.getOriginalFile(Main.currentDir).name == imageName
+            ii.getOriginalFile(App.currentDir).name == imageName
         }
         if (ii == null) {
             throw new RuntimeException("Unable to find: " + imageName)
@@ -38,8 +38,8 @@ public class ImageAction {
             // reorder UI
             centerP.rebuildComponents();
 
-            ii.getMediumFile(Main.getCurrentDir()).delete();
-            ii.getSmallFile(Main.getCurrentDir()).delete();
+            ii.getMediumFile(App.getCurrentDir()).delete();
+            ii.getSmallFile(App.getCurrentDir()).delete();
 
             // TODO: purge all html?
             return;
@@ -120,7 +120,7 @@ public class ImageAction {
             final FileChooser chooser = new FileChooser(
                     "Select directory to move all images before this one to");
             ActionListener actionListener = new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
+                 void actionPerformed(ActionEvent e) {
                     File moveTo = chooser.getSelectedFile();
 
                     if (moveTo == null) {
@@ -176,8 +176,8 @@ public class ImageAction {
         }
 
         if ("info".equals(actionName)) {
-            new JpgInfo(ii.getOriginalFile(Main.getCurrentDir()),
-                    ii.getSmallFile(Main.getCurrentDir()), centerP);
+            new JpgInfo(ii.getOriginalFile(App.getCurrentDir()),
+                    ii.getSmallFile(App.getCurrentDir()), centerP);
 
             return;
         }
@@ -188,7 +188,7 @@ public class ImageAction {
         }
 
         // so If we get to here, must be the "+" button        
-        new Zoom(ii.getMediumFile(Main.getCurrentDir()));
+        new Zoom(ii.getMediumFile(App.getCurrentDir()));
     }
 }
 

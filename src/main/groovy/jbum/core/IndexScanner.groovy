@@ -6,20 +6,20 @@ import com.drew.metadata.Metadata
 
 import java.text.SimpleDateFormat
 
-public class IndexScanner {
-    public static SimpleDateFormat sd = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
+ class IndexScanner {
+     static SimpleDateFormat sd = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
 
-    public interface StatusCallback {
-        public void progress(int atNum, int ofTotal, String name);
+     interface StatusCallback {
+         void progress(int atNum, int ofTotal, String name);
     }
 
     String[] topLevelDirs;
 
-    public IndexScanner(String[] topLevelDirs) {
+     IndexScanner(String[] topLevelDirs) {
         this.topLevelDirs = topLevelDirs;
     }
 
-    public static Date getEarliestDate(File jbfile) {
+     static Date getEarliestDate(File jbfile) {
         File usedate = new File(jbfile.getParentFile(), "usedate");
 
         if (usedate.exists()) {
@@ -62,7 +62,7 @@ public class IndexScanner {
         return d;
     }
 
-    public static Date getDate(File jpegFile) {
+     static Date getDate(File jpegFile) {
         try {
             Metadata metadata = JpegMetadataReader.readMetadata(jpegFile);
 
@@ -107,10 +107,10 @@ public class IndexScanner {
     StatusCallback callback;
 
     @SuppressWarnings("unchecked")
-    public ArrayList<DirEntry> scan(StatusCallback callback) {
+     ArrayList<DirEntry> scan(StatusCallback callback) {
         if (callback == null)
             callback = new StatusCallback() {
-                public void progress(int atNum, int ofTotal, String name) {
+                 void progress(int atNum, int ofTotal, String name) {
                     System.out.println(atNum + " " + ofTotal + " " + name);
                 }
             };
@@ -161,10 +161,10 @@ public class IndexScanner {
         }
     }
 
-    public class DirEntry implements Comparable {
-        public Date d;
+     class DirEntry implements Comparable {
+         Date d;
 
-        public File jbf;
+         File jbf;
 
         DirEntry(Date d, File jbf) {
             this.d = d;
@@ -177,7 +177,7 @@ public class IndexScanner {
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
 
-        public int compareTo(Object o) {
+         int compareTo(Object o) {
             return d.compareTo(((DirEntry) o).d);
         }
     }

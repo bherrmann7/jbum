@@ -11,18 +11,9 @@ import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
-/**
- * @author bob
- */
-public class JpgInfo {
+class JpgInfo {
 
-    public static void main(String[] args) {
-        File orig = new File("/jadn/babypea/2006/parlee farms/100_2134.JPG");
-        File small = new File(orig.getParent(), "smaller/sm_" + orig.getName());
-        new JpgInfo(orig, small, null);
-    }
-
-    public JpgInfo(File jpegFile, File smallFile, Component c) {
+    JpgInfo(File jpegFile, File smallFile, Component c) {
         StringBuffer info = new StringBuffer();
 
         try {
@@ -62,7 +53,7 @@ public class JpgInfo {
         button.setBorderPainted(false);
 
         button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+             void actionPerformed(ActionEvent ae) {
                 frame.setVisible(false);
                 frame.dispose(); // by by ya'all
             }

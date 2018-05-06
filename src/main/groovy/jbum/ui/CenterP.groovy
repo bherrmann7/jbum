@@ -8,10 +8,9 @@ import com.swabunga.spell.engine.SpellDictionary
 import com.swabunga.spell.engine.SpellDictionaryHashMap
 import com.swabunga.spell.swing.JTextComponentSpellChecker
 import jbum.core.*
-import jbum.layouts.TemplateFactory
-import jbum.ui.Prefs
 
 import javax.swing.*
+import javax.swing.border.EmptyBorder
 import javax.swing.text.JTextComponent
 import java.awt.*
 import java.awt.event.ActionEvent
@@ -19,9 +18,9 @@ import java.text.SimpleDateFormat
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class CenterP extends JScrollPane {
+ class CenterP extends JScrollPane {
 
-    public static String[] buttonInfo = [ //
+     static String[] buttonInfo = [ //
 
                                           "X", "delete image", "trash",
 
@@ -55,14 +54,9 @@ public class CenterP extends JScrollPane {
 
     static SimpleDateFormat sd = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
 
-    public SpellDictionary dictionary;
+     SpellDictionary dictionary;
 
-    public VecImageInfo vecii;
-
-    Color dark = new Color(0xE0E0E0);
-
-    // JPanel prologP = new JPanel();
-    Color light = new Color(0xD0D0FF);
+     VecImageInfo vecii;
 
     DeletionManager deletionManager;
 
@@ -80,13 +74,11 @@ public class CenterP extends JScrollPane {
 
     JTextField titleTF = new JTextField("Title", 60);
 
-    String htmlPath;
+    String htmlPath
 
-    Color[] rotateColor = [light, dark, dark, light];
+    private String iconPath
 
-    int lastColor = 0;
-
-    private String iconPath;
+    private Color panelColor
 
     CenterP(DeletionManager deletionManager) {
         super(new Box(BoxLayout.Y_AXIS));
@@ -100,7 +92,7 @@ public class CenterP extends JScrollPane {
         prologTA.setLineWrap(true);
     }
 
-    public static Date getDate(File jpegFile, List<Camera> cameraList) {
+     static Date getDate(File jpegFile, List<Camera> cameraList) {
         if (cameraList == null) {
             throw new RuntimeException("Humm...");
         }
@@ -121,16 +113,13 @@ public class CenterP extends JScrollPane {
 
         Date date;
 
-        public int compareTo(Object o) {
+         int compareTo(Object o) {
             return date.compareTo(((IDate) o).date);
         }
     };
 
-    /**
-     *
-     */
     @SuppressWarnings("unchecked")
-    public void orderByExifDate(List<Camera> cameras) {
+     void orderByExifDate(List<Camera> cameras) {
 
         // get dates
         ArrayList<IDate> idates = new ArrayList<IDate>();
@@ -138,7 +127,7 @@ public class CenterP extends JScrollPane {
         for (int i = 0; i < vecii.size(); i++) {
             IDate id = new IDate();
             id.ii = vecii.get(i);
-            id.date = getDate(id.ii.getOriginalFile(Main.getCurrentDir()), cameras);
+            id.date = getDate(id.ii.getOriginalFile(App.getCurrentDir()), cameras);
 
             if (id.date == null) {
                 if (i != 0) {
@@ -146,7 +135,7 @@ public class CenterP extends JScrollPane {
                 } else {
                     for (int s = i + 1; (s < vecii.size()) && (id.date == null); s++) {
                         id.date = getDate(vecii.get(s).getOriginalFile(
-                                Main.getCurrentDir()), cameras);
+                                App.getCurrentDir()), cameras);
                     }
 
                     if (id.date == null) {
@@ -173,21 +162,23 @@ public class CenterP extends JScrollPane {
         rebuildComponents();
     }
 
-    public void rebuildComponents() {
+    void rebuildImages() {
+        for (int i = 0; i < vecii.size(); i++) {
+            vecii.get(i).getMediumFile(App.getCurrentDir()).delete()
+            vecii.get(i).getSmallFile(App.getCurrentDir()).delete()
+        }
+        ImageCache.clear()
+        rebuildComponents()
+    }
+
+
+     void rebuildComponents() {
         setVisible(false);
         Box box = (Box) getViewport().getView();
         box.removeAll();
         doComponents();
         setVisible(true);
     }
-
-    /*
-     * private void newColor( Component comp, Color c ){ if (comp instanceof
-     * Container) { Container x = (Container) comp;
-     *
-     * for (int i = 0; i < x.getComponentCount(); i++) { newColor(
-     * x.getComponent(i), c); } } comp.setBackground(c);
-     */
 
     void setColor(String what, Color c) {
         if ("Text".equals(what)) {
@@ -196,14 +187,8 @@ public class CenterP extends JScrollPane {
             prologTA.setForeground(c);
         }
 
-        if ("Panel Odd".equals(what)) {
-            rotateColor[1] = c;
-            rotateColor[2] = c;
-        }
-
-        if ("Panel Even".equals(what)) {
-            rotateColor[0] = c;
-            rotateColor[3] = c;
+        if ("Panel".equals(what)) {
+            panelColor = c;
         }
 
         if ("Background".equals(what)) {
@@ -217,12 +202,8 @@ public class CenterP extends JScrollPane {
             return titleTF.getForeground();
         }
 
-        if ("Panel Odd".equals(what)) {
-            return rotateColor[1];
-        }
-
-        if ("Panel Even".equals(what)) {
-            return rotateColor[0];
+        if ("Panel".equals(what)) {
+            return panelColor
         }
 
         if ("Background".equals(what)) {
@@ -235,8 +216,7 @@ public class CenterP extends JScrollPane {
     void setColorSet(String setName) {
         setColor("Background", ColorSet.getBackground(setName));
         setColor("Text", ColorSet.getText(setName));
-        setColor("Panel Odd", ColorSet.getPanelOdd(setName));
-        setColor("Panel Even", ColorSet.getPanelEven(setName));
+        setColor("Panel", ColorSet.getPanel(setName));
     }
 
     void setDir(File dir) {
@@ -261,35 +241,18 @@ public class CenterP extends JScrollPane {
         htmlPath = '' + currentDir + File.separator + "html" + File.separator;
     }
 
-    /*
-     * void setBackgroundChildren(Component component, Color color) { if
-     * (component instanceof JTextArea) {
-     * component.setBackground(color.darker());
-     *
-     * return; }
-     *
-     * component.setBackground(color);
-     *
-     * if (component instanceof Container) { Container x = (Container)
-     * component;
-     *
-     * for (int i = 0; i < x.getComponentCount(); i++) {
-     * setBackgroundChildren(x.getComponent(i), color); } } }
-     */
-
     DPage getCurrentPage() {
         DPage p = new DPage(currentDir, titleTF.getText(), introTA.getText(),
                 vecii, getColor("Background"), getColor("Text"),
-                getColor("Panel Odd"), getColor("Panel Even"), Main
-                .getPicsPerRow(), Main.getTemplate(), prologTA
-                .getText(), blogInfo);
+                getColor("Panel"), App.getPicsPerRow(),
+               prologTA.getText(), blogInfo);
 
         return p;
     }
 
     BlogInfo blogInfo = new BlogInfo(this);
 
-    public static void sort(VecImageInfo vecii) {
+     static void sort(VecImageInfo vecii) {
         boolean flipped = true;
 
         while (flipped) {
@@ -324,15 +287,6 @@ public class CenterP extends JScrollPane {
                         ImageInfo ii = new ImageInfo(list[i], null, null, null);
                         vecii.add(ii);
                     }
-                    // not ready for this yet.
-                    if (false) {
-                        if (list[i].toString().toLowerCase().endsWith(".mov")
-                                || list[i].toString().toLowerCase()
-                                .endsWith(".avi")) {
-                            ImageInfo ii = new ImageInfo(list[i], null, null, null);
-                            vecii.add(ii);
-                        }
-                    }
                 }
             }
 
@@ -364,16 +318,13 @@ public class CenterP extends JScrollPane {
 
         setColor("Background", meta.getBackgroundColor());
         setColor("Text", meta.getTextColor());
-        setColor("Panel Odd", meta.getPanelOddColor());
-        setColor("Panel Even", meta.getPanelEvenColor());
+        setColor("Panel", meta.getPanelColor());
 
-        Main.setPicsPerRow(meta.getPicsPerRow());
-        Main.setTemplate(meta.getTemplate());
+//BOBH        App.setPicsPerRow(meta.getPicsPerRow());
         prologTA.setText(meta.getProlog());
 
         doComponents();
 
-        // rebuildComponents();
     }
 
     void spellcheck() {
@@ -406,7 +357,7 @@ public class CenterP extends JScrollPane {
         }
     }
 
-    def imageName2button = [ : ]
+    def imageName2button = [:]
 
     private void doComponents() {
         Box box = (Box) getViewport().getView();
@@ -414,144 +365,100 @@ public class CenterP extends JScrollPane {
         titleP.add(titleTF);
         box.add(titleP);
         titleP.setBackground(getBackground());
-        titleTF.setBackground(getBackground().darker());
+        titleTF.setBackground(slightlyDarker(getBackground()));
 
         introP.add(introTA);
         box.add(introP);
         introP.setBackground(getBackground());
-        introTA.setBackground(getBackground().darker());
+        introTA.setBackground(slightlyDarker(getBackground()));
 
-        JPanel rowP = new JPanel();
+        def rowP = new Box(BoxLayout.X_AXIS);
+        rowP.setBorder(new EmptyBorder(5, 0, 0, 0))
         box.add(rowP);
-        rowP.setBackground(getBackground());
-
-        lastColor = 0;
-        /*
-         * for (int i = vecii.size() - 1; i >= 0; i--) { ImageInfo ii =
-         * vecii.get(i); if (ii.getName().toLowerCase().endsWith(".mov") ||
-         * ii.getName().toLowerCase().endsWith(".avi")) { vecii.remove(ii); } }
-         */
-
-        PopClickListener popClickListener = new PopClickListener()
+        box.getParent().setBackground(getBackground());
+        setBackground(getBackground());
 
         for (int i = 0; i < vecii.size(); i++) {
             ImageInfo ii = vecii.get(i);
-            Color useColor = rotateColor[lastColor];
 
-            if (Main.getTemplate().equals("Polaroids")) {
-                useColor = rotateColor[0];
+            JPanel littleP = new JPanel() {
+                @Override
+                Dimension getMaximumSize() {
+                    return super.getPreferredSize()
+                }
             }
-            if (Main.getTemplate().equals("Wooden Flow")) {
-                useColor = rotateColor[0];
-            }
-            if (Main.getTemplate().equals("Polaroids Flow")) {
-                useColor = rotateColor[0];
-            }
-
-            JPanel littleP = new JPanel();
-            littleP.setBackground(useColor);
+            littleP.setBackground(panelColor);
+            littleP.setBorder(new EmptyBorder(5, 5, 5, 5))
             littleP.setLayout(new BorderLayout());
             rowP.add(littleP);
+            littleP.setAlignmentY(0)
+            if (rowP instanceof Box) {
+                rowP.add(Box.createRigidArea(new Dimension(5, 0)))
+            }
 
-            String cameraName = CameraUtil.getCameraName(ii.getOriginalFile(Main.getCurrentDir()))
-            String name = ii.name + (cameraName == null ? "" : " : "+cameraName)
+            String cameraName = CameraUtil.getCameraName(ii.getOriginalFile(App.getCurrentDir()))
+            String name = ii.name + (cameraName == null ? "" : " : " + cameraName)
 
-            JButton button = new JButton(name, ImageCache.get(ii.getSmallFile(Main.getCurrentDir())));
+            JButton button = new JButton(/*name ,*/ ImageCache.get(ii.getSmallFile(App.getCurrentDir())));
             imageName2button[ii.name] = button
             button.setBackground(littleP.getBackground());
             button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0))
-            button.setMargin(new Insets(0,0,0,0))
-            if (ii.imgSize == null ||
-                    // Not sure why this was turned off ... Apr 17,2007
-                    (!ii.getSmallFile(Main.getCurrentDir()).exists())) {
+            button.setMargin(new Insets(0, 0, 0, 0))
+            if (ii.imgSize == null || (!ii.getSmallFile(App.getCurrentDir()).exists())) {
                 ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
             }
 
-            if (TemplateFactory.isCommentOnBottom(Main.getTemplate())) {
-                littleP.add(button, BorderLayout.NORTH);
-            } else {
-                littleP.add(button, BorderLayout.CENTER);
-            }
+            littleP.add(button, BorderLayout.NORTH);
 
-            button.setBackground(useColor);
+            button.setBackground(panelColor);
             button.setVerticalTextPosition(JButton.BOTTOM);
             button.setHorizontalTextPosition(JButton.CENTER);
 
             JTextArea jta = ii.commentTA;
-            jta.setBackground(useColor.darker());
+            jta.setBackground(slightlyDarker(panelColor));
             jta.setForeground(introTA.getForeground());
             jta.setLineWrap(true);
             jta.setWrapStyleWord(true);
 
-            if (Main.getTemplate().equals("Polaroids")
-                    || Main.getTemplate().equals("Polaroids Flow")) {
-                littleP.add(jta, BorderLayout.CENTER);
-            } else {
-                littleP.add(jta, BorderLayout.EAST);
-            }
+            littleP.add(jta, BorderLayout.CENTER);
 
-//            JPanel tools = new JPanel();
-//
-//            // if ( Main.getTemplate().equals("Polaroids") )
-//            tools.setLayout(new GridLayout(2, 6));
-//            // tools.setLayout(new GridLayout(1,0));
-//            tools.setBackground(useColor);
-//            tools.setBorder(new EmptyBorder(0, 0, 0, 0));
-
-            //
-            //ImageAction ia = new ImageAction(this, ii, button, littleP);
             button.addActionListener({ ActionEvent ae ->
                 if (ae.modifiers & Event.CTRL_MASK)
                     return
                 if (ae.modifiers & Event.SHIFT_MASK) {
                     Runtime.getRuntime().exec([
                             jbum.core.Prefs.getWebBrowser(),
-                            "file://" + ii.getOriginalFile(Main.getCurrentDir()).toString()]
+                            "file://" + ii.getOriginalFile(App.getCurrentDir()).toString()]
                             as String[])
                 } else
-                    new Zoom(ii.getMediumFile(Main.getCurrentDir()));
+                    new Zoom(ii.getMediumFile(App.getCurrentDir()));
             });
 
-//            button.addActionListener({ ActionEvent e ->
-//                PopupMenu menu = new PopupMenu();
-//                Component c = e.getSource()
-//                menu.show(c, c.getX()+20, c.getY()+20);
-//            } as ActionListener )
+            button.addMouseListener(new PopClickListener(ii.name))
 
-            button.addMouseListener(popClickListener)
+            int x = App.getPicsPerRow();
 
-//            for (int bDex = 0; bDex < (buttonInfo.length / 3); bDex++) {
-//                String buttonName = buttonInfo[bDex * 3 + 2]
-//                JButton b = new JButton(getImageIcon(buttonName));
-//                b.setRolloverIcon(getImageIcon(buttonName + "Dark"));
-//                b.addActionListener(ia);
-//                b.setBackground(useColor);
-//                b.setToolTipText(buttonInfo[(bDex * 3) + 1]);
-//                b.setMargin(new Insets(0, 0, 0, 0));
-//                b.setBorderPainted(false);
-//                b.setBackground(useColor);
-//                tools.add(b);
-//            }
-//
-//            littleP.add(tools, BorderLayout.SOUTH);
-
-            int x = Main.getPicsPerRow();
-
-            if (rowP.getComponentCount() == x) {
-                rowP = new JPanel();
+            if ((i + 1) % x == 0) {
+                rowP = new Box(BoxLayout.X_AXIS);
+                rowP.setBorder(new EmptyBorder(5, 0, 0, 0))
                 box.add(rowP);
-                rowP.setBackground(getBackground());
+                //rowP.setBackground(getBackground());
             }
 
-            if (++lastColor == rotateColor.length) {
-                lastColor = 0;
-            }
         }
 
         JPanel prologP = new JPanel();
         prologP.add(prologTA);
         box.add(prologP);
         prologP.setBackground(getBackground());
-        prologTA.setBackground(getBackground().darker());
+        prologTA.setBackground(slightlyDarker(getBackground()));
+    }
+
+     Color slightlyDarker(Color c) {
+        def FACTOR = 0.9
+        return new Color(Math.max((int) (c.getRed() * FACTOR), 0),
+                Math.max((int) (c.getGreen() * FACTOR), 0),
+                Math.max((int) (c.getBlue() * FACTOR), 0),
+                c.getAlpha());
     }
 }

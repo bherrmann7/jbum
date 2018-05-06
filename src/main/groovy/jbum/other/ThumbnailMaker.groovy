@@ -4,7 +4,7 @@
  * To change the template for this generated file go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
-package jbum.core
+package jbum.other
 
 import com.sun.image.codec.jpeg.JPEGCodec
 import com.sun.image.codec.jpeg.JPEGImageEncoder
@@ -20,9 +20,9 @@ import java.awt.image.BufferedImage
  * @author bob
  */
 
-public class ThumbnailMaker {
+ class ThumbnailMaker {
 
-    public static void main(String[] args) {
+     static void main(String[] args) {
         Date start = new Date();
         createThumbnail("/tmp/cimg0173.jpg", "/tmp/thumb.jpg", 200);
         Date end = new Date();
@@ -41,7 +41,7 @@ public class ThumbnailMaker {
      *            The width and height of the thumbnail must be maxDim pixels or
      *            less.
      */
-    public static void createThumbnail(String orig, String thumb, int maxDim) {
+     static void createThumbnail(String orig, String thumb, int maxDim) {
         try {
             // Get the image from a file.
             Image inImage = new ImageIcon(orig).getImage();

@@ -7,16 +7,16 @@ import java.awt.event.ActionListener
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
-public class FileChooser {
+ class FileChooser {
     File myFile;
     ActionListener myActionListener;
 
-    public FileChooser(String reasonForChoosing) {
+     FileChooser(String reasonForChoosing) {
         final JFrame frame = new JFrame("jbum");
 
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+             void windowClosing(WindowEvent e) {
                 myFile = null;
                 myActionListener.actionPerformed(null);
                 frame.dispose();
@@ -28,7 +28,7 @@ public class FileChooser {
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(new Color(255, 255, 204));
 
-        ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("jbum.gif"));
+        ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("jbum.gif"));
 
         titlePanel.add(new JLabel(icon), BorderLayout.WEST);
         titlePanel.add(new JLabel(reasonForChoosing), BorderLayout.CENTER);
@@ -41,7 +41,7 @@ public class FileChooser {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         ActionListener actionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+             void actionPerformed(ActionEvent e) {
                 String command = e.getActionCommand();
 
                 if (command.equals(JFileChooser.APPROVE_SELECTION)) {
@@ -65,11 +65,11 @@ public class FileChooser {
         frame.setVisible(true);
     }
 
-    public void addActionListener(ActionListener list) {
+     void addActionListener(ActionListener list) {
         myActionListener = list;
     }
 
-    public File getSelectedFile() {
+     File getSelectedFile() {
         return myFile;
     }
 }

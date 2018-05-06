@@ -1,21 +1,22 @@
-package jbum.ui
+package jbum.other
 
 import com.jcraft.jsch.*
 import jbum.core.DPage
 import jbum.core.PrefsCore
+import jbum.ui.App
 import se.datadosen.component.RiverLayout
 
 import javax.swing.*
 import javax.swing.event.DocumentListener
 import java.awt.event.ActionListener
 
-public class Publish {
+ class Publish {
 
     void openDialog() {
 
         // save current work
-        Main.myself.saveAction.actionPerformed(null)
-        DPage dpage = Main.myself.centerP.getCurrentPage();
+        App.myself.saveAction.actionPerformed(null)
+        DPage dpage = App.myself.centerP.getCurrentPage();
         def start = dpage.where
 
         JFrame jf = new JFrame();
@@ -75,7 +76,7 @@ public class Publish {
         okcancel.add(cancel);
         cancel.addActionListener([actionPerformed: { jf.dispose(); }] as ActionListener)
 
-        def loc = Main.myself.frame.location
+        def loc = App.myself.frame.location
         jf.setLocation((int) (loc.x + 150), (int) (loc.y + 150))
         jf.setSize(600, 400)
         jf.setVisible(true)
@@ -86,11 +87,11 @@ public class Publish {
         Thread.start {
             def putting
             try {
-                Main.status("Starting to transfer files")
+                App.status("Starting to transfer files")
 
                 // save current work
-                Main.myself.saveAction.actionPerformed(null)
-                DPage dpage = Main.myself.centerP.getCurrentPage();
+                App.myself.saveAction.actionPerformed(null)
+                DPage dpage = App.myself.centerP.getCurrentPage();
                 def start = dpage.where
 
                 def startTime = System.currentTimeMillis()
@@ -103,13 +104,13 @@ public class Publish {
                 ui.password = password
                 session.setUserInfo(ui);
 
-                Main.status("Connecting to host...")
+                App.status("Connecting to host...")
 
                 session.connect();
 
                 Channel channel = session.openChannel("sftp");
 
-                Main.status("Opening sftp channel...")
+                App.status("Opening sftp channel...")
                 channel.connect();
                 ChannelSftp c = (ChannelSftp) channel;
 
@@ -127,7 +128,7 @@ public class Publish {
                     }
                 }
 
-                Main.status("Making needed directories...")
+                App.status("Making needed directories...")
 
                 mkdir(dstDir)
                 srcDir.eachDirRecurse {
@@ -154,17 +155,17 @@ public class Publish {
 
                 files.eachWithIndex { file, index ->
                     String relativePath = file.toString().substring(srcDir.toString().length() + 1)
-                    Main.status("Transfering $index/$files.size $relativePath")
+                    App.status("Transfering $index/$files.size $relativePath")
                     putting = [file.toString(), sFile(new File(dstDir, relativePath))]
                     c.put(file.toString(), sFile(new File(dstDir, relativePath)), null, ChannelSftp.OVERWRITE)
                 }
 
-                Main.status("all done.  Tranfered ${files.size()} in ${(System.currentTimeMillis() - startTime) / 1000} seconds")
+                App.status("all done.  Tranfered ${files.size()} in ${(System.currentTimeMillis() - startTime) / 1000} seconds")
 
             } catch (Throwable t) {
                 t.printStackTrace()
                 println("Transfer Aborted, files=${putting}, error=" + t.message)
-                Main.status("Transfer Aborted, files=${putting}, error=" + t.message)
+                App.status("Transfer Aborted, files=${putting}, error=" + t.message)
             }
 
         }

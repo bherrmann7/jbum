@@ -6,9 +6,9 @@ import javax.swing.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
-public class Prefs extends jbum.core.Prefs {
+ class Prefs extends jbum.core.Prefs {
 
-    public static void main(String[] args) {
+     static void main(String[] args) {
         new Prefs();
     }
 
@@ -21,7 +21,7 @@ public class Prefs extends jbum.core.Prefs {
     JTextField imageEditorUI;
     JTextField webbrowser;
 
-    public Prefs() {
+     Prefs() {
         f = new JFrame();
         f.setTitle("Jbum Preferences");
         JPanel p = new JPanel();
@@ -44,7 +44,7 @@ public class Prefs extends jbum.core.Prefs {
         p.add("tab hfill vfill", jsp);
         p.add("p right", new JLabel("Pdf viewer"));
         p.add("tab hfill", pdfviewer = new JTextField(getPDFViewer(), 30));
-        p.add("p right", new JLabel("Image editor"));
+        p.add("p right", new JLabel("Exernal Program (Usually image editor)"));
         p.add("tab hfill", imageEditorUI = new JTextField(getImageEditor(), 30));
         p.add("p right", new JLabel("web browser"));
         p.add("tab hfill", webbrowser = new JTextField(getWebBrowser(), 30));
@@ -55,7 +55,7 @@ public class Prefs extends jbum.core.Prefs {
         JButton ok = new JButton("OK");
         okcancel.add(ok);
         ok.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+             void actionPerformed(ActionEvent e) {
                 setInitialTitleText(title.getText());
                 setInitialIntroText(intro.getText());
                 setInitialFirstImageText(firstImage.getText());
@@ -71,7 +71,7 @@ public class Prefs extends jbum.core.Prefs {
         JButton cancel = new JButton("Cancel");
         okcancel.add(cancel);
         cancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+             void actionPerformed(ActionEvent e) {
                 f.dispose();
             }
         }

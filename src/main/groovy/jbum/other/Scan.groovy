@@ -1,8 +1,8 @@
-package jbum.core
+package jbum.other
 
-public class Scan {
+ class Scan {
 
-    public static void main(String[] args) {
+     static void main(String[] args) {
         File f = new File(System.getProperty("user.home"));
         if (args.length == 1)
             f = new File(args[0]);
@@ -10,7 +10,7 @@ public class Scan {
         System.out.println(f);
 
         findImgs(f);
-        System.out.println("Possbiles: " + possibles.size());
+        System.out.println("Possibles: " + possibles.size());
     }
 
     static HashMap<String, File> possibles = new HashMap<String, File>();

@@ -9,16 +9,16 @@ import java.awt.event.ActionListener
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
-public class RenameMoveChooser {
+ class RenameMoveChooser {
     File myFile;
     ActionListener myActionListener;
 
-    public RenameMoveChooser() {
+     RenameMoveChooser() {
         final JFrame frame = new JFrame("jbum - Rename/Move Chooser");
 
         // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+             void windowClosing(WindowEvent e) {
                 frame.dispose();
             }
         });
@@ -28,12 +28,12 @@ public class RenameMoveChooser {
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(new Color(255, 255, 204));
 
-        ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("jbum.gif"));
+        ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("jbum.gif"));
 
         titlePanel.add(new JLabel(icon), BorderLayout.WEST);
         titlePanel.add(new JLabel(
                 "<html>Rename or Move images, current location: <p>&nbsp;&nbsp;&nbsp;&nbsp;<b>" +
-                        Main.getCurrentDir() +
+                        App.getCurrentDir() +
                         "</b><p>&nbsp;<p>Choose new location...</html>"),
                 BorderLayout.CENTER);
 
@@ -45,11 +45,11 @@ public class RenameMoveChooser {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         ActionListener actionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+             void actionPerformed(ActionEvent e) {
                 String command = e.getActionCommand();
 
                 if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-                    moveAllTo(Main.getCurrentDir(),
+                    moveAllTo(App.getCurrentDir(),
                             chooser.getSelectedFile());
                 }
 
@@ -59,7 +59,7 @@ public class RenameMoveChooser {
             private void moveAllTo(File src, File dst) {
                 if (!dst.exists()) {
                     if (!dst.mkdirs()) {
-                        Main.error("Unable to create directory: " + dst,
+                        App.error("Unable to create directory: " + dst,
                                 "Rename Move Chooser");
 
                         return;
@@ -68,7 +68,7 @@ public class RenameMoveChooser {
 
                 recursive(src, dst);
                 src.delete();
-                Main.movedTo(dst);
+                App.movedTo(dst);
 
                 ArrayList<String[]> al = Prefs.getLastModified();
 
@@ -94,7 +94,7 @@ public class RenameMoveChooser {
                         if (!files[i].renameTo(dstItem)) {
                             // move failed, so we have to do copy
                             if (!dstItem.isDirectory() && !dstItem.mkdir()) {
-                                Main.error("Unable to create needed destination directory.",
+                                App.error("Unable to create needed destination directory.",
                                         "Rename/Move");
 
                                 // / ideally we should *unwind*
@@ -141,11 +141,11 @@ public class RenameMoveChooser {
         frame.setVisible(true);
     }
 
-    public void addActionListener(ActionListener list) {
+     void addActionListener(ActionListener list) {
         myActionListener = list;
     }
 
-    public File getSelectedFile() {
+     File getSelectedFile() {
         return myFile;
     }
 }

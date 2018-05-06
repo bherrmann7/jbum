@@ -2,8 +2,8 @@ package jbum.ui
 
 import javax.swing.filechooser.FileFilter
 
-public class DirFilter extends FileFilter {
-    public boolean accept(File f) {
+ class DirFilter extends FileFilter {
+     boolean accept(File f) {
         if (f.isDirectory()) {
             return true;
         }
@@ -12,7 +12,7 @@ public class DirFilter extends FileFilter {
     }
 
     // The description of this filter
-    public String getDescription() {
+     String getDescription() {
         return "Just Directories";
     }
 }
