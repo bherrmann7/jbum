@@ -283,7 +283,7 @@ import java.text.SimpleDateFormat
     private static void doFind(File root) {
         ArrayList<String[]> al = new ArrayList<String[]>();
 
-        // find all jbum.ser files
+        // find all jbum.ser/jbum.json files
         File[] jbf = getAll(root);
 
         for (int i = 0; i < jbf.length; i++) {

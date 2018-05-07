@@ -28,6 +28,23 @@ class Command {
             XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
             xstream.alias("page", jbum.layouts.Page.class);
             println(xstream.toXML(dp.toPage()))
+        } else if(args[0] == "saveAsJson"){
+            File file = new File(args[1])
+            DPage dp = new DPage(file, false)
+            XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+            xstream.alias("page", jbum.layouts.Page.class);
+            FileOutputStream fos = new File(file.getParentFile(), "jbum.json")
+            fos.write(xstream.toXML(dp.toPage()).getBytes())
+            fos.write()
+        } else if(args[0] == "saveAsJser"){
+            File file = new File(args[1])
+            if(!file.getName().equals("jbum.json")){
+                die("Expected jbum.json file")
+            }
+            XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+            xstream.alias("page", jbum.layouts.Page.class);
+            Object obj = xstream.fromXML(new FileInputStream(file))
+            println(obj)
         } else if (args[0] == "make") {
             File file = new File(args[1])
             if(!file.isDirectory()) die("make command requires a directory.  This is not a directory "+args[1])

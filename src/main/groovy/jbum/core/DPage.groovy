@@ -153,9 +153,10 @@ import java.awt.*
     }
 
     boolean exists() {
-        return new File(where, "jbum.ser").exists();
+        return new File(where, "jbum.ser").exists() || new File(where, "jbum.json").exists()
     }
 
+     // BOBH jbum.ser
      void save() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(

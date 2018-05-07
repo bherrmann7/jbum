@@ -19,13 +19,3 @@ Portions of this project are from other open source projects.
 
 Copyright © 2014,2018 Bob Herrmann
 
-
-== 
-
-steps to publish
-
-mv current_directory to /mnt/studio/babypea/site
-chown -R tomcat.tomcat /mnt/studio/babypea/site
-
-add into into arts.edn
-
