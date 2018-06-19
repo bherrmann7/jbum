@@ -5,70 +5,62 @@
 
 package jbum.core
 
- class VecImageInfo implements java.io.Serializable {
+class VecImageInfo implements java.io.Serializable {
     static final long serialVersionUID = -3259743450740459827L;
 
     private Vector<ImageInfo> vec = new Vector<ImageInfo>();
 
-     VecImageInfo() {
+    VecImageInfo() {
     }
 
-    VecImageInfo(ImageInfo[] elements) {
-        add(elements);
-    }
-
-     void add(ImageInfo element) {
+    void add(ImageInfo element) {
         vec.add(element);
     }
 
-     void addFirst(ImageInfo element) {
+    void addFirst(ImageInfo element) {
         vec.add(0, element);
     }
 
-     void remove(ImageInfo element) {
+    void remove(ImageInfo element) {
         vec.remove(element);
     }
 
-     void add(ImageInfo[] elements) {
+    void add(ImageInfo[] elements) {
         for (int i = 0; i < elements.length; i++)
             vec.add(elements[i]);
     }
 
-     ImageInfo[] get() {
+    ImageInfo[] get() {
         ImageInfo[] array = new ImageInfo[vec.size()];
         vec.copyInto(array);
         return array;
     }
 
-     ImageInfo[] toArray() {
-        return get();
-    }
-
-     ImageInfo get(int i) {
+    ImageInfo get(int i) {
         return vec.elementAt(i);
     }
 
-     ImageInfo getAt(int i) {
+    ImageInfo getAt(int i) {
         return vec.elementAt(i);
     }
 
-     void set(ImageInfo elem, int i) {
+    void set(ImageInfo elem, int i) {
         vec.setElementAt(elem, i);
     }
 
-     void clear() {
+    void clear() {
         vec.clear();
     }
 
-     int size() {
+    int size() {
         return vec.size();
     }
 
-     int indexOf(ImageInfo elem) {
+    int indexOf(ImageInfo elem) {
         return vec.indexOf(elem);
     }
 
-     String toString() {
+    String toString() {
         StringBuffer sb = new StringBuffer("VecImageInfo[");
         for (int i = 0; i < vec.size(); i++) {
             if (i != 0)
@@ -79,20 +71,19 @@ package jbum.core
         return sb.toString();
     }
 
-     void add(int pos, ImageInfo element) {
+    void add(int pos, ImageInfo element) {
         vec.add(pos, element);
     }
 
-     ArrayList<ImageInfo2> toModern() {
+    ArrayList<ImageInfo2> toModern() {
         ArrayList<ImageInfo2> modern = new ArrayList<ImageInfo2>(vec.size());
         for (Object iio : vec) {
             modern.add(((ImageInfo) iio).toImageInfo2());
         }
         return modern;
-
     }
 
-     Vector getVec() {
+    Vector getVec() {
         return vec;
     }
 

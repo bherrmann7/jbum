@@ -12,17 +12,17 @@ import java.awt.*
 /**
  * @author bob
  */
- class ImageCache {
+class ImageCache {
     private static HashMap<File, ImageIcon> images = new HashMap<File, ImageIcon>();
 
-     static clear() { images = [:] }
+    static clear() { images = [:] }
 
-     static ImageIcon set(File name, Image img) {
+    static ImageIcon set(File name, Image img) {
         images.put(name, new ImageIcon(img));
         return get(name);
     }
 
-     static ImageIcon get(File smallFile) {
+    static ImageIcon get(File smallFile) {
         ImageIcon icon = images.get(smallFile);
         if (icon != null)
             return icon;

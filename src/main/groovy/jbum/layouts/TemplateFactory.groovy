@@ -2,25 +2,25 @@ package jbum.layouts
 
 class TemplateFactory {
 
-     static final String STANDARD = "Standard";
+    static final String STANDARD = "Standard";
 
-     static final String POLAROIDS = "Polaroids";
+    static final String POLAROIDS = "Polaroids";
 
-     static final String POLAROIDS_FLOW = "Polaroids Flow";
+    static final String POLAROIDS_FLOW = "Polaroids Flow";
 
-     static final String WOODEN_FLOW = "Wooden Flow";
+    static final String WOODEN_FLOW = "Wooden Flow";
 
-     static final String CHAMELEON_FLOW = "Chameleon Flow";
+    static final String CHAMELEON_FLOW = "Chameleon Flow";
 
     static private String[] templates = ["standard", "IntroOnSide",
                                          "polaroids", "polaroidsFlow", "woodenFlow", "chameleon"] as String[];
 
-     static String[] getNames() {
+    static String[] getNames() {
         return [STANDARD, "Intro on left side", POLAROIDS,
                 POLAROIDS_FLOW, WOODEN_FLOW, CHAMELEON_FLOW] as String[];
     }
 
-     static String getResourceName(String templateName) {
+    static String getResourceName(String templateName) {
         int dex = 0;
         for (int i = 0; i < getNames().length; i++) {
             if (templateName.equals(getNames()[i])) {
@@ -31,7 +31,7 @@ class TemplateFactory {
         return "jbum/layouts/" + templates[dex] + "/page.html";
     }
 
-     static String getResourceBase(String templateName) {
+    static String getResourceBase(String templateName) {
         int dex = 0;
         for (int i = 0; i < getNames().length; i++) {
             if (templateName.equals(getNames()[i])) {
@@ -41,10 +41,10 @@ class TemplateFactory {
         }
         return "jbum/layouts/" + templates[dex] + "/";
     }
-    
 
-     static String[] getOtherResources() {
-            return computeResources(POLAROIDS_FLOW);
+
+    static String[] getOtherResources() {
+        return computeResources(POLAROIDS_FLOW);
     }
 
     private static String[] computeResources(String templateName) {

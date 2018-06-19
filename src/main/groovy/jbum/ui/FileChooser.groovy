@@ -7,16 +7,16 @@ import java.awt.event.ActionListener
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 
- class FileChooser {
+class FileChooser {
     File myFile;
     ActionListener myActionListener;
 
-     FileChooser(String reasonForChoosing) {
+    FileChooser(String reasonForChoosing) {
         final JFrame frame = new JFrame("jbum");
 
         //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
-             void windowClosing(WindowEvent e) {
+            void windowClosing(WindowEvent e) {
                 myFile = null;
                 myActionListener.actionPerformed(null);
                 frame.dispose();
@@ -41,7 +41,7 @@ import java.awt.event.WindowEvent
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
         ActionListener actionListener = new ActionListener() {
-             void actionPerformed(ActionEvent e) {
+            void actionPerformed(ActionEvent e) {
                 String command = e.getActionCommand();
 
                 if (command.equals(JFileChooser.APPROVE_SELECTION)) {
@@ -65,11 +65,11 @@ import java.awt.event.WindowEvent
         frame.setVisible(true);
     }
 
-     void addActionListener(ActionListener list) {
+    void addActionListener(ActionListener list) {
         myActionListener = list;
     }
 
-     File getSelectedFile() {
+    File getSelectedFile() {
         return myFile;
     }
 }

@@ -2,21 +2,21 @@ package jbum.core
 
 import java.awt.*
 
- class ColorSet {
+class ColorSet {
 
 
     private static Object[] sets = [
             // Name, Background, Text, Panel
-            [ DEFAULT, new Color(0xD0D0B0), Color.black, new Color(0xD0D0FF) ],
+            [DEFAULT, new Color(0xD0D0B0), Color.black, new Color(0xD0D0FF)],
 
             ["Christmas", Color.WHITE, Color.black, new Color(0xFAB8B8)],
 
-            ["Halloween", new Color(0xFFDD77), Color.black, new Color(0xFFCC99) ]]
+            ["Halloween", new Color(0xFFDD77), Color.black, new Color(0xFFCC99)]]
 
-     static String[] getNames() {
+    static String[] getNames() {
         def names = []
         sets.each {
-            names.add( it[0] )
+            names.add(it[0])
         }
         return names;
     }
@@ -27,15 +27,15 @@ import java.awt.*
 
     static String DEFAULT = "Default Colors";
 
-     static Color getBackground(String name) {
+    static Color getBackground(String name) {
         return (Color) sets[getDex(name)][1];
     }
 
-     static Color getText(String name) {
+    static Color getText(String name) {
         return (Color) sets[getDex(name)][2];
     }
 
-     static Color getPanel(String name) {
+    static Color getPanel(String name) {
         return (Color) sets[getDex(name)][3];
     }
 

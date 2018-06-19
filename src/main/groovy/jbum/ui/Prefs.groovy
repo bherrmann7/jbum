@@ -6,9 +6,9 @@ import javax.swing.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
- class Prefs extends jbum.core.Prefs {
+class Prefs extends jbum.core.Prefs {
 
-     static void main(String[] args) {
+    static void main(String[] args) {
         new Prefs();
     }
 
@@ -21,7 +21,7 @@ import java.awt.event.ActionListener
     JTextField imageEditorUI;
     JTextField webbrowser;
 
-     Prefs() {
+    Prefs() {
         f = new JFrame();
         f.setTitle("Jbum Preferences");
         JPanel p = new JPanel();
@@ -55,7 +55,7 @@ import java.awt.event.ActionListener
         JButton ok = new JButton("OK");
         okcancel.add(ok);
         ok.addActionListener(new ActionListener() {
-             void actionPerformed(ActionEvent e) {
+            void actionPerformed(ActionEvent e) {
                 setInitialTitleText(title.getText());
                 setInitialIntroText(intro.getText());
                 setInitialFirstImageText(firstImage.getText());
@@ -71,7 +71,7 @@ import java.awt.event.ActionListener
         JButton cancel = new JButton("Cancel");
         okcancel.add(cancel);
         cancel.addActionListener(new ActionListener() {
-             void actionPerformed(ActionEvent e) {
+            void actionPerformed(ActionEvent e) {
                 f.dispose();
             }
         }

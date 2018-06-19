@@ -18,7 +18,7 @@ class App {
     ButtonGroup imagesPerRow;
     final JFrame frame = new JFrame();
 
-    App(){
+    App() {
 
     }
 
@@ -28,6 +28,7 @@ class App {
             try {
                 DPage dpage = centerP.getCurrentPage();
                 dpage.save();
+
                 ExportToTemplate e2p = new ExportToTemplate();
                 e2p.export(dpage);
             } catch (Throwable t) {
@@ -205,11 +206,7 @@ class App {
 
         menuItem.addActionListener(ae);
         menu.add(menuItem);
-        menuItem = new JMenuItem("Panel Odd");
-
-        menuItem.addActionListener(ae);
-        menu.add(menuItem);
-        menuItem = new JMenuItem("Panel Even");
+        menuItem = new JMenuItem("Panel");
 
         menuItem.addActionListener(ae);
         menu.add(menuItem);
@@ -240,12 +237,10 @@ class App {
         menuItem.addActionListener(new ActionListener() {
             void actionPerformed(ActionEvent axey) {
                 JOptionPane.showMessageDialog(frame, "Background: "
-                        + prettyColor(centerP.getColor("Background"))
-                        + "\nText: " + prettyColor(centerP.getColor("Text"))
-                        + "\nPanel Odd: "
-                        + prettyColor(centerP.getColor("Panel Odd"))
-                        + "\nPanel Even: "
-                        + prettyColor(centerP.getColor("Panel Even")),
+                        + webEncodeColor(centerP.getColor("Background"))
+                        + "\nText: " + webEncodeColor(centerP.getColor("Text"))
+                        + "\nPanel: "
+                        + webEncodeColor(centerP.getColor("Panel")),
                         "Active colors", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -324,12 +319,14 @@ class App {
 
     static int getPicsPerRow() {
         // bobh hack for dumping via command line
-        if(myself.imagesPerRow == null)
+        if (myself.imagesPerRow == null)
             return 4;
         return Integer.parseInt(myself.imagesPerRow.elements.find { it.selected }.text[0])
     }
 
     static void setPicsPerRow(int x) {
+        if (myself == null || myself.imagesPerRow == null)
+            return
         myself.imagesPerRow.elements.find { it.text.startsWith(x.toString()) }.setSelected(true)
     }
 
@@ -365,7 +362,7 @@ class App {
         return myself.centerP.currentDir;
     }
 
-    static String prettyColor(Color c) {
+    static String webEncodeColor(Color c) {
         return "#" + get2Hex(c.getRed()) + get2Hex(c.getGreen()) + get2Hex(c.getBlue());
     }
 

@@ -5,7 +5,7 @@ import jbum.core.Version
 class Update extends Thread {
 
     @SuppressWarnings("deprecation")
-     void run() {
+    void run() {
         try {
             URL url = new URL("http://jadn.com/jbum/update.dat");
             DataInputStream dis = new DataInputStream(url.openStream());

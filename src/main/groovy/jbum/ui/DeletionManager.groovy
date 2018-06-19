@@ -9,7 +9,7 @@ import javax.swing.event.MenuListener
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
- class DeletionManager implements ActionListener, MenuListener {
+class DeletionManager implements ActionListener, MenuListener {
     CenterP centerP;
 
     JMenu menu = new JMenu("Deleted");
@@ -29,13 +29,13 @@ import java.awt.event.ActionListener
         cb.setSelected(true);
     }
 
-     void menuCanceled(MenuEvent e) {
+    void menuCanceled(MenuEvent e) {
     }
 
-     void menuDeselected(MenuEvent e) {
+    void menuDeselected(MenuEvent e) {
     }
 
-     void menuSelected(MenuEvent e) {
+    void menuSelected(MenuEvent e) {
         menu.removeAll();
 
         File[] files = purgeList();
@@ -63,7 +63,7 @@ import java.awt.event.ActionListener
         }
     }
 
-     void actionPerformed(ActionEvent ae) {
+    void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().startsWith("Purge")) {
             Object[] options = ["OK", "CANCEL"]
             int c = JOptionPane.showOptionDialog(null,

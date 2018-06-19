@@ -132,7 +132,7 @@ class Prefs {
         if (File.separatorChar == '/')
             defaultBrowser = "htmlview";
         if (System.getProperty("java.vendor").toString().indexOf("Apple") != -1)
-            defaultBrowser = "open";
+            defaultBrowser = " /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --allow-file-access-from-files --user-data-dir /";
         return PrefsCore.getStr("webbrowser", defaultBrowser);
     }
 

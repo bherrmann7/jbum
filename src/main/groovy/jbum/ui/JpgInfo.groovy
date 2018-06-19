@@ -53,7 +53,7 @@ class JpgInfo {
         button.setBorderPainted(false);
 
         button.addActionListener(new ActionListener() {
-             void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 frame.setVisible(false);
                 frame.dispose(); // by by ya'all
             }

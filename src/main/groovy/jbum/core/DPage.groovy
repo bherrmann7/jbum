@@ -1,38 +1,31 @@
 package jbum.core
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import jbum.layouts.Page
-import jbum.ui.BlogInfo
 import jbum.ui.App
 
 import java.awt.*
 
-/**
- * Data Page.. a model of the data used to construct the page.
- */
- class DPage {
-    Color background = ColorSet.getBackground(ColorSet.DEFAULT);
-
-    Color panel = ColorSet.getPanel(ColorSet.DEFAULT);
-
-    Color text = ColorSet.getText(ColorSet.DEFAULT);
-
+/** Data Page.. a model of the data used to construct the page. */
+public class DPage {
     File where;
-
-    String intro;
-
-    String prolog = Prefs.getInitialPrologText();
-
-    String title;
-
     VecImageInfo vii;
+    Color background = ColorSet.getBackground(ColorSet.DEFAULT);
+    Color panel = ColorSet.getPanel(ColorSet.DEFAULT);
+    Color text = ColorSet.getText(ColorSet.DEFAULT);
+    String intro = Prefs.getInitialIntroText();
+    String prolog = Prefs.getInitialPrologText();
+    String title = Prefs.getInitialTitleText()
+    int picsPerRow = 3;
 
-    int picsPerRow = 2;
+    DPage(File where, VecImageInfo vecii) {
+        this.where = where
+        this.vii = vecii
+    }
 
-    BlogInfo blogInfo;
-
-     DPage(File where, String title, String intro, VecImageInfo vecii,
-                 Color bg, Color text, Color panel,
-                 int picsPerRow, String prolog, BlogInfo blogInfo) {
+    DPage(File where, String title, String intro, VecImageInfo vecii,
+          Color bg, Color text, Color panel,
+          int picsPerRow, String prolog) {
         super();
         this.where = where;
         this.title = title;
@@ -43,14 +36,32 @@ import java.awt.*
         this.panel = panel;
         this.picsPerRow = picsPerRow;
         this.prolog = prolog;
-        this.blogInfo = blogInfo;
     }
 
-     DPage(File jbumFile, boolean newPage) {
+    public DPage(File jbumFile, boolean newPage) {
         this.where = jbumFile.getParentFile();
         if (newPage) {
             picsPerRow = 3;
             panel = Color.WHITE;
+        }
+
+        if (jbumFile.name.endsWith(".json")) {
+            ObjectMapper om = new ObjectMapper()
+            FileReader fr = new FileReader(jbumFile)
+            Page page = om.readValue(fr, Page.class)
+            fr.close()
+            title = page.title
+            intro = page.intro
+            vii = new VecImageInfo()
+            page.photos.forEach({
+                vii.add(it.toImageInfo())
+            })
+            background = Color.decode(page.bgColor)
+            text = Color.decode(page.textColor)
+            panel = Color.decode(page.panelColor)
+            picsPerRow = page.picsPerRow
+            prolog = page.prolog
+            return
         }
 
         ObjectInputStream oos = null;
@@ -75,80 +86,80 @@ import java.awt.*
             picsPerRow = oos.readInt();
             oos.readUTF(); // not used - was template
             prolog = (String) oos.readObject();
-            blogInfo = (BlogInfo) oos.readObject();
         } catch (Exception e) {
             // Here when the saved version was older than our newer format
             // values not read are "reset-to-factory"
             // e.printStackTrace();
+            System.out.println("NOTE: ---- Really old jbum.ser format ---- or error unserializing")
         }
 
     }
 
-     void setBackgroundColor(Color backgroundColor) {
+    void setBackgroundColor(Color backgroundColor) {
         this.background = backgroundColor;
     }
 
-     Color getBackgroundColor() {
+    Color getBackgroundColor() {
         return background;
     }
 
-     void setIntro(String intro) {
+    void setIntro(String intro) {
         this.intro = intro;
     }
 
-     String getIntro() {
+    String getIntro() {
         return intro;
     }
 
-     void setPanelColor(Color panel) {
+    void setPanelColor(Color panel) {
         this.panel = panel;
     }
 
-     Color getPanelColor() {
+    Color getPanelColor() {
         return panel;
     }
 
-     void setPicsPerRow(int picsPerRow) {
+    void setPicsPerRow(int picsPerRow) {
         this.picsPerRow = picsPerRow;
     }
 
-     int getPicsPerRow() {
+    int getPicsPerRow() {
         return picsPerRow;
     }
 
-     void setProlog(String prolog) {
+    void setProlog(String prolog) {
         this.prolog = prolog;
     }
 
-     String getProlog() {
+    String getProlog() {
         return prolog;
     }
 
-     void setTemplate(String templates) {
+    void setTemplate(String templates) {
         this.template = templates;
     }
 
-     void setTextColor(Color textColor) {
+    void setTextColor(Color textColor) {
         this.text = textColor;
     }
 
-     Color getTextColor() {
+    Color getTextColor() {
         return text
     }
 
-     void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 
-     String getTitle() {
+    String getTitle() {
         return title;
     }
 
-     void setVii(VecImageInfo vii) {
+    void setVii(VecImageInfo vii) {
         this.vii = vii;
     }
 
-     VecImageInfo getVii() {
+    VecImageInfo getVii() {
         return vii;
     }
 
@@ -156,8 +167,7 @@ import java.awt.*
         return new File(where, "jbum.ser").exists() || new File(where, "jbum.json").exists()
     }
 
-     // BOBH jbum.ser
-     void save() {
+    void save() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream(new File(where, "jbum.ser")));
@@ -167,27 +177,33 @@ import java.awt.*
             oos.writeObject(background);
             oos.writeObject(text);
             oos.writeObject(panel);
-            oos.writeObject("Not Used - was panel odd color");
+            oos.writeObject(Color.RED) //"Not Used - was panel odd color")
             oos.writeInt(picsPerRow);
-            oos.writeUTF("Not Used - was Template");
+            oos.writeUTF("Not Used - was Template Name");
             oos.writeObject(prolog);
             oos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        def fos = new FileOutputStream(new File(where, "jbum.json"))
+        ObjectMapper om = new ObjectMapper()
+        def pp = om.writerWithDefaultPrettyPrinter()
+        fos.write(pp.writeValueAsBytes(toPage()))
+        fos.close()
     }
 
-     File getWhere() {
+    File getWhere() {
         return where;
     }
 
-     void setWhere(File where) {
+    void setWhere(File where) {
         this.where = where;
     }
 
-     Page toPage() {
+    Page toPage() {
         return new Page(title, intro, vii.toModern(), picsPerRow, App
-                .prettyColor(background), App.prettyColor(text), App
-                .prettyColor(panel), prolog, where.toString());
+                .webEncodeColor(background), App.webEncodeColor(text), App
+                .webEncodeColor(panel), prolog, where.toString());
     }
 }

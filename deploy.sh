@@ -1,2 +1,3 @@
 ./gradlew shadowJar
-scp build/libs/jbum-all.jar crystal@wilddog:bin/jbum.jar
+cp  build/libs/jbum-all.jar ~/bin/jbum.jar
+scp build/libs/jbum-all.jar root@wilddog.local:/usr/local/bin/jbum.jar

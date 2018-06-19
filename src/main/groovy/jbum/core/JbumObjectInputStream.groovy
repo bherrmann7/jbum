@@ -8,7 +8,7 @@ package jbum.core
 /**
  * @author bob
  */
- class JbumObjectInputStream extends ObjectInputStream {
+class JbumObjectInputStream extends ObjectInputStream {
 
     /**
      * @throws IOException

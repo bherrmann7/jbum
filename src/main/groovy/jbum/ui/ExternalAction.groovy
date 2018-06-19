@@ -7,12 +7,12 @@ class ExternalAction implements Runnable {
     ImageInfo ii;
 
 
-     ExternalAction(ImageInfo ii) {
+    ExternalAction(ImageInfo ii) {
         this.ii = ii;
         new Thread(this, "ExternalAction").start();
     }
 
-     void run() {
+    void run() {
         try {
             String target = ii.getOriginalFile(App.getCurrentDir()).toString();
 

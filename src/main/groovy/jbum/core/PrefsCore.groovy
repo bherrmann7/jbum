@@ -1,11 +1,10 @@
-
 package jbum.core
 
 import jbum.ui.App
 
- class PrefsCore {
+class PrefsCore {
 
-     static void setApp(String appName) {
+    static void setApp(String appName) {
         PrefsCore.appName = appName;
     }
 
@@ -82,7 +81,7 @@ import jbum.ui.App
         return d;
     }
 
-     static Object get(String name, Object defaultValue) {
+    static Object get(String name, Object defaultValue) {
         initProp();
 
         Object o = prop.get(name);
@@ -95,7 +94,7 @@ import jbum.ui.App
         return o;
     }
 
-     static String getStr(String name, Object defaultValue) {
+    static String getStr(String name, Object defaultValue) {
         initProp();
 
         Object o = prop.get(name);
@@ -120,7 +119,7 @@ import jbum.ui.App
         syncProp();
     }
 
-     static void set(String name, java.io.Serializable x) {
+    static void set(String name, java.io.Serializable x) {
         initProp();
         if (debug)
             System.out.println("AppProp: set(name=" + name + ", x=" + x + ");");

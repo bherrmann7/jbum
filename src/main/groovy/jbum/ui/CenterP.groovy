@@ -8,6 +8,7 @@ import com.swabunga.spell.engine.SpellDictionary
 import com.swabunga.spell.engine.SpellDictionaryHashMap
 import com.swabunga.spell.swing.JTextComponentSpellChecker
 import jbum.core.*
+import jbum.ui.Prefs
 
 import javax.swing.*
 import javax.swing.border.EmptyBorder
@@ -15,54 +16,52 @@ import javax.swing.text.JTextComponent
 import java.awt.*
 import java.awt.event.ActionEvent
 import java.text.SimpleDateFormat
-import java.util.List;
+import java.util.List
 
 @SuppressWarnings("serial")
- class CenterP extends JScrollPane {
+class CenterP extends JScrollPane {
 
-     static String[] buttonInfo = [ //
+    static String[] buttonInfo = [ //
 
-                                          "X", "delete image", "trash",
+                                   "X", "delete image", "trash",
 
-                                          "<-", "move image back in list", "back",
+                                   "<-", "move image back in list", "back",
 
-                                          "->", "move image forwared in list", "forward",
+                                   "->", "move image forwared in list", "forward",
 
-                                          "C", "Rotate Clockwise", "clockwise",
+                                   "C", "Rotate Clockwise", "clockwise",
 
-                                          "CC", "Rotate Counter Clockwise", "counterclockwise",
+                                   "CC", "Rotate Counter Clockwise", "counterclockwise",
 
-                                          "info", "display image info", "information",
+                                   "info", "display image info", "information",
 
 //                                          "+", "view larger version of imageoom ", "zoom",
 
-                                          "R", "reload image", "reload",
+                                   "R", "reload image", "reload",
 
-                                          "sp", "Spell check", "spellcheck",
+                                   "sp", "Spell check", "spellcheck",
 
-                                          "tool", "external tool", "hammer",
+                                   "tool", "external tool", "hammer",
 
-                                          "-",
-                                          "split - takes this image and all before it and moves them into another folder",
-                                          "split",
+                                   "-",
+                                   "split - takes this image and all before it and moves them into another folder",
+                                   "split",
 
-                                          "I",
-                                          "Insert deleted images after this image",
-                                          "insert",
+                                   "I",
+                                   "Insert deleted images after this image",
+                                   "insert",
 
     ];
 
     static SimpleDateFormat sd = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
 
-     SpellDictionary dictionary;
+    SpellDictionary dictionary;
 
-     VecImageInfo vecii;
+    VecImageInfo vecii;
 
     DeletionManager deletionManager;
 
     File currentDir;
-
-    File jbumSer;
 
     private JPanel introP = new JPanel();
 
@@ -92,7 +91,7 @@ import java.util.List;
         prologTA.setLineWrap(true);
     }
 
-     static Date getDate(File jpegFile, List<Camera> cameraList) {
+    static Date getDate(File jpegFile, List<Camera> cameraList) {
         if (cameraList == null) {
             throw new RuntimeException("Humm...");
         }
@@ -113,13 +112,13 @@ import java.util.List;
 
         Date date;
 
-         int compareTo(Object o) {
+        int compareTo(Object o) {
             return date.compareTo(((IDate) o).date);
         }
     };
 
     @SuppressWarnings("unchecked")
-     void orderByExifDate(List<Camera> cameras) {
+    void orderByExifDate(List<Camera> cameras) {
 
         // get dates
         ArrayList<IDate> idates = new ArrayList<IDate>();
@@ -172,7 +171,7 @@ import java.util.List;
     }
 
 
-     void rebuildComponents() {
+    void rebuildComponents() {
         setVisible(false);
         Box box = (Box) getViewport().getView();
         box.removeAll();
@@ -221,11 +220,11 @@ import java.util.List;
 
     void setDir(File dir) {
         currentDir = dir;
-        jbumSer = new File(dir, "jbum.ser");
         iconPath = '' + currentDir + File.separator + "smaller" + File.separator;
 
         File outF = new File(iconPath);
 
+        File jbumSer = new File(dir, "jbum.ser");
         if (jbumSer.exists() && !outF.exists()) {
             iconPath = outF.getParent() + File.separator;
             JOptionPane
@@ -233,7 +232,7 @@ import java.util.List;
                     null,
                     "This jbum page uses the older style of putting thumbnails\n"
                             + "in the main directory (and not the 'smaller' sub directory). Resaving\n"
-                            + "this page may result in a page w/o images.",
+                            + "this page may result in a page w/o images.   You can regenerate thumbnails from the menu.",
                     "Missing 'smaller' directory",
                     JOptionPane.WARNING_MESSAGE);
         }
@@ -245,14 +244,12 @@ import java.util.List;
         DPage p = new DPage(currentDir, titleTF.getText(), introTA.getText(),
                 vecii, getColor("Background"), getColor("Text"),
                 getColor("Panel"), App.getPicsPerRow(),
-               prologTA.getText(), blogInfo);
+                prologTA.getText());
 
         return p;
     }
 
-    BlogInfo blogInfo = new BlogInfo(this);
-
-     static void sort(VecImageInfo vecii) {
+    static void sort(VecImageInfo vecii) {
         boolean flipped = true;
 
         while (flipped) {
@@ -273,9 +270,13 @@ import java.util.List;
     }
 
     void scanDir() {
-        boolean newPage = false;
+        boolean newPage = false
+        File jbumFile = new File(currentDir, "jbum.json")
+        if (!jbumFile.exists())
+            jbumFile = new File(currentDir, "jbum.ser");
 
-        if (!jbumSer.exists()) {
+        DPage meta = null
+        if (!jbumFile.exists()) {
             newPage = true;
             vecii = new VecImageInfo();
 
@@ -298,20 +299,10 @@ import java.util.List;
                         .setText(Prefs.getInitialFirstImageText());
             }
 
-            try {
-                ObjectOutputStream oos = new ObjectOutputStream(
-                        new FileOutputStream(jbumSer));
-                oos.writeObject(Prefs.getInitialTitleText());
-                oos.writeObject(Prefs.getInitialIntroText());
-                oos.writeObject(vecii);
-                oos.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            meta = new DPage(currentDir, vecii)
+        } else {
+            meta = new DPage(jbumFile, newPage);
         }
-
-        // load()
-        DPage meta = new DPage(jbumSer, newPage);
         titleTF.setText(meta.getTitle());
         introTA.setText(meta.getIntro());
         vecii = meta.getVii();
@@ -320,11 +311,10 @@ import java.util.List;
         setColor("Text", meta.getTextColor());
         setColor("Panel", meta.getPanelColor());
 
-//BOBH        App.setPicsPerRow(meta.getPicsPerRow());
+        App.setPicsPerRow(meta.getPicsPerRow());
         prologTA.setText(meta.getProlog());
 
         doComponents();
-
     }
 
     void spellcheck() {
@@ -454,7 +444,7 @@ import java.util.List;
         prologTA.setBackground(slightlyDarker(getBackground()));
     }
 
-     Color slightlyDarker(Color c) {
+    Color slightlyDarker(Color c) {
         def FACTOR = 0.9
         return new Color(Math.max((int) (c.getRed() * FACTOR), 0),
                 Math.max((int) (c.getGreen() * FACTOR), 0),

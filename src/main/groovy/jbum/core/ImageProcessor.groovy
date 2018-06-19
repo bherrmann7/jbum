@@ -6,23 +6,23 @@ import javax.swing.*
 import java.awt.*
 import java.awt.image.BufferedImage
 
- class ImageProcessor implements Runnable {
+class ImageProcessor implements Runnable {
 
-     static final String CLOCKWISE = "rr";
-     static final String COUNTER_CLOCKWISE = "rl";
-     static final String SMALLER = "sm";
+    static final String CLOCKWISE = "rr";
+    static final String COUNTER_CLOCKWISE = "rl";
+    static final String SMALLER = "sm";
     static ImageProcessor ip;
     Vector vii = new Vector();
     Vector vtask = new Vector();
 
-     static queueSize(){
-         if(ip==null || ip.vii == null)
-             return 0
-         return ip.vii.size()
-     }
+    static queueSize() {
+        if (ip == null || ip.vii == null)
+            return 0
+        return ip.vii.size()
+    }
 
     @SuppressWarnings("unchecked")
-     static void enqueue(ImageInfo ii, String task) {
+    static void enqueue(ImageInfo ii, String task) {
         synchronized (ImageProcessor.class) {
             if (ip == null) {
                 ip = new ImageProcessor();
@@ -33,7 +33,7 @@ import java.awt.image.BufferedImage
         }
     }
 
-     void run() {
+    void run() {
         try {
             ImageInfo ii
             String task
@@ -73,7 +73,7 @@ import java.awt.image.BufferedImage
             }
         } catch (Throwable t) {
             t.printStackTrace()
-            App.error(t, "Error occured during image processing");
+            App.error(t, "Error occurred during image processing");
         }
     }
 

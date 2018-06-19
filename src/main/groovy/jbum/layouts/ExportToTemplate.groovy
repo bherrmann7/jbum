@@ -5,20 +5,25 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver
 import jbum.core.DPage
 
 class ExportToTemplate {
+
     void export(DPage dp) throws IOException {
         prepare(dp.getWhere());
 
         Page page = dp.toPage();
 
-        XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-        xstream.alias("page", jbum.layouts.Page.class);
-
         FileOutputStream fos = new FileOutputStream(new File(dp.getWhere(), "index.html"));
-        fos.write("<script>data = ".getBytes());
-        fos.write(xstream.toXML(page).getBytes());
-        fos.write("\np = data.page".getBytes());
-        fos.write("</script>\n".getBytes());
-        fos.write("<script src='layout.js'></script>\n".getBytes());
+        if (false) {
+            XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
+            xstream.alias("page", jbum.layouts.Page.class);
+
+            fos.write("<script>data = ".getBytes());
+            fos.write(xstream.toXML(page).getBytes());
+            fos.write("\np = data.page".getBytes());
+            fos.write("</script>\n".getBytes());
+
+        }
+        fos.write(("<div id=ctx></div>" +
+                "<script src='layout.js'></script>\n").getBytes());
         fos.close();
     }
 

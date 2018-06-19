@@ -7,16 +7,16 @@ import java.awt.event.MouseEvent
 class PopClickListener extends MouseAdapter {
     String imageName
 
-    PopClickListener(String imageName){
+    PopClickListener(String imageName) {
         this.imageName = imageName
     }
 
-     void mousePressed(MouseEvent e) {
+    void mousePressed(MouseEvent e) {
         if (e.isPopupTrigger())
             doPop(e);
     }
 
-     void mouseReleased(MouseEvent e) {
+    void mouseReleased(MouseEvent e) {
         if (e.isPopupTrigger())
             doPop(e);
     }

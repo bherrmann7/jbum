@@ -1,5 +1,3 @@
-
-
 package tinker;
 
 import com.drew.imaging.jpeg.JpegMetadataReader;

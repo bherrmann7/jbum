@@ -11,11 +11,11 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.List
 
- class OrderDialog extends JDialog {
+class OrderDialog extends JDialog {
 
     def mapUI = [:]
 
-     OrderDialog(final JFrame frame, VecImageInfo vecImageInfo, CenterP centerP) {
+    OrderDialog(final JFrame frame, VecImageInfo vecImageInfo, CenterP centerP) {
         super(frame);
         setTitle("Order by exif date");
 
@@ -45,7 +45,7 @@ import java.util.List
         JButton send = new JButton("Reorder Images");
         okcancel.add(send);
         send.addActionListener(new ActionListener() {
-             void actionPerformed(ActionEvent e) {
+            void actionPerformed(ActionEvent e) {
                 cameras.each { Camera camera ->
                     def uiSet = mapUI[camera.name]
                     camera.setOffsets(Integer.parseInt(uiSet[0].text),
@@ -62,7 +62,7 @@ import java.util.List
         JButton cancel = new JButton("Cancel");
         okcancel.add(cancel);
         cancel.addActionListener(new ActionListener() {
-             void actionPerformed(ActionEvent e) {
+            void actionPerformed(ActionEvent e) {
                 dispose();
             }
         }

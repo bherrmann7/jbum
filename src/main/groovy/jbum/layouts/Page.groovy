@@ -4,7 +4,7 @@ import jbum.core.ImageInfo2
 
 /** written for modeling and writing out a JSON structure */
 
- class Page {
+class Page {
     String title;
 
     String intro;
@@ -23,8 +23,10 @@ import jbum.core.ImageInfo2
 
     ArrayList<ImageInfo2> photos;
 
+    // for loading via json
+    Page() {}
 
-     Page(String title, String intro, ArrayList<ImageInfo2> photos, int picsPerRow, String bgColor, String textColor, String panelColor, String prolog, String where) {
+    Page(String title, String intro, ArrayList<ImageInfo2> photos, int picsPerRow, String bgColor, String textColor, String panelColor, String prolog, String where) {
         super();
         this.title = title;
         this.intro = intro.replace('\n', ' ');

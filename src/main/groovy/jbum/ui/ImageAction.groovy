@@ -11,7 +11,7 @@ import javax.swing.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
- class ImageAction {
+class ImageAction {
 
     static void performAction(String imageName, String tooltext) {
         String actionName = "zoom";
@@ -120,7 +120,7 @@ import java.awt.event.ActionListener
             final FileChooser chooser = new FileChooser(
                     "Select directory to move all images before this one to");
             ActionListener actionListener = new ActionListener() {
-                 void actionPerformed(ActionEvent e) {
+                void actionPerformed(ActionEvent e) {
                     File moveTo = chooser.getSelectedFile();
 
                     if (moveTo == null) {

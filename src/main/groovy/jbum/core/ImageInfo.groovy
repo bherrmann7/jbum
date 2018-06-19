@@ -3,17 +3,17 @@ package jbum.core
 import javax.swing.*
 import java.awt.*
 
- class ImageInfo implements java.io.Serializable {
+class ImageInfo implements java.io.Serializable {
     final static long serialVersionUID = 2366333334630035894L;
 
     private File fileName;
-     Dimension imgSize;
-     Dimension mediumSize;
-     Dimension smallSize;
-     transient JTextArea commentTA = mkTA()
+    Dimension imgSize;
+    Dimension mediumSize;
+    Dimension smallSize;
+    transient JTextArea commentTA = mkTA()
 
-     ImageInfo(File x, Dimension imgSize, Dimension mediumSize,
-                     Dimension smallSize) {
+    ImageInfo(File x, Dimension imgSize, Dimension mediumSize,
+              Dimension smallSize) {
         this.fileName = x;
         this.imgSize = imgSize;
         this.mediumSize = mediumSize;
@@ -47,25 +47,29 @@ import java.awt.*
         return new JTextArea(1, 10);
     }
 
-     String getName() {
+    String getName() {
         return fileName.getName();
     }
 
-     File getOriginalFile(File baseDir) {
+    File getOriginalFile(File baseDir) {
         return new File(baseDir, fileName.getName());
     }
 
-     File getMediumFile(File baseDir) {
+    File getMediumFile(File baseDir) {
         return new File(baseDir, "smaller"
                 + File.separator + "me_" + fileName.getName());
     }
 
-     File getSmallFile(File baseDir) {
+    File getSmallFile(File baseDir) {
         return new File(baseDir, "smaller"
                 + File.separator + "sm_" + fileName.getName());
     }
 
-     ImageInfo2 toImageInfo2() {
-        return new ImageInfo2(fileName.toString(), imgSize, mediumSize, smallSize, commentTA.getText());
+    ImageInfo2 toImageInfo2() {
+        return new ImageInfo2(fileName.getName(), imgSize, mediumSize, smallSize, commentTA.getText());
+    }
+
+    def setText(String s) {
+        commentTA.setText(s)
     }
 }

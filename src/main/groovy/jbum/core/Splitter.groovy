@@ -2,8 +2,8 @@ package jbum.core
 
 import javax.swing.*
 
- class Splitter {
-     static void split(DPage p, int loc, File moveTo) {
+class Splitter {
+    static void split(DPage p, int loc, File moveTo) {
 
         VecImageInfo newVii = new VecImageInfo();
         VecImageInfo oldVii = p.getVii();

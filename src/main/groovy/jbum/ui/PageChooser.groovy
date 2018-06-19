@@ -16,11 +16,11 @@ import java.text.SimpleDateFormat
 /**
  * @author bob
  */
- class PageChooser {
+class PageChooser {
     static JButton openButton = new JButton("Open" /* "Modify" */);
     static SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy");
 
-     static void start() {
+    static void start() {
 
         final JFrame frame = new JFrame("Jbum - Page Chooser");
         final PagesDataModel pagesDataModel = new PagesDataModel();
@@ -87,11 +87,11 @@ import java.text.SimpleDateFormat
 
                 JButton browseButton = new JButton("Browse...");
                 browseButton.addActionListener(new ActionListener() {
-                     void actionPerformed(ActionEvent e) {
+                    void actionPerformed(ActionEvent e) {
                         final FileChooser chooser = new FileChooser(
                                 "Choose a directory with images to create a page with.");
                         chooser.addActionListener(new ActionListener() {
-                             void actionPerformed(ActionEvent axe) {
+                            void actionPerformed(ActionEvent axe) {
                                 File file = chooser.getSelectedFile();
 
                                 if (file == null) {
@@ -126,7 +126,7 @@ import java.text.SimpleDateFormat
 
                 jtf.getDocument().addDocumentListener(new DocumentListener() {
 
-                     void changedUpdate(DocumentEvent e) {
+                    void changedUpdate(DocumentEvent e) {
                         check();
                     }
 
@@ -138,18 +138,18 @@ import java.text.SimpleDateFormat
                         }
                     }
 
-                     void insertUpdate(DocumentEvent e) {
+                    void insertUpdate(DocumentEvent e) {
                         check();
                     }
 
-                     void removeUpdate(DocumentEvent e) {
+                    void removeUpdate(DocumentEvent e) {
                         check();
                     }
                 });
 
                 p.add(buttonHolder, BorderLayout.EAST);
                 createButton.addActionListener(new ActionListener() {
-                     void actionPerformed(ActionEvent e) {
+                    void actionPerformed(ActionEvent e) {
                         File f = new File(jtf.getText());
 
                         if (!f.exists()) {
@@ -208,11 +208,11 @@ import java.text.SimpleDateFormat
                 first.add(findButton);
 
                 findButton.addActionListener(new ActionListener() {
-                     void actionPerformed(ActionEvent e) {
+                    void actionPerformed(ActionEvent e) {
                         final FileChooser chooser = new FileChooser(
                                 "Where to start finding from?");
                         chooser.addActionListener(new ActionListener() {
-                             void actionPerformed(ActionEvent ae) {
+                            void actionPerformed(ActionEvent ae) {
                                 File file = chooser.getSelectedFile();
 
                                 if (file == null) {
@@ -240,7 +240,7 @@ import java.text.SimpleDateFormat
                 first.add(clearButton);
 
                 clearButton.addActionListener(new ActionListener() {
-                     void actionPerformed(ActionEvent e) {
+                    void actionPerformed(ActionEvent e) {
                         pagesDataModel.clear();
                         openButton.setEnabled(false);
                         Prefs.setLastModified(new ArrayList<String[]>());
@@ -252,7 +252,7 @@ import java.text.SimpleDateFormat
                 p.add(last, BorderLayout.EAST);
                 last.add(openButton);
                 openButton.addActionListener(new ActionListener() {
-                     void actionPerformed(ActionEvent e) {
+                    void actionPerformed(ActionEvent e) {
                         int sel = table.getSelectedRow();
 
                         if (sel == -1) {
@@ -331,24 +331,24 @@ import java.text.SimpleDateFormat
             data = Prefs.getLastModified();
         }
 
-         void update() {
+        void update() {
             data = Prefs.getLastModified();
             fireTableDataChanged();
         }
 
-         int getColumnCount() {
+        int getColumnCount() {
             return 3;
         }
 
-         int getRowCount() {
+        int getRowCount() {
             return data.size();
         }
 
-         Object getValueAt(int row, int col) {
+        Object getValueAt(int row, int col) {
             return ((String[]) data.get(row))[col];
         }
 
-         String getColumnName(int col) {
+        String getColumnName(int col) {
             if (col == 0) {
                 return "Last Modified";
             }
@@ -360,7 +360,7 @@ import java.text.SimpleDateFormat
             return "Folder Path";
         }
 
-         void validate() {
+        void validate() {
             for (int i = data.size() - 1; i >= 0; i--) {
                 if (!new File(getValueAt(i, 2).toString()).exists()) {
                     data.remove(i);
@@ -368,7 +368,7 @@ import java.text.SimpleDateFormat
             }
         }
 
-         void clear() {
+        void clear() {
             data.clear();
             fireTableDataChanged();
         }
