@@ -1,7 +1,5 @@
 package jbum.layouts
 
-import com.thoughtworks.xstream.XStream
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver
 import jbum.core.DPage
 
 class ExportToTemplate {
@@ -12,16 +10,6 @@ class ExportToTemplate {
         Page page = dp.toPage();
 
         FileOutputStream fos = new FileOutputStream(new File(dp.getWhere(), "index.html"));
-        if (false) {
-            XStream xstream = new XStream(new JsonHierarchicalStreamDriver());
-            xstream.alias("page", jbum.layouts.Page.class);
-
-            fos.write("<script>data = ".getBytes());
-            fos.write(xstream.toXML(page).getBytes());
-            fos.write("\np = data.page".getBytes());
-            fos.write("</script>\n".getBytes());
-
-        }
         fos.write(("<div id=ctx></div>" +
                 "<script src='layout.js'></script>\n").getBytes());
         fos.close();

@@ -41,23 +41,10 @@ repositories {
 dependencies {
     compile module('org.codehaus.groovy:groovy:2.3.7')
     compile module(':junit:3.8.2')
-    compile module(':cglib-nodep:2.1_3')
-    compile module(':dom4j:1.6.1')
-    compile module(':xstream:1.3.1')
-    compile module(':iText:')
-    compile module(':javamail:')
     compile module(':jazzy-core:')
     compile module(':jazzy-swing:')
-    compile module(':jdom:1.0')
     compile module(':joda-time:1.2.1')
-    //compile module(':jsch:0.1.54')
-    compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
     compile module(':meta:')
-    compile module(':stax:1.2.0_rc2-dev')
-    compile module(':stax-api:1.0.1')
-    compile module(':xom-1.1:')
-    compile module(':xpp3_min-1.1.3.4.O:')
-//    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile 'junit:junit:4.12'
 
     compile module('com.fasterxml.jackson.core:jackson-databind:2.9.5')
