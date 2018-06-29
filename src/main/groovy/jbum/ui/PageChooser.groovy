@@ -1,5 +1,10 @@
 package jbum.ui
 
+import com.drew.imaging.jpeg.JpegMetadataReader
+import com.drew.metadata.Directory
+import com.drew.metadata.Metadata
+import com.drew.metadata.exif.ExifDirectory
+import jbum.core.DPage
 import jbum.core.Prefs
 import jbum.core.Version
 
@@ -7,36 +12,80 @@ import javax.swing.*
 import javax.swing.border.EmptyBorder
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
-import javax.swing.table.AbstractTableModel
+import javax.swing.table.TableCellRenderer
+import javax.swing.table.TableColumn
+import javax.swing.table.TableModel
+import javax.swing.table.TableRowSorter
 import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.text.SimpleDateFormat
 
-/**
- * @author bob
- */
 class PageChooser {
     static JButton openButton = new JButton("Open" /* "Modify" */);
-    static SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy");
+    static SimpleDateFormat mmddyyyy = new SimpleDateFormat("MM/dd/yyyy")
+    static SimpleDateFormat stockImageFormat = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss")
+
+    static void recomputeTableWidths(JTable table) {
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            TableColumn tableColumn = table.getColumnModel().getColumn(column);
+            int preferredWidth = Math.max(100, tableColumn.getMinWidth() + 20 )
+            int maxWidth = tableColumn.getMaxWidth();
+
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
+                Component c = table.prepareRenderer(cellRenderer, row, column);
+                int width = c.getPreferredSize().width + table.getIntercellSpacing().width;
+                preferredWidth = Math.max(preferredWidth, width);
+
+                //  We've exceeded the maximum width, no need to check other rows
+
+                if (preferredWidth >= maxWidth) {
+                    preferredWidth = maxWidth;
+                    break;
+                }
+            }
+
+            tableColumn.setPreferredWidth(preferredWidth);
+        }
+    }
 
     static void start() {
+        final JFrame frame = new JFrame("Jbum - Page Chooser")
+        final PageDataModel pageDataModel = new PageDataModel();
+        pageDataModel.validate();
 
-        final JFrame frame = new JFrame("Jbum - Page Chooser");
-        final PagesDataModel pagesDataModel = new PagesDataModel();
-        pagesDataModel.validate();
+        final JTable table = new JTable(pageDataModel);
+        table.setAutoCreateRowSorter(true);
 
-        final JTable table = new JTable(pagesDataModel);
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(sorter);
+        def sortKeys = [] //new ArrayList<RowSorter.SortKey>();
+
+        int columnIndexToSort = 0;
+        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
+
+        sorter.setSortKeys(sortKeys);
+        sorter.sort();
+
+        def dateCompare = new Comparator<String>() {
+            @Override
+            public int compare(String name1, String name2) {
+                if(name1=="Unknown") name1 = "1900/01/01"
+                if(name2=="Unknown") name2 = "1900/01/01"
+                return mmddyyyy.parse(name1).compareTo(mmddyyyy.parse(name2));
+            }
+        }
+        sorter.setComparator(0, dateCompare);
+        sorter.setComparator(1, dateCompare);
+
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        recomputeTableWidths(table)
 
         Color yellow = new Color(255, 255, 204);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        /*
-         * frame.addWindowListener(new WindowAdapter() {  void
-         * windowClosing(WindowEvent e) { //myFile = null;
-         * //myActionListener.actionPerformed(null); frame.dispose(); } });
-         */
         Container contentPane = frame.getContentPane();
         frame.setBackground(yellow);
         contentPane.setBackground(yellow);
@@ -44,11 +93,10 @@ class PageChooser {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(yellow);
-
-        ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("jbum.gif"));
-
-        titlePanel.add(new JLabel(Version.VERSION, icon, SwingConstants.RIGHT), BorderLayout.WEST);
-
+        JLabel titleLabel = new JLabel("Jbum " + Version.VERSION, SwingConstants.RIGHT);
+        titleLabel.setFont(new Font("Sans", Font.BOLD, 25));
+        titlePanel.add(titleLabel, BorderLayout.WEST);
+        titlePanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPane.add(titlePanel, BorderLayout.NORTH);
 
         Box stack = Box.createVerticalBox();
@@ -57,8 +105,8 @@ class PageChooser {
 
         boolean welcome = false;
 
-        if (pagesDataModel.getRowCount() == 0) {
-            welcome = true;
+        if (pageDataModel.getRowCount() == 0) {
+            //welcome = true;
         }
 
         boxstuff:
@@ -102,7 +150,7 @@ class PageChooser {
                                     file = file.getParentFile();
                                 }
 
-                                jtf.setText(file.toString());
+                                PageChooser.jTextField.setText(file.toString());
                             }
                         });
                     }
@@ -224,9 +272,10 @@ class PageChooser {
                                 }
 
                                 PageChooser.doFind(file);
-                                pagesDataModel.update();
+                                pageDataModel.update();
+                                recomputeTableWidths(table)
 
-                                if (pagesDataModel.getRowCount() == 0) {
+                                if (pageDataModel.getRowCount() == 0) {
                                     PageChooser.openButton.setEnabled(false);
                                 } else {
                                     PageChooser.openButton.setEnabled(true);
@@ -241,7 +290,7 @@ class PageChooser {
 
                 clearButton.addActionListener(new ActionListener() {
                     void actionPerformed(ActionEvent e) {
-                        pagesDataModel.clear();
+                        pageDataModel.clear();
                         openButton.setEnabled(false);
                         Prefs.setLastModified(new ArrayList<String[]>());
                     }
@@ -254,19 +303,17 @@ class PageChooser {
                 openButton.addActionListener(new ActionListener() {
                     void actionPerformed(ActionEvent e) {
                         int sel = table.getSelectedRow();
-
                         if (sel == -1) {
                             return;
                         }
-
-                        String value = (String) table.getModel().getValueAt(sel,
-                                2);
+                        def x = table.convertRowIndexToModel(sel)
+                        String value = (String) table.getModel().getValueAt(x, 4);
                         new App(new File(value));
                         frame.dispose();
                     }
                 });
 
-                if (pagesDataModel.getRowCount() == 0) {
+                if (pageDataModel.getRowCount() == 0) {
                     openButton.setEnabled(false);
                 }
 
@@ -287,15 +334,44 @@ class PageChooser {
         File[] jbf = getAll(root);
 
         for (int i = 0; i < jbf.length; i++) {
-            String dateMod = sd.format(new Date(jbf[i].lastModified()));
+            String dateMod = mmddyyyy.format(new Date(jbf[i].lastModified()));
+            def dateSize = findOldestImageDateAndSize(jbf[i])
+            def oldestImageDate = dateSize[0]
+            def size = dateSize[1]
             String title = jbf[i].getParentFile().getName();
             String path = jbf[i].getParent().toString();
-            al.add([dateMod, title, path]);
+            al.add([dateMod, oldestImageDate, size, title, path] as String[]);
         }
 
         //Collections.sort(al);
         //Collections.reverse(al);
         Prefs.setLastModified(al);
+    }
+
+    private static def findOldestImageDateAndSize(File file) {
+        if (!file.exists()) {
+            return ["", ""]
+        }
+        DPage dpage = new DPage(file, false)
+        def size = dpage.getVii().size()
+
+        String oldestImageDate = "Unknown"
+        for (int i = size - 1; i > 0; i--) {
+            def lastImageFile = dpage.getVii().get(size - 1).getOriginalFile(file.getParentFile())
+            if (!lastImageFile.exists())
+                continue
+            Metadata metadata = JpegMetadataReader.readMetadata(lastImageFile);
+            Directory dir = metadata.getDirectory(ExifDirectory.class);
+            if (dir == null)
+                continue
+            String dateCreated = dir.getString(36867)
+            if (dateCreated == null)
+                continue
+            Date d = stockImageFormat.parse(dateCreated);
+            oldestImageDate = mmddyyyy.format(d)
+        }
+
+        return [oldestImageDate, size]
     }
 
     static File[] getAll(File dir) {
@@ -312,65 +388,19 @@ class PageChooser {
                 }
             }
 
+            // can have either jbum.ser both/or jbum.json
+            // we prefer jbum.json as newer data
             if (list[i].getName().equals("jbum.ser")) {
-                al.add(list[i]);
-
+                if (!new File(dir, "jbum.json").exists()) {
+                    al.add(list[i]);
+                }
                 //status("Found "+list[i]);
+            }
+            if (list[i].getName().equals("jbum.json")) {
+                al.add(list[i]);
             }
         }
 
         return al.toArray(new File[0]);
-    }
-
-    @SuppressWarnings("serial")
-    private static final class PagesDataModel extends AbstractTableModel {
-
-        ArrayList data;
-
-        PagesDataModel() {
-            data = Prefs.getLastModified();
-        }
-
-        void update() {
-            data = Prefs.getLastModified();
-            fireTableDataChanged();
-        }
-
-        int getColumnCount() {
-            return 3;
-        }
-
-        int getRowCount() {
-            return data.size();
-        }
-
-        Object getValueAt(int row, int col) {
-            return ((String[]) data.get(row))[col];
-        }
-
-        String getColumnName(int col) {
-            if (col == 0) {
-                return "Last Modified";
-            }
-
-            if (col == 1) {
-                return "Title";
-            }
-
-            return "Folder Path";
-        }
-
-        void validate() {
-            for (int i = data.size() - 1; i >= 0; i--) {
-                if (!new File(getValueAt(i, 2).toString()).exists()) {
-                    data.remove(i);
-                }
-            }
-        }
-
-        void clear() {
-            data.clear();
-            fireTableDataChanged();
-        }
     }
 }

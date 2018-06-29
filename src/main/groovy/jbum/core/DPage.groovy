@@ -78,19 +78,21 @@ public class DPage {
         }
 
         try {
-            // newer settings
+            // newer settings... might be missing... expect EOF
             background = (Color) oos.readObject();
             text = (Color) oos.readObject();
             panel = (Color) oos.readObject();
-            (Color) oos.readObject() // not used - was odd panel color
+            /*was (Color) */ oos.readObject() // not used - was odd panel color
             picsPerRow = oos.readInt();
             oos.readUTF(); // not used - was template
             prolog = (String) oos.readObject();
+        } catch (EOFException e) {
+            System.out.println("NOTE: Probably old format.  EOF: ${jbumFile}")
         } catch (Exception e) {
             // Here when the saved version was older than our newer format
             // values not read are "reset-to-factory"
             // e.printStackTrace();
-            System.out.println("NOTE: ---- Really old jbum.ser format ---- or error unserializing")
+            System.out.println("NOTE: ---- Really old jbum.ser or error unserializing: ${jbumFile}")
         }
 
     }

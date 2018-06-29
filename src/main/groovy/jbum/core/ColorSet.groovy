@@ -4,7 +4,6 @@ import java.awt.*
 
 class ColorSet {
 
-
     private static Object[] sets = [
             // Name, Background, Text, Panel
             [DEFAULT, new Color(0xD0D0B0), Color.black, new Color(0xD0D0FF)],

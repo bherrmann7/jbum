@@ -22,6 +22,9 @@ class CameraUtil {
     }
 
     static String getCameraName(File jpegFile) {
+        if(!jpegFile.exists()){
+            return "Missing-Original-File"
+        }
         Metadata metadata = JpegMetadataReader.readMetadata(jpegFile);
         Directory dir = metadata.getDirectory(ExifDirectory.class);
         return dir.getString(271);

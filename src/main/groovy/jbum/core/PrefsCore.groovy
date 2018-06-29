@@ -30,6 +30,7 @@ class PrefsCore {
                 prop = (Properties) ois.readObject();
                 ois.close();
             } catch (Exception e) {
+                e.printStackTrace()
                 App.error(e, "fff");
             }
         } else {
