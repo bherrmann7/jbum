@@ -21,6 +21,34 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.text.SimpleDateFormat
 
+
+class DoFind extends SwingWorker<String, Object> {
+    def findComplete
+    def backgroundWork
+
+    DoFind(def findComplete, def backgroundWork) {
+        this.findComplete = findComplete
+        this.backgroundWork = backgroundWork
+        findComplete(false)
+    }
+
+    @Override
+    public String doInBackground() {
+        backgroundWork()
+        return "cow";
+    }
+
+    @Override
+    protected void done() {
+        try {
+            get();
+            findComplete(true)
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
+        }
+    }
+}
+
 class PageChooser {
     static JButton openButton = new JButton("Open" /* "Modify" */);
     static SimpleDateFormat mmddyyyy = new SimpleDateFormat("MM/dd/yyyy")
@@ -29,13 +57,13 @@ class PageChooser {
     static void recomputeTableWidths(JTable table) {
         for (int column = 0; column < table.getColumnCount(); column++) {
             TableColumn tableColumn = table.getColumnModel().getColumn(column);
-            int preferredWidth = Math.max(100, tableColumn.getMinWidth() + 20 )
+            int preferredWidth = Math.max(60, tableColumn.getMinWidth() + 20)
             int maxWidth = tableColumn.getMaxWidth();
 
             for (int row = 0; row < table.getRowCount(); row++) {
                 TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
                 Component c = table.prepareRenderer(cellRenderer, row, column);
-                int width = c.getPreferredSize().width + table.getIntercellSpacing().width;
+                int width = c.getPreferredSize().width + table.getIntercellSpacing().width+10;
                 preferredWidth = Math.max(preferredWidth, width);
 
                 //  We've exceeded the maximum width, no need to check other rows
@@ -66,18 +94,19 @@ class PageChooser {
         sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
 
         sorter.setSortKeys(sortKeys);
-        sorter.sort();
 
         def dateCompare = new Comparator<String>() {
             @Override
             public int compare(String name1, String name2) {
-                if(name1=="Unknown") name1 = "1900/01/01"
-                if(name2=="Unknown") name2 = "1900/01/01"
+                if (name1 == "Unknown") name1 = "1900/01/01"
+                if (name2 == "Unknown") name2 = "1900/01/01"
                 return mmddyyyy.parse(name1).compareTo(mmddyyyy.parse(name2));
             }
         }
         sorter.setComparator(0, dateCompare);
         sorter.setComparator(1, dateCompare);
+
+        sorter.sort();
 
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         recomputeTableWidths(table)
@@ -108,6 +137,28 @@ class PageChooser {
         if (pageDataModel.getRowCount() == 0) {
             //welcome = true;
         }
+        final JTextField jtf = new JTextField(20);
+        JButton browseButton = new JButton("Browse...");
+        final JButton createButton = new JButton("Create/Open");
+        JButton findButton = new JButton("Find...");
+        JButton clearButton = new JButton("Clear");
+        def uiComponents = [jtf, browseButton, createButton, findButton, clearButton]
+
+        def startingFind = { enabled ->
+            uiComponents.each {
+                it.setEnabled(enabled)
+            }
+            if (enabled) {
+                pageDataModel.update();
+                PageChooser.recomputeTableWidths(table)
+                if (pageDataModel.getRowCount() == 0) {
+                    PageChooser.openButton.setEnabled(false);
+                } else {
+                    PageChooser.openButton.setEnabled(true);
+                }
+            }
+
+        }
 
         boxstuff:
         {
@@ -116,8 +167,6 @@ class PageChooser {
                     "Create new page from folder of images"));
 
             stack.add(y);
-
-            final JTextField jtf = new JTextField(20);
 
             innerstuff:
             {
@@ -133,7 +182,6 @@ class PageChooser {
                 d.height += 5;
                 jtf.setMaximumSize(d);
 
-                JButton browseButton = new JButton("Browse...");
                 browseButton.addActionListener(new ActionListener() {
                     void actionPerformed(ActionEvent e) {
                         final FileChooser chooser = new FileChooser(
@@ -150,7 +198,7 @@ class PageChooser {
                                     file = file.getParentFile();
                                 }
 
-                                PageChooser.jTextField.setText(file.toString());
+                                jtf.setText(file.toString());
                             }
                         });
                     }
@@ -168,13 +216,20 @@ class PageChooser {
 
                 JPanel buttonHolder = new JPanel();
                 buttonHolder.setBackground(yellow);
-                final JButton createButton = new JButton("Create/Open");
                 createButton.setEnabled(false);
                 buttonHolder.add(createButton);
 
                 jtf.getDocument().addDocumentListener(new DocumentListener() {
 
                     void changedUpdate(DocumentEvent e) {
+                        check();
+                    }
+
+                    void insertUpdate(DocumentEvent e) {
+                        check();
+                    }
+
+                    void removeUpdate(DocumentEvent e) {
                         check();
                     }
 
@@ -186,13 +241,6 @@ class PageChooser {
                         }
                     }
 
-                    void insertUpdate(DocumentEvent e) {
-                        check();
-                    }
-
-                    void removeUpdate(DocumentEvent e) {
-                        check();
-                    }
                 });
 
                 p.add(buttonHolder, BorderLayout.EAST);
@@ -252,7 +300,6 @@ class PageChooser {
                 p.add(first, BorderLayout.WEST);
                 first.setBackground(yellow);
 
-                JButton findButton = new JButton("Find...");
                 first.add(findButton);
 
                 findButton.addActionListener(new ActionListener() {
@@ -271,21 +318,13 @@ class PageChooser {
                                     file = file.getParentFile();
                                 }
 
-                                PageChooser.doFind(file);
-                                pageDataModel.update();
-                                recomputeTableWidths(table)
+                                (new DoFind(startingFind, { PageChooser.doFind(file) })).execute()
 
-                                if (pageDataModel.getRowCount() == 0) {
-                                    PageChooser.openButton.setEnabled(false);
-                                } else {
-                                    PageChooser.openButton.setEnabled(true);
-                                }
                             }
                         });
                     }
                 });
 
-                JButton clearButton = new JButton("Clear");
                 first.add(clearButton);
 
                 clearButton.addActionListener(new ActionListener() {
@@ -335,10 +374,8 @@ class PageChooser {
 
         for (int i = 0; i < jbf.length; i++) {
             String dateMod = mmddyyyy.format(new Date(jbf[i].lastModified()));
-            def dateSize = findOldestImageDateAndSize(jbf[i])
-            def oldestImageDate = dateSize[0]
-            def size = dateSize[1]
-            String title = jbf[i].getParentFile().getName();
+            def dateSizeTitle = findOldestImageDateAndSizeAndTitle(jbf[i])
+            def (oldestImageDate,size, title) = dateSizeTitle
             String path = jbf[i].getParent().toString();
             al.add([dateMod, oldestImageDate, size, title, path] as String[]);
         }
@@ -348,9 +385,9 @@ class PageChooser {
         Prefs.setLastModified(al);
     }
 
-    private static def findOldestImageDateAndSize(File file) {
+    private static def findOldestImageDateAndSizeAndTitle(File file) {
         if (!file.exists()) {
-            return ["", ""]
+            return ["", "", ""]
         }
         DPage dpage = new DPage(file, false)
         def size = dpage.getVii().size()
@@ -371,7 +408,7 @@ class PageChooser {
             oldestImageDate = mmddyyyy.format(d)
         }
 
-        return [oldestImageDate, size]
+        return [oldestImageDate, size, dpage.title]
     }
 
     static File[] getAll(File dir) {
@@ -403,4 +440,5 @@ class PageChooser {
 
         return al.toArray(new File[0]);
     }
+
 }

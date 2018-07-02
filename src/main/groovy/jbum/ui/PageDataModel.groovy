@@ -1,5 +1,6 @@
 package jbum.ui
 
+import jbum.core.DPage
 import jbum.core.Prefs
 
 import javax.swing.table.AbstractTableModel
@@ -46,7 +47,7 @@ class PageDataModel extends AbstractTableModel {
     }
 
     String getColumnName(int col) {
-        return ["Last Modified", "Oldest Photo", "Photo Count", "Title", "Path"][col];
+        return ["Modified", "Oldest", "Photos", "Title", "Path"][col];
     }
 
     private int PATH_COLUMN = 4
@@ -56,7 +57,11 @@ class PageDataModel extends AbstractTableModel {
             if (!new File(getValueAt(i, PATH_COLUMN).toString()).exists()) {
                 data.remove(i);
             }
+            // Update title and modified date.
+            DPage dPage = new DPage(new File(getValueAt(i, PATH_COLUMN)))
+            data.get(i)[3] = dPage.title
         }
+        fireTableDataChanged();
     }
 
     void clear() {

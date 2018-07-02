@@ -38,12 +38,26 @@ public class DPage {
         this.prolog = prolog;
     }
 
-    public DPage(File jbumFile, boolean newPage) {
-        this.where = jbumFile.getParentFile();
-        if (newPage) {
-            picsPerRow = 3;
-            panel = Color.WHITE;
+    DPage(File jbumDir) {
+        if (!jbumDir.isDirectory()) {
+            throw new RuntimeException("Not a directory: " + jbumDir)
         }
+        if (!jbumDir.exists()) {
+            throw new RuntimeException("missing jbum.json/jbum.ser: " + jbumDir)
+        }
+        File f = new File(jbumDir, "jbum.json")
+        if (!f.exists()) {
+            f = new File(jbumDir, "jbum.ser")
+        }
+        loadIt(f)
+    }
+
+    DPage(File jbumFile, boolean newPage) {
+        loadIt(jbumFile)
+    }
+
+    void loadIt(File jbumFile) {
+        this.where = jbumFile.getParentFile();
 
         if (jbumFile.name.endsWith(".json")) {
             ObjectMapper om = new ObjectMapper()
