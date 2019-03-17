@@ -17,7 +17,6 @@ public class Prefs extends jbum.core.Prefs {
     JTextField intro;
     JTextField firstImage;
     JTextArea prolog;
-    JTextField pdfviewer;
     JTextField imageEditorUI;
     JTextField webbrowser;
 
@@ -42,8 +41,6 @@ public class Prefs extends jbum.core.Prefs {
         JScrollPane jsp = new JScrollPane(prolog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         p.add("tab hfill vfill", jsp);
-        p.add("p right", new JLabel("Pdf viewer"));
-        p.add("tab hfill", pdfviewer = new JTextField(getPDFViewer(), 30));
         p.add("p right", new JLabel("Image editor"));
         p.add("tab hfill", imageEditorUI = new JTextField(getImageEditor(), 30));
         p.add("p right", new JLabel("web browser"));
@@ -60,7 +57,6 @@ public class Prefs extends jbum.core.Prefs {
                 setInitialIntroText(intro.getText());
                 setInitialFirstImageText(firstImage.getText());
                 setInitialPrologText(prolog.getText());
-                setPDFViewer(pdfviewer.getText());
                 setImageEditor(imageEditorUI.getText());
                 setWebBrowser(webbrowser.getText());
                 f.dispose();

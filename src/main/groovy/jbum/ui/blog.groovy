@@ -101,7 +101,6 @@ class Blog {
         }] as ActionListener)
         okcancel.add(ok);
 
-
         JButton cancel = new JButton("Cancel");
         okcancel.add(cancel);
         cancel.addActionListener([actionPerformed: { f.dispose(); }] as ActionListener)

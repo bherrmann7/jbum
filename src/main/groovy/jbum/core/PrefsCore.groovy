@@ -78,19 +78,6 @@ public class PrefsCore {
         return f;
     }
 
-    static java.awt.Dimension getDimension(String name, java.awt.Dimension x) {
-        initProp();
-
-        java.awt.Dimension d = (java.awt.Dimension) prop.get(name);
-        if (d == null)
-            d = x;
-
-        if (debug)
-            System.out.println("AppProp: getFile(name=" + name + ",default="
-                    + x + ") returns " + d);
-        return d;
-    }
-
     public static Object get(String name, Object defaultValue) {
         initProp();
 

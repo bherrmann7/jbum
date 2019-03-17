@@ -108,14 +108,6 @@ public class Prefs {
     }
 
 
-    public static String getPDFViewer() {
-        return PrefsCore.getStr("pdfViewer", "/usr/bin/xpdf");
-    }
-
-    public static void setPDFViewer(String pdfviewer) {
-        PrefsCore.set("pdfViewer", pdfviewer);
-    }
-
     public static String getImageEditor() {
         String defaultBrowser = "C:\\Windows\\System32\\mspaint.exe";
         if (File.separatorChar == '/')

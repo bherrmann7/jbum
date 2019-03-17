@@ -230,13 +230,13 @@ public class PageChooser {
                                     file = file.getParentFile();
                                 }
 
-                                doFind(file);
+                                PageChooser.doFind(file);
                                 pagesDataModel.update();
 
                                 if (pagesDataModel.getRowCount() == 0) {
-                                    openButton.setEnabled(false);
+                                    PageChooser.openButton.setEnabled(false);
                                 } else {
-                                    openButton.setEnabled(true);
+                                    PageChooser.openButton.setEnabled(true);
                                 }
                             }
                         });

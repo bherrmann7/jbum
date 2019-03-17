@@ -3,6 +3,7 @@ package jbum.ui
 import jbum.core.ColorSet
 import jbum.core.DPage
 import jbum.core.Prefs
+import jbum.core.PrefsCore
 import jbum.core.Version
 import jbum.layouts.ExportToTemplate
 import jbum.layouts.TemplateFactory
@@ -23,6 +24,13 @@ public class Main {
 
     // for testing
     public Main() {
+    }
+
+    public saveWindowLocationAndSize() {
+        PrefsCore.setInt("mainLocationX", frame.getLocation().x.toInteger())
+        PrefsCore.setInt("mainLocationY", frame.getLocation().y.toInteger())
+        PrefsCore.setInt("mainWidth", frame.getSize().width.toInteger())
+        PrefsCore.setInt("mainHeight", frame.getSize().height.toInteger())
     }
 
     public ActionListener saveAction = new ActionListener() {
@@ -46,9 +54,12 @@ public class Main {
         myself = this;
         frame.setTitle("jbum - " + file);
         frame.addWindowListener(new WindowAdapter() {
+
             public void windowClosing(WindowEvent e) {
+                println("-=--=-==-=-=-=--")
                 System.exit(0);
             }
+
         });
 
         JMenuBar menuBar = new JMenuBar();
@@ -118,16 +129,6 @@ public class Main {
             }
         });
 
-        menuItem = new JMenuItem("Rename/Move", KeyEvent.VK_R);
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R,
-                ActionEvent.ALT_MASK));
-        menu.add(menuItem);
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                new RenameMoveChooser();
-            }
-        });
-
         menu.add(menuItem = new JMenuItem("Order images by exif date..."));
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -142,28 +143,6 @@ public class Main {
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 new jbum.ui.Prefs();
-            }
-        });
-
-        menu.add(menuItem = new JMenuItem("Export PDF"));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                try {
-                    new jbum.pdf.ExportPDF(centerP.getCurrentPage());
-                } catch (Exception e) {
-                    error("Generating PDF", e.getMessage());
-                }
-            }
-        });
-
-        menu.add(menuItem = new JMenuItem("Export PDF 2"));
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
-                try {
-                    jbum.pdf.ExportPDF.make2(centerP.getCurrentPage());
-                } catch (Exception e) {
-                    error("Generating PDF", e.getMessage());
-                }
             }
         });
 
@@ -208,6 +187,7 @@ public class Main {
         menu.add(menuItem);
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+                saveWindowLocationAndSize()
                 System.exit(0);
             }
         }
@@ -353,41 +333,6 @@ public class Main {
         menuBar.add(Box.createHorizontalGlue())
         menuBar.add(menu = new JMenu("Help"))
 
-        menu.add(menuItem = new JMenuItem("About Groovy"))
-        menuItem.addActionListener(new
-                ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
-
-                        try {
-                            Object o = Class.forName("jbum.ui.GroovyVersion").newInstance();
-                            String about = o.getClass().getField("about").get(o).toString();
-
-                            JOptionPane.showMessageDialog(frame, about, "About Groovy",
-                                    JOptionPane.INFORMATION_MESSAGE, icon);
-                        } catch (Throwable e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-        );
-        menu.add(menuItem = new JMenuItem("Groovy Console")
-
-        );
-        menuItem.addActionListener(new
-
-                ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
-                        try {
-                            Object o = Class.forName("jbum.ui.GroovyVersion").newInstance();
-                            o.getClass().getMethod("startConsole").invoke(o,
-                                    (Object[]) null);
-                        } catch (Throwable e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }
-
-        );
         menu.add(menuItem = new JMenuItem("About"))
         menuItem.addActionListener(new
 
@@ -402,10 +347,15 @@ public class Main {
 
         );
 
-        frame.setSize(1050, 800);
-
-        // frame.setSize(500,500);
-        frame.setLocation(30, 100);
+        b:
+        {
+            int x = PrefsCore.getInt("mainLocationX", 30)
+            int y = PrefsCore.getInt("mainLocationY", 100)
+            frame.setLocation(x, y)
+            int w = PrefsCore.getInt("mainWidth", 1050)
+            int h = PrefsCore.getInt("mainHeight", 800)
+            frame.setSize(w, h);
+        }
 
         // frame.pack();
         frame.setVisible(true);
@@ -429,6 +379,7 @@ public class Main {
             frame.getContentPane().add(statusP, BorderLayout.SOUTH);
         }
 
+        // Keep status bar memory and image stats current
         new Thread(new Runnable() {
             public void run() {
                 while (true) {
