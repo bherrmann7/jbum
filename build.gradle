@@ -24,7 +24,7 @@ allprojects {
 }
 
 // used by application plugin
-mainClassName = 'jbum.ui.PageChooser'
+mainClassName = 'jbum.ui.Command'
 
 compileGroovy {
     options.compilerArgs << '-XDignore.symbol.file'
@@ -36,27 +36,20 @@ repositories {
     flatDir(dirs: file('libs'))
     mavenCentral()
 }
+
 //  jsch
 dependencies {
     compile module('org.codehaus.groovy:groovy:2.3.7')
     compile module(':junit:3.8.2')
-    compile module(':cglib-nodep:2.1_3')
-    compile module(':dom4j:1.6.1')
-    compile module(':xstream:1.3.1')
-    compile module(':iText:')
-    compile module(':javamail:')
     compile module(':jazzy-core:')
     compile module(':jazzy-swing:')
-    compile module(':jdom:1.0')
     compile module(':joda-time:1.2.1')
-    //compile module(':jsch:0.1.54')
-    compile group: 'com.jcraft', name: 'jsch', version: '0.1.54'
     compile module(':meta:')
-    compile module(':stax:1.2.0_rc2-dev')
-    compile module(':stax-api:1.0.1')
-    compile module(':xom-1.1:')
-    compile module(':xpp3_min-1.1.3.4.O:')
-//    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile 'junit:junit:4.12'
+
+    compile module('com.fasterxml.jackson.core:jackson-databind:2.9.5')
+    compile module('com.fasterxml.jackson.core:jackson-core:2.9.5')
+    compile module('com.fasterxml.jackson.core:jackson-annotations:2.9.5')
 }
 
 task copyFiles(type: Copy, dependsOn: [jar]) {
@@ -66,76 +59,20 @@ task copyFiles(type: Copy, dependsOn: [jar]) {
     include('*.jar')
 }
 
-def home = System.getProperty('user.home')
-
-task signAll(dependsOn: [copyFiles]) << {
-    new File('webstart/signed').mkdirs()
-    def libFiles = files { file('webstart/lib').listFiles() }
-    libFiles.each {
-        ant.signjar(
-                destDir: 'webstart/signed',
-                alias: 'mykey',
-                jar: it,
-                keystore: home+'/bin/jbum-key',
-                storepass: 'jbum4win',
-                preservelastmodified: 'true')
-    }
+task runSample(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'jbum.ui.Command'
+    args '/Users/bob/Desktop/picture-pile/cannon-photos'
 }
 
-task signJbumJar(dependsOn: [copyFiles]) << {
-    new File('webstart/signed').mkdirs()
-    def libFiles = files { file('webstart/lib/jbum.jar') }
-    libFiles.each {
-        ant.signjar(
-                destDir: 'webstart/signed',
-                alias: 'mykey',
-                jar: it,
-                keystore: home+'/bin/jbum-key',
-                storepass: new File(home+'/bin/jbum-pass.txt').text,
-                preservelastmodified: 'true')
-    }
+task runDump(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'jbum.ui.Command'
+    args 'dump', '/Users/bob/Desktop/picture-pile/cannon-photos'
 }
 
-task deployJnlpFile(type:Exec) {
-    executable 'sh'
-    args '-c', 'scp src/main/resources/jbum.jnlp studio:/jadn/ROOT/jbum/'
+task runEx(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'jbum.ui.Command'
+    args '/Users/bob/Desktop/ex'
 }
-
-task genVersionFile(type: Exec, dependsOn: 'classes') {
-    standardOutput = new ByteArrayOutputStream()
-    executable "sh"
-    args '-c', 'java -cp build/classes/main:webstart/lib/groovy-2.3.7.jar jbum.core.Version full'
-    doLast {
-        file('webstart/signed/update.dat').text = standardOutput.toString()
-    }
-}
-
-task deploy(type: Exec, dependsOn: ['signJbumJar', 'deployJnlpFile', 'genVersionFile'] ){
-    executable "sh"
-    args "-c", "scp webstart/signed/* jadn.com:/jadn/ROOT/jbum/"
-}
-
-//compileKotlin {
-//    kotlinOptions {
-//        jvmTarget = "1.8"
-//    }
-//}
-//compileTestKotlin {
-//    kotlinOptions {
-//        jvmTarget = "1.8"
-//    }
-//}
-
-//manifest.mainAttributes("Main-Class":  "jbum.ui.PageChooser");
-
-// try to automate webstart deploy...
-//// , dependsOn: [signAll]
-//task updateJadn(type:Exec) << {
-//    //commandLine 'scp src/main/resources/jbum.jnlp studio:/jadn/ROOT/jbum/'
-//}
-//
-//task foo(type: Exec)  {
-//    commandLine '/bin/bash -c "scp webstart/signed/*.jar studio:/jadn/ROOT/jbum/"'
-//}
-
-

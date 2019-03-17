@@ -2,9 +2,9 @@ package jbum.layouts
 
 import jbum.core.ImageInfo2
 
-/** written for modeling and writting out a JSON structure */
+/** written for modeling and writing out a JSON structure */
 
-public class Page {
+class Page {
     String title;
 
     String intro;
@@ -15,9 +15,7 @@ public class Page {
 
     String textColor;
 
-    String panelOddColor;
-
-    String panelEvenColor;
+    String panelColor;
 
     String prolog;
 
@@ -25,8 +23,10 @@ public class Page {
 
     ArrayList<ImageInfo2> photos;
 
+    // for loading via json
+    Page() {}
 
-    public Page(String title, String intro, ArrayList<ImageInfo2> photos, int picsPerRow, String bgColor, String textColor, String panelOddColor, String panelEvenColor, String prolog, String where) {
+    Page(String title, String intro, ArrayList<ImageInfo2> photos, int picsPerRow, String bgColor, String textColor, String panelColor, String prolog, String where) {
         super();
         this.title = title;
         this.intro = intro.replace('\n', ' ');
@@ -34,8 +34,7 @@ public class Page {
         this.picsPerRow = picsPerRow;
         this.bgColor = bgColor;
         this.textColor = textColor;
-        this.panelOddColor = panelOddColor;
-        this.panelEvenColor = panelEvenColor;
+        this.panelColor = panelColor;
         this.prolog = prolog.replace('\n', ' ');
         this.where = where;
     }

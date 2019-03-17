@@ -3,17 +3,17 @@ package jbum.core
 import javax.swing.*
 import java.awt.*
 
-public class ImageInfo implements java.io.Serializable {
+class ImageInfo implements java.io.Serializable {
     final static long serialVersionUID = 2366333334630035894L;
 
     private File fileName;
-    public Dimension imgSize;
-    public Dimension mediumSize;
-    public Dimension smallSize;
-    public transient JTextArea commentTA = mkTA()
+    Dimension imgSize;
+    Dimension mediumSize;
+    Dimension smallSize;
+    transient JTextArea commentTA = mkTA()
 
-    public ImageInfo(File x, Dimension imgSize, Dimension mediumSize,
-                     Dimension smallSize) {
+    ImageInfo(File x, Dimension imgSize, Dimension mediumSize,
+              Dimension smallSize) {
         this.fileName = x;
         this.imgSize = imgSize;
         this.mediumSize = mediumSize;
@@ -44,28 +44,32 @@ public class ImageInfo implements java.io.Serializable {
     }
 
     private JTextArea mkTA() {
-        return new JTextArea(3, 10);
+        return new JTextArea(1, 10);
     }
 
-    public String getName() {
+    String getName() {
         return fileName.getName();
     }
 
-    public File getOriginalFile(File baseDir) {
+    File getOriginalFile(File baseDir) {
         return new File(baseDir, fileName.getName());
     }
 
-    public File getMediumFile(File baseDir) {
+    File getMediumFile(File baseDir) {
         return new File(baseDir, "smaller"
                 + File.separator + "me_" + fileName.getName());
     }
 
-    public File getSmallFile(File baseDir) {
+    File getSmallFile(File baseDir) {
         return new File(baseDir, "smaller"
                 + File.separator + "sm_" + fileName.getName());
     }
 
-    public ImageInfo2 toImageInfo2() {
-        return new ImageInfo2(fileName.toString(), imgSize, mediumSize, smallSize, commentTA.getText());
+    ImageInfo2 toImageInfo2() {
+        return new ImageInfo2(fileName.getName(), imgSize, mediumSize, smallSize, commentTA.getText());
+    }
+
+    def setText(String s) {
+        commentTA.setText(s)
     }
 }

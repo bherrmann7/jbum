@@ -2,28 +2,20 @@ package jbum.ui
 
 import jbum.core.Version
 
-import javax.swing.*
-
-public class Update extends Thread {
-
-    public static void check(JFrame frame) {
-//		Update update = new Update(frame);
-//		update.start();
-    }
+class Update extends Thread {
 
     @SuppressWarnings("deprecation")
-    public void run() {
+    void run() {
         try {
             URL url = new URL("http://jadn.com/jbum/update.dat");
             DataInputStream dis = new DataInputStream(url.openStream());
             String version = dis.readLine();
             if (!Version.VERSION.equals(version)) {
-                Main.warning("Version mismatch", "Your version of jbum doenst match the lastest released version.\nYours = " + Version.VERSION + "\nHosted at jadn.com/jbum/ = " + version);
+                App.warning("Version mismatch", "Your version of jbum does not match the latest released version.\nYours = " + Version.VERSION + "\nHosted at jadn.com/jbum/ = " + version);
             }
         } catch (Throwable t) {
             //t.printStackTrace();
         }
-
 
     }
 }

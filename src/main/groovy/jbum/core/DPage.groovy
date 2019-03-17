@@ -1,44 +1,31 @@
 package jbum.core
 
-import com.thoughtworks.xstream.XStream
+import com.fasterxml.jackson.databind.ObjectMapper
 import jbum.layouts.Page
-import jbum.layouts.TemplateFactory
-import jbum.ui.BlogInfo
-import jbum.ui.Main
+import jbum.ui.App
 
 import java.awt.*
 
-/**
- * Data Page.. a model of the data used to construct the page.
- */
+/** Data Page.. a model of the data used to construct the page. */
 public class DPage {
-    Color background = ColorSet.getBackground(ColorSet.DEFAULT);
-
-    Color panelEven = ColorSet.getPanelEven(ColorSet.DEFAULT);
-
-    Color panelOdd = ColorSet.getPanelOdd(ColorSet.DEFAULT);
-
-    Color text = ColorSet.getText(ColorSet.DEFAULT);
-
     File where;
-
-    String intro;
-
-    String prolog = Prefs.getInitialPrologText();
-
-    String template;
-
-    String title;
-
     VecImageInfo vii;
+    Color background = ColorSet.getBackground(ColorSet.DEFAULT);
+    Color panel = ColorSet.getPanel(ColorSet.DEFAULT);
+    Color text = ColorSet.getText(ColorSet.DEFAULT);
+    String intro = Prefs.getInitialIntroText();
+    String prolog = Prefs.getInitialPrologText();
+    String title = Prefs.getInitialTitleText()
+    int picsPerRow = 3;
 
-    int picsPerRow = 2;
+    DPage(File where, VecImageInfo vecii) {
+        this.where = where
+        this.vii = vecii
+    }
 
-    BlogInfo blogInfo;
-
-    public DPage(File where, String title, String intro, VecImageInfo vecii,
-                 Color bg, Color text, Color oddPanel, Color evenPanel,
-                 int picsPerRow, String template, String prolog, BlogInfo blogInfo) {
+    DPage(File where, String title, String intro, VecImageInfo vecii,
+          Color bg, Color text, Color panel,
+          int picsPerRow, String prolog) {
         super();
         this.where = where;
         this.title = title;
@@ -46,20 +33,49 @@ public class DPage {
         this.vii = vecii;
         this.background = bg;
         this.text = text;
-        this.panelOdd = oddPanel;
-        this.panelEven = evenPanel;
+        this.panel = panel;
         this.picsPerRow = picsPerRow;
-        this.template = template;
         this.prolog = prolog;
-        this.blogInfo = blogInfo;
     }
 
-    public DPage(File jbumFile, boolean newPage) {
+    DPage(File jbumDir) {
+        if (!jbumDir.isDirectory()) {
+            throw new RuntimeException("Not a directory: " + jbumDir)
+        }
+        if (!jbumDir.exists()) {
+            throw new RuntimeException("missing jbum.json/jbum.ser: " + jbumDir)
+        }
+        File f = new File(jbumDir, "jbum.json")
+        if (!f.exists()) {
+            f = new File(jbumDir, "jbum.ser")
+        }
+        loadIt(f)
+    }
+
+    DPage(File jbumFile, boolean newPage) {
+        loadIt(jbumFile)
+    }
+
+    void loadIt(File jbumFile) {
         this.where = jbumFile.getParentFile();
-        if (newPage) {
-            template = TemplateFactory.POLAROIDS_FLOW;
-            picsPerRow = 3;
-            panelEven = Color.WHITE;
+
+        if (jbumFile.name.endsWith(".json")) {
+            ObjectMapper om = new ObjectMapper()
+            FileReader fr = new FileReader(jbumFile)
+            Page page = om.readValue(fr, Page.class)
+            fr.close()
+            title = page.title
+            intro = page.intro
+            vii = new VecImageInfo()
+            page.photos.forEach({
+                vii.add(it.toImageInfo())
+            })
+            background = Color.decode(page.bgColor)
+            text = Color.decode(page.textColor)
+            panel = Color.decode(page.panelColor)
+            picsPerRow = page.picsPerRow
+            prolog = page.prolog
+            return
         }
 
         ObjectInputStream oos = null;
@@ -72,126 +88,102 @@ public class DPage {
         } catch (Exception e) {
             // should always be able to read these
             e.printStackTrace();
-            Main.error(e, "loading image information");
+            App.error(e, "loading image information");
         }
 
         try {
-            // newer settings
+            // newer settings... might be missing... expect EOF
             background = (Color) oos.readObject();
             text = (Color) oos.readObject();
-            panelOdd = (Color) oos.readObject();
-            panelEven = (Color) oos.readObject();
+            panel = (Color) oos.readObject();
+            /*was (Color) */ oos.readObject() // not used - was odd panel color
             picsPerRow = oos.readInt();
-            template = oos.readUTF();
+            oos.readUTF(); // not used - was template
             prolog = (String) oos.readObject();
-            blogInfo = (BlogInfo) oos.readObject();
+        } catch (EOFException e) {
+            System.out.println("NOTE: Probably old format.  EOF: ${jbumFile}")
         } catch (Exception e) {
             // Here when the saved version was older than our newer format
             // values not read are "reset-to-factory"
             // e.printStackTrace();
+            System.out.println("NOTE: ---- Really old jbum.ser or error unserializing: ${jbumFile}")
         }
 
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
+    void setBackgroundColor(Color backgroundColor) {
         this.background = backgroundColor;
     }
 
-    public Color getBackgroundColor() {
+    Color getBackgroundColor() {
         return background;
     }
 
-    public void setIntro(String intro) {
+    void setIntro(String intro) {
         this.intro = intro;
     }
 
-    public String getIntro() {
+    String getIntro() {
         return intro;
     }
 
-    public void setPanelEvenColor(Color panelEvenColor) {
-        this.panelEven = panelEvenColor;
+    void setPanelColor(Color panel) {
+        this.panel = panel;
     }
 
-    public Color getPanelEvenColor() {
-        return panelEven;
+    Color getPanelColor() {
+        return panel;
     }
 
-    public void setPanelOddColor(Color panelOddColor) {
-        this.panelOdd = panelOddColor;
-    }
-
-    public Color getPanelOddColor() {
-        return panelOdd;
-    }
-
-    public void setPicsPerRow(int picsPerRow) {
+    void setPicsPerRow(int picsPerRow) {
         this.picsPerRow = picsPerRow;
     }
 
-    public int getPicsPerRow() {
+    int getPicsPerRow() {
         return picsPerRow;
     }
 
-    public void setProlog(String prolog) {
+    void setProlog(String prolog) {
         this.prolog = prolog;
     }
 
-    public String getProlog() {
+    String getProlog() {
         return prolog;
     }
 
-    public void setTemplate(String templates) {
+    void setTemplate(String templates) {
         this.template = templates;
     }
 
-    public String getTemplate() {
-        return template;
-    }
-
-    public void setTextColor(Color textColor) {
+    void setTextColor(Color textColor) {
         this.text = textColor;
     }
 
-    public Color getTextColor() {
-        return text;
+    Color getTextColor() {
+        return text
     }
 
-    public void setTitle(String title) {
+    void setTitle(String title) {
         this.title = title;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public void setVii(VecImageInfo vii) {
+    void setVii(VecImageInfo vii) {
         this.vii = vii;
     }
 
-    public VecImageInfo getVii() {
+    VecImageInfo getVii() {
         return vii;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-
-        if (args[0].endsWith(".ser")) {
-            DPage p = new DPage(new File(args[0]), false);
-            XStream xstream = new XStream();
-            System.out.println(xstream.toXML(p));
-        }
-        if (args[0].endsWith(".xml")) {
-            XStream xstream = new XStream();
-            DPage np = (DPage) xstream.fromXML(new FileReader(args[0]));
-            np.save();
-        }
-    }
-
     boolean exists() {
-        return new File(where, "jbum.ser").exists();
+        return new File(where, "jbum.ser").exists() || new File(where, "jbum.json").exists()
     }
 
-    public void save() {
+    void save() {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream(new File(where, "jbum.ser")));
@@ -200,28 +192,34 @@ public class DPage {
             oos.writeObject(vii);
             oos.writeObject(background);
             oos.writeObject(text);
-            oos.writeObject(panelOdd);
-            oos.writeObject(panelEven);
+            oos.writeObject(panel);
+            oos.writeObject(Color.RED) //"Not Used - was panel odd color")
             oos.writeInt(picsPerRow);
-            oos.writeUTF(template);
+            oos.writeUTF("Not Used - was Template Name");
             oos.writeObject(prolog);
             oos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        def fos = new FileOutputStream(new File(where, "jbum.json"))
+        ObjectMapper om = new ObjectMapper()
+        def pp = om.writerWithDefaultPrettyPrinter()
+        fos.write(pp.writeValueAsBytes(toPage()))
+        fos.close()
     }
 
-    public File getWhere() {
+    File getWhere() {
         return where;
     }
 
-    public void setWhere(File where) {
+    void setWhere(File where) {
         this.where = where;
     }
 
-    public Page toPage() {
-        return new Page(title, intro, vii.toModern(), picsPerRow, Main
-                .prettyColor(background), Main.prettyColor(text), Main
-                .prettyColor(panelOdd), Main.prettyColor(panelEven), prolog, where.toString());
+    Page toPage() {
+        return new Page(title, intro, vii.toModern(), picsPerRow, App
+                .webEncodeColor(background), App.webEncodeColor(text), App
+                .webEncodeColor(panel), prolog, where.toString());
     }
 }

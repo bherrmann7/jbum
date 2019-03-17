@@ -3,24 +3,24 @@ package jbum.core
 import java.awt.*
 import java.awt.image.ImageObserver
 
-public class ImageLoader implements ImageObserver {
+class ImageLoader implements ImageObserver {
 
     boolean ok;
     String imageName;
 
-    public ImageLoader(String imageName) {
+    ImageLoader(String imageName) {
         this.imageName = imageName;
     }
 
-    public ImageLoader(Image img, String imageName) {
+    ImageLoader(Image img, String imageName) {
         this.imageName = imageName;
         if (img.getHeight(this) != -1) {
             ok = true;
         }
     }
 
-    public boolean imageUpdate(Image img, int infoflags, int x, int y,
-                               int width, int height) {
+    boolean imageUpdate(Image img, int infoflags, int x, int y,
+                        int width, int height) {
 
         // get rid of warnings
         if (false) {
@@ -43,7 +43,7 @@ public class ImageLoader implements ImageObserver {
         return true; // indicates I want more info
     }
 
-    public void waitForBits() {
+    void waitForBits() {
         while (!ok)
             try {
                 Thread.sleep(100);

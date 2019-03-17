@@ -5,8 +5,8 @@ import java.awt.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
-public class Zoom {
-    public Zoom(File imgFile) {
+class Zoom {
+    Zoom(File imgFile) {
         final JFrame frame = new JFrame();
         frame.setTitle("jbum zoom");
 
@@ -16,7 +16,7 @@ public class Zoom {
         button.setBorder(BorderFactory.createEmptyBorder())
 
         button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            void actionPerformed(ActionEvent ae) {
                 frame.setVisible(false);
                 frame.dispose();
             }

@@ -1,23 +1,22 @@
 package jbum.ui
 
 import jbum.core.ImageInfo
-import jbum.core.ImageProcessor
 import jbum.core.Prefs
 
-import javax.swing.JButton
-
-public class ExternalAction implements Runnable {
+class ExternalAction implements Runnable {
     ImageInfo ii;
 
 
-    public ExternalAction(ImageInfo ii, JButton jButton) {
+    ExternalAction(ImageInfo ii) {
         this.ii = ii;
         new Thread(this, "ExternalAction").start();
     }
 
-    public void run() {
+    void run() {
         try {
-            String target = ii.getOriginalFile(Main.getCurrentDir()).toString();
+            String target = ii.getOriginalFile(App.getCurrentDir()).toString();
+
+            println("Target is $target")
 
             //			StringBuffer tt = new StringBuffer();
             //			for (int i = 0; i < target.length(); i++) {
@@ -29,9 +28,9 @@ public class ExternalAction implements Runnable {
                     Prefs.getImageEditor(), target
             ] as String[]);
             p.waitFor();
-            ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
+            //ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
         } catch (Exception e) {
-            Main.error("running " + Prefs.getImageEditor(), "Unable to execute program: " + Prefs.getImageEditor() +
+            App.error("running " + Prefs.getImageEditor(), "Unable to execute program: " + Prefs.getImageEditor() +
                     "\nYou may want to modify your program preferences in File/Preferences" +
                     "\n\nError:" + e.getMessage());
             e.printStackTrace();

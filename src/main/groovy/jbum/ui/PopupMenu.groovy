@@ -20,7 +20,7 @@ class PopupMenu extends JPopupMenu {
         return imageIcon
     }
 
-    public PopupMenu(String imageName) {
+    PopupMenu(String imageName) {
         (0..<CenterP.buttonInfo.size() / 3).forEach {
             //String buttonCmd = CenterP.buttonInfo[it * 3]
             String buttonName = CenterP.buttonInfo[it * 3 + 2]
