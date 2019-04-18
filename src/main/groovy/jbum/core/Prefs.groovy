@@ -4,16 +4,23 @@ import javax.swing.*
 import java.awt.*
 import java.text.SimpleDateFormat
 
-class Prefs {
+/*
+ * Created on Aug 12, 2004
+ */
 
-    static void setFramePlace(JFrame frame, boolean welcome) {
+/**
+ * @author bob
+ */
+public class Prefs {
+
+    public static void setFramePlace(JFrame frame, boolean welcome) {
         int fudge = 0;
         if (welcome)
             fudge = 25;
         setFramePlace(frame, fudge);
     }
 
-    static void setFramePlace(JFrame frame, int heightFudge) {
+    public static void setFramePlace(JFrame frame, int heightFudge) {
 
         Dimension pref = frame.getPreferredSize();
         // this fudgery is annoying
@@ -24,23 +31,18 @@ class Prefs {
         Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         int x = (d.width - frame.getWidth()) / 2;
         int y = (d.height - frame.getHeight()) / 2;
-        frame.setLocation(100, 100);
-        //This is a hideous hack for my HDPI laptop
-        if (x > 2000) {
-            frame.setSize(1024, 1024)
-        } else {
-            frame.setSize((d.width as Integer) - 200, (d.height as Integer) - 200)
-        }
+        frame.setLocation(x, y);
         frame.setVisible(true);
 
         // f.setLocation(Pref.getChooserLocation(Pref.getMiddle(f.getSize())));
         // f.setSize(Pref.getChooserDimension(new Dimension(800,800)));
         // f.setLocation(Pref.getChooserLocation(Pref.getMiddle(f.getSize())));
+
     }
 
     static SimpleDateFormat sd = new SimpleDateFormat("MM/dd/yyyy");
 
-    static void justLoaded(File file) {
+    public static void justLoaded(File file) {
         ArrayList<String[]> al = Prefs.getLastModified();
         String dateMod = sd.format(new Date(file.lastModified()));
         String title = file.getName();
@@ -62,59 +64,51 @@ class Prefs {
     }
 
     @SuppressWarnings("unchecked")
-    static ArrayList<String[]> getLastModified() {
+    public static ArrayList<String[]> getLastModified() {
         ArrayList<String[]> arrayList = (ArrayList<String[]>) PrefsCore.get("LASTMOD", new ArrayList());
         return arrayList;
     }
 
-    static void setLastModified(ArrayList<String[]> al) {
+    public static void setLastModified(ArrayList<String[]> al) {
         PrefsCore.set("LASTMOD", al);
     }
 
-    static String getInitialFirstImageText() {
+    public static String getInitialFirstImageText() {
         return PrefsCore.getStr("InitialFirstImageText",
                 "[Enter comment about this image here.]");
     }
 
-    static void setInitialFirstImageText(String initialFirstImageText) {
+    public static void setInitialFirstImageText(String initialFirstImageText) {
         PrefsCore.set("InitialFirstImageText", initialFirstImageText);
     }
 
-    static String getInitialIntroText() {
+    public static String getInitialIntroText() {
         return PrefsCore
                 .getStr("InitialIntroText", "[Enter introduction here]");
     }
 
-    static void setInitialIntroText(String initialIntroText) {
+    public static void setInitialIntroText(String initialIntroText) {
         PrefsCore.set("InitialIntroText", initialIntroText);
     }
 
-    static String getInitialPrologText() {
+    public static String getInitialPrologText() {
         return PrefsCore.getStr("InitialPrologText", "[Enter the prolog here]\n\n\n<p>Created with <a href=http://jbum.sf.net/>jbum</a>");
     }
 
-    static void setInitialPrologText(String initialPrologText) {
+    public static void setInitialPrologText(String initialPrologText) {
         PrefsCore.set("InitialPrologText", initialPrologText);
     }
 
-    static String getInitialTitleText() {
+    public static String getInitialTitleText() {
         return PrefsCore.getStr("InitialTitleText", "[Enter title here]");
     }
 
-    static void setInitialTitleText(String initialTitleText) {
+    public static void setInitialTitleText(String initialTitleText) {
         PrefsCore.set("InitialTitleText", initialTitleText);
     }
 
 
-    static String getPDFViewer() {
-        return PrefsCore.getStr("pdfViewer", "/usr/bin/xpdf");
-    }
-
-    static void setPDFViewer(String pdfviewer) {
-        PrefsCore.set("pdfViewer", pdfviewer);
-    }
-
-    static String getImageEditor() {
+    public static String getImageEditor() {
         String defaultBrowser = "C:\\Windows\\System32\\mspaint.exe";
         if (File.separatorChar == '/')
             defaultBrowser = "/usr/bin/gimp";
@@ -123,20 +117,20 @@ class Prefs {
         return PrefsCore.getStr("imageEditor", defaultBrowser);
     }
 
-    static void setImageEditor(String pdfviewer) {
+    public static void setImageEditor(String pdfviewer) {
         PrefsCore.set("imageEditor", pdfviewer);
     }
 
-    static String getWebBrowser() {
+    public static String getWebBrowser() {
         String defaultBrowser = "C:\\Program Files\\Internet Explorer\\iexplore.exe";
         if (File.separatorChar == '/')
             defaultBrowser = "htmlview";
         if (System.getProperty("java.vendor").toString().indexOf("Apple") != -1)
-            defaultBrowser = " /Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --disable-web-security --allow-file-access-from-files --user-data-dir /";
+            defaultBrowser = "open";
         return PrefsCore.getStr("webbrowser", defaultBrowser);
     }
 
-    static void setWebBrowser(String webbrowser) {
+    public static void setWebBrowser(String webbrowser) {
         PrefsCore.set("webbrowser", webbrowser);
     }
 }

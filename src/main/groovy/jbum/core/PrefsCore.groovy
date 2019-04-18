@@ -1,10 +1,20 @@
+/*
+ * Created on Aug 12, 2004
+ *
+ * To change the template for this generated file go to
+ * Window - Preferences - Java - Code Generation - Code and Comments
+ */
+
 package jbum.core
 
-import jbum.ui.App
+import jbum.ui.Main
 
-class PrefsCore {
+/**
+ * @author bob
+ */
+public class PrefsCore {
 
-    static void setApp(String appName) {
+    public static void setApp(String appName) {
         PrefsCore.appName = appName;
     }
 
@@ -30,8 +40,7 @@ class PrefsCore {
                 prop = (Properties) ois.readObject();
                 ois.close();
             } catch (Exception e) {
-                e.printStackTrace()
-                App.error(e, "fff");
+                Main.error(e, "fff");
             }
         } else {
             prop = new Properties();
@@ -69,20 +78,7 @@ class PrefsCore {
         return f;
     }
 
-    static java.awt.Dimension getDimension(String name, java.awt.Dimension x) {
-        initProp();
-
-        java.awt.Dimension d = (java.awt.Dimension) prop.get(name);
-        if (d == null)
-            d = x;
-
-        if (debug)
-            System.out.println("AppProp: getFile(name=" + name + ",default="
-                    + x + ") returns " + d);
-        return d;
-    }
-
-    static Object get(String name, Object defaultValue) {
+    public static Object get(String name, Object defaultValue) {
         initProp();
 
         Object o = prop.get(name);
@@ -95,7 +91,7 @@ class PrefsCore {
         return o;
     }
 
-    static String getStr(String name, Object defaultValue) {
+    public static String getStr(String name, Object defaultValue) {
         initProp();
 
         Object o = prop.get(name);
@@ -120,7 +116,7 @@ class PrefsCore {
         syncProp();
     }
 
-    static void set(String name, java.io.Serializable x) {
+    public static void set(String name, java.io.Serializable x) {
         initProp();
         if (debug)
             System.out.println("AppProp: set(name=" + name + ", x=" + x + ");");
@@ -145,7 +141,7 @@ class PrefsCore {
             oos.writeObject(prop);
             oos.close();
         } catch (Exception e) {
-            App.error(e, "saving prop");
+            Main.error(e, "saving prop");
         }
     }
 
