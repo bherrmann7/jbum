@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel
 
 class PageDataModel extends AbstractTableModel {
 
-    ArrayList data;
+    ArrayList<String[]> data;
 
     PageDataModel() {
         data = jbum.core.Prefs.getLastModified();
@@ -53,6 +53,10 @@ class PageDataModel extends AbstractTableModel {
     private int PATH_COLUMN = 4
 
     void validate() {
+        // if data is in old format, reject it.
+        if(data.size()>0 && data.get(0).size()!=getColumnCount()){
+            data = new ArrayList<>()
+        }
         for (int i = data.size() - 1; i >= 0; i--) {
             File dir = new File(getValueAt(i, PATH_COLUMN).toString())
             File jbumSer = new File(dir,"jbum.ser")

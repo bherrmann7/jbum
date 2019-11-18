@@ -6,9 +6,9 @@ import javax.swing.*
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 
-class Prefs extends jbum.core.Prefs {
+public class Prefs extends jbum.core.Prefs {
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
         new Prefs();
     }
 
@@ -17,11 +17,10 @@ class Prefs extends jbum.core.Prefs {
     JTextField intro;
     JTextField firstImage;
     JTextArea prolog;
-    JTextField pdfviewer;
     JTextField imageEditorUI;
     JTextField webbrowser;
 
-    Prefs() {
+    public Prefs() {
         f = new JFrame();
         f.setTitle("Jbum Preferences");
         JPanel p = new JPanel();
@@ -42,9 +41,7 @@ class Prefs extends jbum.core.Prefs {
         JScrollPane jsp = new JScrollPane(prolog, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         p.add("tab hfill vfill", jsp);
-        p.add("p right", new JLabel("Pdf viewer"));
-        p.add("tab hfill", pdfviewer = new JTextField(getPDFViewer(), 30));
-        p.add("p right", new JLabel("Exernal Program (Usually image editor)"));
+        p.add("p right", new JLabel("Image editor"));
         p.add("tab hfill", imageEditorUI = new JTextField(getImageEditor(), 30));
         p.add("p right", new JLabel("web browser"));
         p.add("tab hfill", webbrowser = new JTextField(getWebBrowser(), 30));
@@ -55,12 +52,11 @@ class Prefs extends jbum.core.Prefs {
         JButton ok = new JButton("OK");
         okcancel.add(ok);
         ok.addActionListener(new ActionListener() {
-            void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 setInitialTitleText(title.getText());
                 setInitialIntroText(intro.getText());
                 setInitialFirstImageText(firstImage.getText());
                 setInitialPrologText(prolog.getText());
-                setPDFViewer(pdfviewer.getText());
                 setImageEditor(imageEditorUI.getText());
                 setWebBrowser(webbrowser.getText());
                 f.dispose();
@@ -71,7 +67,7 @@ class Prefs extends jbum.core.Prefs {
         JButton cancel = new JButton("Cancel");
         okcancel.add(cancel);
         cancel.addActionListener(new ActionListener() {
-            void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 f.dispose();
             }
         }
