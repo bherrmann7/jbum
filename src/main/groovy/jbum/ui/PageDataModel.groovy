@@ -54,8 +54,12 @@ class PageDataModel extends AbstractTableModel {
 
     void validate() {
         for (int i = data.size() - 1; i >= 0; i--) {
-            if (!new File(getValueAt(i, PATH_COLUMN).toString()).exists()) {
+            File dir = new File(getValueAt(i, PATH_COLUMN).toString())
+            File jbumSer = new File(dir,"jbum.ser")
+            File jbumJson = new File(dir,"jbum.json")
+            if (!dir.exists() || (!jbumSer.exists() && !jbumJson.exists())) {
                 data.remove(i);
+                continue;
             }
             // Update title and modified date.
             DPage dPage = new DPage(new File(getValueAt(i, PATH_COLUMN)))

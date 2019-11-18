@@ -42,12 +42,12 @@ public class DPage {
         if (!jbumDir.isDirectory()) {
             throw new RuntimeException("Not a directory: " + jbumDir)
         }
-        if (!jbumDir.exists()) {
-            throw new RuntimeException("missing jbum.json/jbum.ser: " + jbumDir)
-        }
         File f = new File(jbumDir, "jbum.json")
         if (!f.exists()) {
             f = new File(jbumDir, "jbum.ser")
+            if (!f.exists()) {
+                throw new RuntimeException("missing jbum.json/jbum.ser: " + jbumDir)
+            }
         }
         loadIt(f)
     }
