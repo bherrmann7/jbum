@@ -9,3 +9,4 @@ jbum_main.iml
 jbum_test.iml
 out
 gradle/wrapper/gradle-wrapper.jar
+/classes
