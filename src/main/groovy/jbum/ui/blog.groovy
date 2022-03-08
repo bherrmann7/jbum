@@ -43,15 +43,16 @@ class MyCellRenderer extends JLabel implements ListCellRenderer {
 class Blog {
 
     void openDialog(DPage dpage) {
-        Main.myself.saveAction.actionPerformed(null)
-        BlogInfo blogInfo = dpage.blogInfo
+        App.myself.saveAction.actionPerformed(null)
 
-        if (!blogInfo.title)
-            blogInfo.title = dpage.title
-        if (!blogInfo.text)
-            blogInfo.text = dpage.intro
-
-        blogInfo.init()
+//        BlogInfo blogInfo = dpage.blogInfo
+//
+//        if (!blogInfo.title)
+//            blogInfo.title = dpage.title
+//        if (!blogInfo.text)
+//            blogInfo.text = dpage.intro
+//
+//        blogInfo.init()
 
         JFrame jf = new JFrame();
 

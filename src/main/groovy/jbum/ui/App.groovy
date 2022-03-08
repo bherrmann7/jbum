@@ -13,8 +13,8 @@ import java.awt.*
 import java.awt.event.*
 import java.lang.reflect.Method
 
-public class Main {
-    private static Main myself;
+public class App {
+    private static App myself;
     CenterP centerP;
     JLabel memStatusL = new JLabel();
     JLabel statusL = new JLabel("");
@@ -23,7 +23,7 @@ public class Main {
     final JFrame frame = new JFrame();
 
     // for testing
-    public Main() {
+    App() {
     }
 
     public saveWindowLocationAndSize() {
@@ -50,7 +50,7 @@ public class Main {
 
     };
 
-    public Main(File file) {
+    App(File file) {
         myself = this;
         frame.setTitle("jbum - " + file);
         frame.addWindowListener(new WindowAdapter() {
@@ -201,17 +201,17 @@ public class Main {
 
         ActionListener layoutChange = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (Main.getTemplate().equals(TemplateFactory.WOODEN_FLOW)) {
+                if (App.getTemplate().equals(TemplateFactory.WOODEN_FLOW)) {
                     centerP.setColor("Background", Color.decode("#c97726"));
                     centerP.setColor("Panel Even", Color.decode("#A35200"));
                 }
-                if (Main.getTemplate().equals(TemplateFactory.POLAROIDS_FLOW)) {
+                if (App.getTemplate().equals(TemplateFactory.POLAROIDS_FLOW)) {
                     centerP.setColor("Panel Even", Color.WHITE);
                 }
-                if (Main.getTemplate().equals(TemplateFactory.POLAROIDS)) {
+                if (App.getTemplate().equals(TemplateFactory.POLAROIDS)) {
                     centerP.setColor("Panel Even", Color.WHITE);
                 }
-                if (Main.getTemplate().equals(TemplateFactory.CHAMELEON_FLOW)) {
+                if (App.getTemplate().equals(TemplateFactory.CHAMELEON_FLOW)) {
                     centerP.setColor("Background", Color.decode("#e0e0e0"));
                     centerP.setColor("Panel Even", Color.WHITE);
                     centerP.setColor("Panel Odd", Color.WHITE);
@@ -327,17 +327,15 @@ public class Main {
         );
 
         // / -- Help
-        final ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("author.jpg"));
+        final ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("author.jpg"));
 
         // makes help on the right
         menuBar.add(Box.createHorizontalGlue())
         menuBar.add(menu = new JMenu("Help"))
 
         menu.add(menuItem = new JMenuItem("About"))
-        menuItem.addActionListener(new
-
-                ActionListener() {
-                    public void actionPerformed(ActionEvent axe) {
+        menuItem.addActionListener(new ActionListener() {
+            void actionPerformed(ActionEvent axe) {
                         JOptionPane.showMessageDialog(frame,
                                 "Written by Robert Herrmann,\nbob@jadn.com.\n"
                                         + "http://jadn.com\n\n" + Version.VERSION,
@@ -386,7 +384,7 @@ public class Main {
                     String msg = "";
                     if (myself != null && myself.centerP != null
                             && myself.centerP.vecii != null)
-                        msg += "images=" + Main.myself.centerP.vecii.size();
+                        msg += "images=" + App.myself.centerP.vecii.size();
                     msg += ' mem=' + ((long) (Runtime.getRuntime().totalMemory() / 1_000_000)) + "MB";
                     memStatusL.setText(msg);
 
@@ -415,7 +413,7 @@ public class Main {
         myself.imagesPerRow.elements.find { it.text.startsWith(x.toString()) }.setSelected(true)
     }
 
-    public static void main(String[] args) {
+    static void main(String[] args) {
         // What directory do we start in?
         final FileChooser chooser = new FileChooser(
                 "Choose a directory with images to work with.");
@@ -431,15 +429,17 @@ public class Main {
                     file = file.getParentFile();
                 }
 
-                new Main(file);
+                new App(file);
             }
         });
     }
 
-    public static void error(Throwable e, String whywhere) {
+    static void error(Throwable e, String whywhere) {
 
         JOptionPane.showMessageDialog(null, e.getMessage(), whywhere,
                 JOptionPane.ERROR_MESSAGE);
+
+        e.printStackTrace();
 
         // Need dialog to ask user permission, and show progres... and allow
         // abort

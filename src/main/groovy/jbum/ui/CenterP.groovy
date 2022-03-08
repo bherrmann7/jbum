@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder
 import javax.swing.text.JTextComponent
 import java.awt.*
 import java.awt.event.ActionEvent
+import java.awt.event.KeyEvent
 import java.text.SimpleDateFormat
 import java.util.List
 
@@ -229,12 +230,12 @@ class CenterP extends JScrollPane {
             iconPath = outF.getParent() + File.separator;
             JOptionPane
                     .showMessageDialog(
-                    null,
-                    "This jbum page uses the older style of putting thumbnails\n"
-                            + "in the main directory (and not the 'smaller' sub directory). Resaving\n"
-                            + "this page may result in a page w/o images.   You can regenerate thumbnails from the menu.",
-                    "Missing 'smaller' directory",
-                    JOptionPane.WARNING_MESSAGE);
+                            null,
+                            "This jbum page uses the older style of putting thumbnails\n"
+                                    + "in the main directory (and not the 'smaller' sub directory). Resaving\n"
+                                    + "this page may result in a page w/o images.   You can regenerate thumbnails from the menu.",
+                            "Missing 'smaller' directory",
+                            JOptionPane.WARNING_MESSAGE);
         }
 
         htmlPath = '' + currentDir + File.separator + "html" + File.separator;
@@ -284,9 +285,14 @@ class CenterP extends JScrollPane {
 
             if (list) {
                 for (int i = 0; i < list.length; i++) {
-                    if (list[i].toString().toLowerCase().endsWith(".jpg")) {
-                        ImageInfo ii = new ImageInfo(list[i], null, null, null);
-                        vecii.add(ii);
+                    String filenameLower = list[i].toString().toLowerCase();
+                    if (filenameLower.endsWith(".jpg")||filenameLower.endsWith(".mp4")) {
+                        if (list[i].length() == 0) {
+                            println("WARNING: Skipping 0 length file " + list[i].name);
+                        } else {
+                            ImageInfo ii = new ImageInfo(list[i], null, null, null);
+                            vecii.add(ii);
+                        }
                     }
                 }
             }
@@ -394,7 +400,7 @@ class CenterP extends JScrollPane {
             button.setBackground(littleP.getBackground());
             button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0))
             button.setMargin(new Insets(0, 0, 0, 0))
-            if (ii.imgSize == null || (!ii.getSmallFile(App.getCurrentDir()).exists())) {
+            if ( ii.imgSize == null || (!ii.getSmallFile(App.getCurrentDir()).exists())) {
                 ImageProcessor.enqueue(ii, ImageProcessor.SMALLER);
             }
 
@@ -413,15 +419,37 @@ class CenterP extends JScrollPane {
             littleP.add(jta, BorderLayout.CENTER);
 
             button.addActionListener({ ActionEvent ae ->
-                if (ae.modifiers & Event.CTRL_MASK)
-                    return
+                if (ae.modifiers & Event.CTRL_MASK){
+                    ImageProcessor.enqueue(ii, ImageProcessor.CLOCKWISE);
+                    return;
+                }
+                if (ae.modifiers & Event.ALT_MASK){
+                    ImageProcessor.enqueue(ii, ImageProcessor.COUNTER_CLOCKWISE);
+                    return;
+                }
                 if (ae.modifiers & Event.SHIFT_MASK) {
-                    Runtime.getRuntime().exec([
-                            jbum.core.Prefs.getWebBrowser(),
-                            "file://" + ii.getOriginalFile(App.getCurrentDir()).toString()]
-                            as String[])
-                } else
+                    ImageProcessor.enqueue(ii, ImageProcessor.CLOCKWISE);
+                    ImageProcessor.enqueue(ii, ImageProcessor.CLOCKWISE);
+                    return;
+                } else if (ii.isMovie()) {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            try {
+                                String target = ii.getOriginalFile(App.getCurrentDir()).toString();
+                                Process p = Runtime.getRuntime().exec([
+                                        "mpv", target
+                                ] as String[]);
+                                // p.waitFor();
+                            } catch (Exception e) {
+                                App.error("running " + jbum.core.Prefs.getImageEditor(), "Unable to execute program: " + "mpv" +
+                                        "\n\nError:" + e.getMessage());
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                } else {
                     new Zoom(ii.getMediumFile(App.getCurrentDir()));
+                }
             });
 
             button.addMouseListener(new PopClickListener(ii.name))

@@ -1,3 +1,6 @@
+
+// polaridsFlow/layout.js
+
 function writeOutPage(p) {
     function s(x) {
         document.write(x);
@@ -43,9 +46,14 @@ function writeOutPage(p) {
             ii = p.photos[dex];
             pt += "<td valign='top' align='center'><table cellpadding=5 cellspacing=5 width=310 >";
             pt += "<tr><TD valign='top' align='center' bgcolor='white'>";
-            pt += "<a id='" + ii.fileName + "' title='" + ii.fileName + "' onclick='myLightbox.start(this);return false' rel='lightbox[1]' HREF='smaller/me_" + escape(ii.fileName) + "' >";
-            pt += "<img src='smaller/sm_" + escape(ii.fileName) + "' width=" + ii.smallSize.width;
-            pt += " height=" + ii.smallSize.height + " ></a><br>" + ii.comment;
+            if(ii.fileName.endsWith(".mp4")){
+                pt += "<video controls src='"+ii.fileName+"' width=310></video>";
+            } else {
+                pt += "<a id='" + ii.fileName + "' title='" + ii.fileName + "' onclick='myLightbox.start(this);return false' rel='lightbox[1]' HREF='smaller/me_" + escape(ii.fileName) + "' >";
+                pt += "<img src='smaller/sm_" + escape(ii.fileName) + "' width=" + ii.smallSize.width;
+                pt += " height=" + ii.smallSize.height + " ></a>";
+            }
+            pt += "<br>" + ii.comment;
             pt += "</TD></table>";
             if (++col >= numPerRow) {
                 col = 0;

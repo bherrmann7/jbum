@@ -1,8 +1,8 @@
 package jbum.core
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import jbum.layouts.Page
 import jbum.ui.App
+import com.fasterxml.jackson.databind.ObjectMapper
 
 import java.awt.*
 
@@ -218,8 +218,7 @@ public class DPage {
     }
 
     Page toPage() {
-        return new Page(title, intro, vii.toModern(), picsPerRow, App
-                .webEncodeColor(background), App.webEncodeColor(text), App
-                .webEncodeColor(panel), prolog, where.toString());
+        return new Page(title, intro, vii.toModern(), picsPerRow,
+                WebColor.getHex(background), WebColor.getHex(text), WebColor.getHex(panel), prolog, where.toString());
     }
 }

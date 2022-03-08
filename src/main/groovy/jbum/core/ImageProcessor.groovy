@@ -2,6 +2,7 @@ package jbum.core
 
 import jbum.ui.App
 
+import javax.imageio.ImageIO
 import javax.swing.*
 import java.awt.*
 import java.awt.image.BufferedImage
@@ -90,9 +91,13 @@ class ImageProcessor implements Runnable {
             throw new RuntimeException("Unable to create directory named 'smaller'");
         }
 
-        Image img = new ImageIcon(ii.getOriginalFile(App.getCurrentDir()).toString()).getImage();
-        int width = img.getWidth(null);
-        int height = img.getHeight(null);
+        def filename = ii.getOriginalFile(App.getCurrentDir()).toString();
+        if(ii.isMovie()){
+            filename = filename.replaceAll(".mp4", ".png");
+        }
+        BufferedImage img = ImageIO.read(new FileInputStream(filename));
+        int width          = img.getWidth();
+        int height         = img.getHeight();
 
         // Dont know why, but this causes memory to sucked up like crazy
         if (!task.equals(SMALLER)) {
@@ -121,12 +126,8 @@ class ImageProcessor implements Runnable {
             g2 = null;
 
             try {
-                FileOutputStream fileOut = new FileOutputStream(ii
-                        .getOriginalFile(App.getCurrentDir()));
-                com.sun.image.codec.jpeg.JPEGImageEncoder en = com.sun.image.codec.jpeg.JPEGCodec
-                        .createJPEGEncoder(fileOut);
-
-                en.encode(bimg);
+                FileOutputStream fileOut = new FileOutputStream(ii.getOriginalFile(App.getCurrentDir()));
+                ImageIO.write(bimg, "jpeg", fileOut);
             } catch (Exception e) {
                 App.error(e, "Unable to write out image (permissions?) ");
                 return null;
@@ -136,8 +137,7 @@ class ImageProcessor implements Runnable {
             bimg = null;
 
             // now reload newly rotated image.
-            img = new ImageIcon(ii.getOriginalFile(App.getCurrentDir()).toString()).getImage();
-
+            img = ImageIO.read(new FileInputStream(filename));
         }
 
         // done w rotation.
@@ -152,8 +152,9 @@ class ImageProcessor implements Runnable {
             mediumWidth = (width * mediumHeight) / height;
         }
 
-        Image me = makeSmall(ii.getName(), img, ii.getMediumFile(App.getCurrentDir()), mediumWidth, mediumHeight);
-        Image sm = makeSmall(ii.getName(), img, ii.getSmallFile(App.getCurrentDir()), 300, -1);
+
+        Image me = makeSmall(ii.getName(), img, ii.getMediumFile(App.getCurrentDir()), mediumWidth, mediumHeight, ii.isMovie());
+        Image sm = makeSmall(ii.getName(), img, ii.getSmallFile(App.getCurrentDir()), 300, -1, ii.isMovie());
 
         ii.mediumSize = new Dimension(me.getWidth(null), me.getHeight(null));
         ii.smallSize = new Dimension(sm.getWidth(null), sm.getHeight(null));
@@ -165,7 +166,7 @@ class ImageProcessor implements Runnable {
     }
 
     Image makeSmall(String name, Image img, File outFile, int width,
-                    int height) {
+                    int height, isMovie) {
         try {
             Image smaller = img.getScaledInstance(width, height,
                     Image.SCALE_SMOOTH);
@@ -181,13 +182,23 @@ class ImageProcessor implements Runnable {
                     BufferedImage.TYPE_INT_RGB);
             Graphics2D g2 = bimg.createGraphics();
             g2.drawImage(smaller, 0, 0, width, height, null);
+
+            if(isMovie){
+                g2.setColor(Color.RED);
+                g2.fillRect(0,0,width,10);
+                //g2.drawLine(0,0, width, height);
+            }
+
             g2.dispose();
 
             def fileOut = new java.io.FileOutputStream(outFile);
-            def en = com.sun.image.codec.jpeg.JPEGCodec.createJPEGEncoder(fileOut);
+            //println(ImageIO.getWriterFormatNames());
 
-            en.encode(bimg);
-            bimg.flush();
+            ImageIO.write(bimg, "jpg", fileOut)
+//            def en = com.sun.image.codec.jpeg.JPEGCodec.createJPEGEncoder(fileOut);
+//
+//            en.encode(bimg);
+//            bimg.flush();
             fileOut.close();
             return smaller;
         } catch (Exception e) {

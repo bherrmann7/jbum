@@ -7,7 +7,7 @@
 
 package jbum.core
 
-import jbum.ui.Main
+import jbum.ui.App
 
 /**
  * @author bob
@@ -40,7 +40,7 @@ public class PrefsCore {
                 prop = (Properties) ois.readObject();
                 ois.close();
             } catch (Exception e) {
-                Main.error(e, "fff");
+                App.error(e, "fff");
             }
         } else {
             prop = new Properties();
@@ -141,7 +141,7 @@ public class PrefsCore {
             oos.writeObject(prop);
             oos.close();
         } catch (Exception e) {
-            Main.error(e, "saving prop");
+            App.error(e, "saving prop");
         }
     }
 

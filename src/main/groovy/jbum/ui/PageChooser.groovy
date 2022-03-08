@@ -25,7 +25,7 @@ public class PageChooser {
         System.setSecurityManager(null);
 
         if (args.length != 0) {
-            new Main(new File(args[0]));
+            new App(new File(args[0]));
             return;
         }
 
@@ -52,7 +52,7 @@ public class PageChooser {
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(yellow);
 
-        ImageIcon icon = new ImageIcon(Main.class.getClassLoader().getResource("jbum.gif"));
+        ImageIcon icon = new ImageIcon(App.class.getClassLoader().getResource("jbum.gif"));
 
         titlePanel.add(new JLabel(Version.VERSION, icon, SwingConstants.RIGHT), BorderLayout.WEST);
 
@@ -160,13 +160,13 @@ public class PageChooser {
                         File f = new File(jtf.getText());
 
                         if (!f.exists()) {
-                            Main.error("Choosing a folder to work with...",
+                            App.error("Choosing a folder to work with...",
                                     "Can't create/open a folder that doesn't exist");
 
                             return;
                         }
 
-                        new Main(f);
+                        new App(f);
                         frame.dispose();
                     }
                 });
@@ -268,7 +268,7 @@ public class PageChooser {
 
                         String value = (String) table.getModel().getValueAt(sel,
                                 2);
-                        new Main(new File(value));
+                        new App(new File(value));
                         frame.dispose();
                     }
                 });
@@ -284,7 +284,7 @@ public class PageChooser {
         Prefs.setFramePlace(frame, welcome);
         frame.setVisible(true);
 
-        Update.check(frame);
+        // new Update().start()
     }
 
     private static void doFind(File root) {

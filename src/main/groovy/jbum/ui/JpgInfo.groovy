@@ -39,6 +39,7 @@ class JpgInfo {
                 }
             }
         } catch (Exception e) {
+            println("Exception occured with image ${jpegFile}")
             e.printStackTrace();
         }
 

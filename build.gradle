@@ -1,15 +1,17 @@
+// used by application plugin
 
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
     }
 }
 
 plugins {
     id 'org.hidetake.ssh' version '0.4.2'
+    id 'idea'
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -23,7 +25,6 @@ allprojects {
     targetCompatibility = '1.6'
 }
 
-// used by application plugin
 mainClassName = 'jbum.ui.Command'
 
 compileGroovy {
@@ -74,5 +75,10 @@ task runDump(type: JavaExec) {
 task runEx(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'jbum.ui.Command'
-    args '/Users/bob/Desktop/ex'
+    args '/home/bob/huh'
+}
+
+task runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'jbum.ui.PageChooser'
 }

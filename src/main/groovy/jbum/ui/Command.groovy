@@ -13,7 +13,7 @@ import javax.swing.*
 class Command {
 
     static void usage() {
-        println("usage: jbum director-of-images");
+        println("usage: jbum directory-of-images");
         println("usage: jbum  # will open page chooser");
         println("usage: jbum make {directory-name}");
         println("usage: jbum rebuild {jbum.json | jbum.ser} # rebuilds images");
@@ -26,7 +26,7 @@ class Command {
 
     static void main(String[] args) {
         if (args.length == 0) {
-            PageChooser.start();
+            PageChooser.main();
         } else if (args[0] == "rebuild") {
             File file = new File(args[1])
             if (file.getName() != "jbum.ser" && file.getName() != "jbum.json")

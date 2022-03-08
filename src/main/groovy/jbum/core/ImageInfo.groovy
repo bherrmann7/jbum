@@ -61,8 +61,11 @@ class ImageInfo implements java.io.Serializable {
     }
 
     File getSmallFile(File baseDir) {
+        String fname = fileName.getName();
+        if (isMovie())
+            fname = fname.replaceAll(".mov", ".png")
         return new File(baseDir, "smaller"
-                + File.separator + "sm_" + fileName.getName());
+                + File.separator + "sm_" + fname);
     }
 
     ImageInfo2 toImageInfo2() {
@@ -71,5 +74,9 @@ class ImageInfo implements java.io.Serializable {
 
     def setText(String s) {
         commentTA.setText(s)
+    }
+
+    boolean isMovie() {
+        getName().endsWith(".mp4")
     }
 }

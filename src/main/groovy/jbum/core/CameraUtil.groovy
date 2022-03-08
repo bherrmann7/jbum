@@ -4,7 +4,6 @@ import com.drew.imaging.jpeg.JpegMetadataReader
 import com.drew.metadata.Directory
 import com.drew.metadata.Metadata
 import com.drew.metadata.exif.ExifDirectory
-import jbum.ui.App
 
 class CameraUtil {
     static def findCameras(VecImageInfo vecImageInfo) {
@@ -12,7 +11,7 @@ class CameraUtil {
 
         vecImageInfo.vec.each { ImageInfo ii ->
             // BOBH toLowerCase ...
-            String name = getCameraName(new File(App.getCurrentDir(), ii.fileName.name))
+            String name = getCameraName(new File(jbum.ui.App.getCurrentDir(), ii.fileName.name))
             if (!map[name])
                 map[name] = new Camera(name: name, imageInfos: [ii])
             else
@@ -25,9 +24,13 @@ class CameraUtil {
         if(!jpegFile.exists()){
             return "Missing-Original-File"
         }
-        Metadata metadata = JpegMetadataReader.readMetadata(jpegFile);
-        Directory dir = metadata.getDirectory(ExifDirectory.class);
-        return dir.getString(271);
+        try {
+            Metadata metadata = JpegMetadataReader.readMetadata(jpegFile);
+            Directory dir = metadata.getDirectory(ExifDirectory.class);
+            return dir.getString(271);
+        } catch(Throwable t) {
+          return "Cannot-Extract-Original-Size (not JPEG)";
+        }
     }
 
     static Date adjustTime(Date d, List<Camera> cameraList, String cameraName) {
